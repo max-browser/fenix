@@ -15,11 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import mozilla.components.service.glean.private.NoExtras
-import org.mozilla.fenix.BrowserDirection
-import org.mozilla.fenix.BuildConfig
+import org.mozilla.fenix.*
 import org.mozilla.fenix.GleanMetrics.Events
-import org.mozilla.fenix.HomeActivity
-import org.mozilla.fenix.R
 import org.mozilla.fenix.crashes.CrashListActivity
 import org.mozilla.fenix.databinding.FragmentAboutBinding
 import org.mozilla.fenix.ext.settings
@@ -135,48 +132,79 @@ class AboutFragment : Fragment(), AboutPageListener {
     private fun populateAboutList(): List<AboutPageItem> {
         val context = requireContext()
 
-        return listOf(
-            AboutPageItem(
-                AboutItem.ExternalLink(
-                    WHATS_NEW,
-                    SupportUtils.getWhatsNewUrl(context),
+        return if (Config.channel.isMax) {
+            listOf(
+                AboutPageItem(
+                    AboutItem.Crashes,
+                    getString(R.string.about_crashes),
                 ),
-                getString(R.string.about_whats_new, getString(R.string.app_name)),
-            ),
-            AboutPageItem(
-                AboutItem.ExternalLink(
-                    SUPPORT,
-                    SupportUtils.getSumoURLForTopic(context, SupportUtils.SumoTopic.HELP),
+                AboutPageItem(
+                    AboutItem.ExternalLink(
+                        PRIVACY_NOTICE,
+                        SupportUtils.getMaxPageUrl(SupportUtils.MaxPage.PRIVATE_NOTICE)
+                    ),
+                    getString(R.string.about_privacy_notice),
                 ),
-                getString(R.string.about_support),
-            ),
-            AboutPageItem(
-                AboutItem.Crashes,
-                getString(R.string.about_crashes),
-            ),
-            AboutPageItem(
-                AboutItem.ExternalLink(
-                    PRIVACY_NOTICE,
-                    SupportUtils.getMozillaPageUrl(SupportUtils.MozillaPage.PRIVATE_NOTICE),
+                AboutPageItem(
+                    AboutItem.ExternalLink(
+                        RIGHTS,
+                        SupportUtils.getMaxPageUrl(SupportUtils.MaxPage.TERMS_OF_SERVICE)
+                    ),
+                    getString(R.string.about_know_your_rights),
                 ),
-                getString(R.string.about_privacy_notice),
-            ),
-            AboutPageItem(
-                AboutItem.ExternalLink(
-                    RIGHTS,
-                    SupportUtils.getSumoURLForTopic(context, SupportUtils.SumoTopic.YOUR_RIGHTS),
+                AboutPageItem(
+                    AboutItem.ExternalLink(LICENSING_INFO, ABOUT_LICENSE_URL),
+                    getString(R.string.about_licensing_information),
                 ),
-                getString(R.string.about_know_your_rights),
-            ),
-            AboutPageItem(
-                AboutItem.ExternalLink(LICENSING_INFO, ABOUT_LICENSE_URL),
-                getString(R.string.about_licensing_information),
-            ),
-            AboutPageItem(
-                AboutItem.Libraries,
-                getString(R.string.about_other_open_source_libraries),
-            ),
-        )
+                AboutPageItem(
+                    AboutItem.Libraries,
+                    getString(R.string.about_other_open_source_libraries),
+                ),
+            )
+        } else {
+            listOf(
+                AboutPageItem(
+                    AboutItem.ExternalLink(
+                        WHATS_NEW,
+                        SupportUtils.getWhatsNewUrl(context),
+                    ),
+                    getString(R.string.about_whats_new, getString(R.string.app_name)),
+                ),
+                AboutPageItem(
+                    AboutItem.ExternalLink(
+                        SUPPORT,
+                        SupportUtils.getSumoURLForTopic(context, SupportUtils.SumoTopic.HELP),
+                    ),
+                    getString(R.string.about_support),
+                ),
+                AboutPageItem(
+                    AboutItem.Crashes,
+                    getString(R.string.about_crashes),
+                ),
+                AboutPageItem(
+                    AboutItem.ExternalLink(
+                        PRIVACY_NOTICE,
+                        SupportUtils.getMozillaPageUrl(SupportUtils.MozillaPage.PRIVATE_NOTICE)
+                    ),
+                    getString(R.string.about_privacy_notice),
+                ),
+                AboutPageItem(
+                    AboutItem.ExternalLink(
+                        RIGHTS,
+                        SupportUtils.getSumoURLForTopic(context, SupportUtils.SumoTopic.YOUR_RIGHTS)
+                    ),
+                    getString(R.string.about_know_your_rights),
+                ),
+                AboutPageItem(
+                    AboutItem.ExternalLink(LICENSING_INFO, ABOUT_LICENSE_URL),
+                    getString(R.string.about_licensing_information),
+                ),
+                AboutPageItem(
+                    AboutItem.Libraries,
+                    getString(R.string.about_other_open_source_libraries),
+                ),
+            )
+        }
     }
 
     private fun openLinkInNormalTab(url: String) {

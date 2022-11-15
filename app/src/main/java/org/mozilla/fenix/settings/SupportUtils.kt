@@ -61,6 +61,11 @@ object SupportUtils {
         MANIFESTO("about/manifesto/"),
     }
 
+    enum class MaxPage(internal val path: String) {
+        PRIVATE_NOTICE("privacy-policy/"),
+        TERMS_OF_SERVICE("terms-of-service/"),
+    }
+
     /**
      * Gets a support page URL for the corresponding topic.
      */
@@ -95,6 +100,11 @@ object SupportUtils {
         val path = page.path
         val langTag = getLanguageTag(locale)
         return "https://www.mozilla.org/$langTag/$path"
+    }
+
+    fun getMaxPageUrl(page: MaxPage): String {
+        val path = page.path
+        return "https://maxbrowser.co/$path"
     }
 
     fun getWhatsNewUrl(context: Context) = getSumoURLForTopic(context, SumoTopic.WHATS_NEW)
