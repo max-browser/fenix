@@ -5,6 +5,9 @@ import org.mozilla.fenix.gradle.tasks.GithubDetailsTask
 buildscript {
     // This logic is duplicated in the allprojects block: I don't know how to fix that.
     repositories {
+        // Make sure that you have the following two repositories
+        google()  // Google's Maven repository
+        mavenCentral()  // Maven Central repository
         maven {
             name "Mozilla Nightly"
             url "https://nightly.maven.mozilla.org/maven2"
@@ -69,6 +72,7 @@ buildscript {
         classpath "org.mozilla.components:tooling-glean-gradle:${Versions.mozilla_android_components}"
         classpath "org.mozilla.components:tooling-nimbus-gradle:${Versions.mozilla_android_components}"
 
+        classpath 'com.google.gms:google-services:4.3.13'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -81,7 +85,9 @@ plugins {
 allprojects {
     // This logic is duplicated in the buildscript block: I don't know how to fix that.
     repositories {
-        mavenCentral()
+        google()  // Google's Maven repository
+        mavenCentral()  // Maven Central repository
+
         maven {
             name "Mozilla Nightly"
             url "https://nightly.maven.mozilla.org/maven2"

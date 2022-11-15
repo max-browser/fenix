@@ -3,6 +3,7 @@ import org.mozilla.fenix.gradle.tasks.ApkSizeTask
 plugins {
     id "com.jetbrains.python.envs" version "0.0.26"
     id "com.google.protobuf" version "0.8.19"
+    id 'com.google.gms.google-services'
 }
 
 apply plugin: 'com.android.application'

@@ -20,6 +20,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.work.Configuration.Builder
 import androidx.work.Configuration.Provider
 import com.max.browser.core.MaxBrowserApplicationDelegate
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.*
 import mozilla.appservices.Megazord
 import mozilla.components.browser.state.action.SystemAction
@@ -135,6 +136,8 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
             PerfStartup.applicationOnCreate.accumulateSamples(listOf(durationMillis))
         }
 
+
+        ReportManager.getInstance().report("hello_world")
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
