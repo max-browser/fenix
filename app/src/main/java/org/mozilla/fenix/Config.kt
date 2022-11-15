@@ -9,11 +9,14 @@ enum class ReleaseChannel {
     Nightly,
     Beta,
     Release,
+    MaxDebug,
+    MaxRelease,
     ;
 
     val isReleased: Boolean
         get() = when (this) {
             Debug -> false
+            MaxDebug -> false
             else -> true
         }
 
@@ -28,11 +31,12 @@ enum class ReleaseChannel {
         get() = !this.isReleased
 
     val isReleaseOrBeta: Boolean
-        get() = this == Release || this == Beta
+        get() = this == Release || this == Beta || this == MaxRelease
 
     val isRelease: Boolean
         get() = when (this) {
             Release -> true
+            MaxRelease -> true
             else -> false
         }
 
@@ -40,7 +44,7 @@ enum class ReleaseChannel {
         get() = this == Beta
 
     val isNightlyOrDebug: Boolean
-        get() = this == Debug || this == Nightly
+        get() = this == Debug || this == Nightly || this == MaxDebug
 
     /**
      * Is this a "Mozilla Online" build of Fenix? "Mozilla Online" is the Chinese branch of Mozilla
@@ -56,6 +60,8 @@ object Config {
         "nightly" -> ReleaseChannel.Nightly
         "beta" -> ReleaseChannel.Beta
         "release" -> ReleaseChannel.Release
+        "maxDebug" -> ReleaseChannel.MaxDebug
+        "maxRelease" -> ReleaseChannel.MaxRelease
         else -> {
             throw IllegalStateException("Unknown build type: ${BuildConfig.BUILD_TYPE}")
         }

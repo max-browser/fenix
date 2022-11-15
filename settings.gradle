@@ -2,6 +2,10 @@ include ':app'
 
 include ':mozilla-detekt-rules'
 include ':mozilla-lint-rules'
+
+include ":max-browser-core"
+project(":max-browser-core").projectDir = file("../max-browser-core/max-browser-core")
+
 def log(message) {
     logger.lifecycle("[settings] ${message}")
 }

@@ -81,6 +81,7 @@ plugins {
 allprojects {
     // This logic is duplicated in the buildscript block: I don't know how to fix that.
     repositories {
+        mavenCentral()
         maven {
             name "Mozilla Nightly"
             url "https://nightly.maven.mozilla.org/maven2"
