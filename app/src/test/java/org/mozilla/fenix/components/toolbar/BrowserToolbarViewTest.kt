@@ -49,6 +49,7 @@ class BrowserToolbarViewTest {
             interactor = mockk(),
             customTabSession = mockk(relaxed = true),
             lifecycleOwner = mockk(),
+            onMenuDismissed = {},
         )
 
         toolbarView.view = toolbar

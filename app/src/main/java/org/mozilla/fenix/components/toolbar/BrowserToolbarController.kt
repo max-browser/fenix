@@ -61,6 +61,7 @@ class DefaultBrowserToolbarController(
     private val customTabSessionId: String?,
     private val browserAnimator: BrowserAnimator,
     private val onTabCounterClicked: () -> Unit,
+    private val onHomeButtonClicked: () -> Unit,
     private val onCloseTab: (SessionState) -> Unit,
 ) : BrowserToolbarController {
 
@@ -172,6 +173,7 @@ class DefaultBrowserToolbarController(
     }
 
     override fun handleHomeButtonClick() {
+        onHomeButtonClicked.invoke()
         Events.browserToolbarHomeTapped.record(NoExtras())
         browserAnimator.captureEngineViewAndDrawStatically {
             navController.navigate(

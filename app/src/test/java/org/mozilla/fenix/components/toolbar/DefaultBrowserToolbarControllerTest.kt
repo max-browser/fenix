@@ -382,6 +382,8 @@ class DefaultBrowserToolbarControllerTest {
         onTabCounterClicked = {
             tabCounterClicked = true
         },
+        onHomeButtonClicked = {
+        },
         onCloseTab = {},
     )
 }

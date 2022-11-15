@@ -43,6 +43,7 @@ class BrowserToolbarView(
     private val interactor: BrowserToolbarInteractor,
     private val customTabSession: CustomTabSessionState?,
     private val lifecycleOwner: LifecycleOwner,
+    private val onMenuDismissed: () -> Unit,
 ) {
 
     @LayoutRes
@@ -63,7 +64,7 @@ class BrowserToolbarView(
     @VisibleForTesting
     internal val isPwaTabOrTwaTab: Boolean
         get() = customTabSession?.config?.externalAppType == ExternalAppType.PROGRESSIVE_WEB_APP ||
-            customTabSession?.config?.externalAppType == ExternalAppType.TRUSTED_WEB_ACTIVITY
+                customTabSession?.config?.externalAppType == ExternalAppType.TRUSTED_WEB_ACTIVITY
 
     init {
         val isCustomTabSession = customTabSession != null
@@ -143,6 +144,9 @@ class BrowserToolbarView(
                         interactor.onBrowserToolbarMenuItemTapped(it)
                     },
                 )
+                view.display.setMenuDismissAction {
+                    onMenuDismissed.invoke()
+                }
             } else {
                 menuToolbar = DefaultToolbarMenu(
                     context = this,
@@ -159,6 +163,7 @@ class BrowserToolbarView(
                 )
                 view.display.setMenuDismissAction {
                     view.invalidateActions()
+                    onMenuDismissed.invoke()
                 }
             }
 

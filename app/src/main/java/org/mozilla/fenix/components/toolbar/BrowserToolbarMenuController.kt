@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -98,6 +99,7 @@ class DefaultBrowserToolbarMenuController(
             // TODO: These can be removed for https://github.com/mozilla-mobile/fenix/issues/17870
             // todo === Start ===
             is ToolbarMenu.Item.InstallPwaToHomeScreen -> {
+                ReportManager.getInstance().report("browser_menu_install_pwa_to_home_screen")
                 settings.installPwaOpened = true
                 MainScope().launch {
                     with(activity.components.useCases.webAppUseCases) {
@@ -112,6 +114,7 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.OpenInFenix -> {
+                ReportManager.getInstance().report("browser_menu_open_in_fenix")
                 customTabSessionId?.let {
                     // Stop the SessionFeature from updating the EngineView and let it release the session
                     // from the EngineView so that it can immediately be rendered by a different view once
@@ -138,6 +141,7 @@ class DefaultBrowserToolbarMenuController(
             }
             // todo === End ===
             is ToolbarMenu.Item.OpenInApp -> {
+                ReportManager.getInstance().report("browser_menu_open_in_app")
                 settings.openInAppOpened = true
 
                 val appLinksUseCases = activity.components.useCases.appLinksUseCases
@@ -149,6 +153,7 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.Quit -> {
+                ReportManager.getInstance().report("browser_menu_quit")
                 // We need to show the snackbar while the browsing data is deleting (if "Delete
                 // browsing data on quit" is activated). After the deletion is over, the snackbar
                 // is dismissed.
@@ -164,10 +169,12 @@ class DefaultBrowserToolbarMenuController(
                 deleteAndQuit(activity, scope, snackbar)
             }
             is ToolbarMenu.Item.CustomizeReaderView -> {
+                ReportManager.getInstance().report("browser_menu_customize_reader_view")
                 readerModeController.showControls()
                 ReaderMode.appearance.record(NoExtras())
             }
             is ToolbarMenu.Item.Back -> {
+                ReportManager.getInstance().report("browser_menu_back")
                 if (item.viewHistory) {
                     navController.navigate(
                         BrowserFragmentDirections.actionGlobalTabHistoryDialogFragment(
@@ -181,6 +188,7 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.Forward -> {
+                ReportManager.getInstance().report("browser_menu_forward")
                 if (item.viewHistory) {
                     navController.navigate(
                         BrowserFragmentDirections.actionGlobalTabHistoryDialogFragment(
@@ -194,6 +202,7 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.Reload -> {
+                ReportManager.getInstance().report("browser_menu_reload")
                 val flags = if (item.bypassCache) {
                     LoadUrlFlags.select(LoadUrlFlags.BYPASS_CACHE)
                 } else {
@@ -205,11 +214,13 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.Stop -> {
+                ReportManager.getInstance().report("browser_menu_stop")
                 currentSession?.let {
                     sessionUseCases.stopLoading.invoke(it.id)
                 }
             }
             is ToolbarMenu.Item.Share -> {
+                ReportManager.getInstance().report("browser_menu_share")
                 val directions = NavGraphDirections.actionGlobalShareFragment(
                     sessionId = currentSession?.id,
                     data = arrayOf(
@@ -223,10 +234,12 @@ class DefaultBrowserToolbarMenuController(
                 navController.navigate(directions)
             }
             is ToolbarMenu.Item.Settings -> browserAnimator.captureEngineViewAndDrawStatically {
+                ReportManager.getInstance().report("browser_menu_settings")
                 val directions = BrowserFragmentDirections.actionBrowserFragmentToSettingsFragment()
                 navController.nav(R.id.browserFragment, directions)
             }
             is ToolbarMenu.Item.SyncAccount -> {
+                ReportManager.getInstance().report("browser_menu_sync_account")
                 val directions = when (item.accountState) {
                     AccountState.AUTHENTICATED ->
                         BrowserFragmentDirections.actionGlobalAccountSettingsFragment()
@@ -243,6 +256,7 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.RequestDesktop -> {
+                ReportManager.getInstance().report("browser_menu_request_desktop")
                 currentSession?.let {
                     sessionUseCases.requestDesktopSite.invoke(
                         item.isChecked,
@@ -251,6 +265,7 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.AddToTopSites -> {
+                ReportManager.getInstance().report("browser_menu_add_to_top_sites")
                 scope.launch {
                     val context = swipeRefresh.context
                     val numPinnedSites = topSitesStorage.cachedTopSites
@@ -287,6 +302,7 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.AddToHomeScreen -> {
+                ReportManager.getInstance().report("browser_menu_add_to_home_screen")
                 settings.installPwaOpened = true
                 MainScope().launch {
                     with(activity.components.useCases.webAppUseCases) {
@@ -301,15 +317,18 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.FindInPage -> {
+                ReportManager.getInstance().report("browser_menu_find_in_page")
                 findInPageLauncher()
             }
             is ToolbarMenu.Item.AddonsManager -> browserAnimator.captureEngineViewAndDrawStatically {
+                ReportManager.getInstance().report("browser_menu_addons_manager")
                 navController.nav(
                     R.id.browserFragment,
                     BrowserFragmentDirections.actionGlobalAddonsManagementFragment(),
                 )
             }
             is ToolbarMenu.Item.SaveToCollection -> {
+                ReportManager.getInstance().report("browser_menu_save_to_collection")
                 Collections.saveButton.record(
                     Collections.SaveButtonExtra(
                         TELEMETRY_BROWSER_IDENTIFIER,
@@ -331,17 +350,20 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.Bookmark -> {
+                ReportManager.getInstance().report("browser_menu_bookmark")
                 store.state.selectedTab?.let {
                     getProperUrl(it)?.let { url -> bookmarkTapped(url, it.content.title) }
                 }
             }
             is ToolbarMenu.Item.Bookmarks -> browserAnimator.captureEngineViewAndDrawStatically {
+                ReportManager.getInstance().report("browser_menu_bookmarks")
                 navController.nav(
                     R.id.browserFragment,
                     BrowserFragmentDirections.actionGlobalBookmarkFragment(BookmarkRoot.Mobile.id),
                 )
             }
             is ToolbarMenu.Item.History -> browserAnimator.captureEngineViewAndDrawStatically {
+                ReportManager.getInstance().report("browser_menu_history")
                 navController.nav(
                     R.id.browserFragment,
                     BrowserFragmentDirections.actionGlobalHistoryFragment(),
@@ -349,21 +371,25 @@ class DefaultBrowserToolbarMenuController(
             }
 
             is ToolbarMenu.Item.Downloads -> browserAnimator.captureEngineViewAndDrawStatically {
+                ReportManager.getInstance().report("browser_menu_downloads")
                 navController.nav(
                     R.id.browserFragment,
                     BrowserFragmentDirections.actionGlobalDownloadsFragment(),
                 )
             }
             is ToolbarMenu.Item.NewTab -> {
+                ReportManager.getInstance().report("browser_menu_new_tab")
                 navController.navigate(
                     BrowserFragmentDirections.actionGlobalHome(focusOnAddressBar = true),
                 )
             }
             is ToolbarMenu.Item.SetDefaultBrowser -> {
+                ReportManager.getInstance().report("browser_menu_set_default_browser")
                 ExperimentsDefaultBrowser.toolbarMenuClicked.record(NoExtras())
                 activity.openSetDefaultBrowserOption()
             }
             is ToolbarMenu.Item.RemoveFromTopSites -> {
+                ReportManager.getInstance().report("browser_menu_remove_from_top_sites")
                 scope.launch {
                     val removedTopSite: TopSite? =
                         pinnedSiteStorage
