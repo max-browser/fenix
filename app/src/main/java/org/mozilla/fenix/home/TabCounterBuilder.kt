@@ -7,6 +7,7 @@ package org.mozilla.fenix.home
 import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.max.browser.core.ReportManager
 import mozilla.components.ui.tabcounter.TabCounter
 import mozilla.components.ui.tabcounter.TabCounterMenu
 import mozilla.telemetry.glean.private.NoExtras
@@ -59,6 +60,7 @@ class TabCounterBuilder(
         }
 
         tabCounter.setOnClickListener {
+            ReportManager.getInstance().report("home_tab")
             StartOnHome.openTabsTray.record(NoExtras())
 
             navController.nav(

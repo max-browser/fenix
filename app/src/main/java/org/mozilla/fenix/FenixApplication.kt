@@ -136,8 +136,6 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
             PerfStartup.applicationOnCreate.accumulateSamples(listOf(durationMillis))
         }
 
-
-        ReportManager.getInstance().report("hello_world")
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage

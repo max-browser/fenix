@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import mozilla.components.browser.menu.BrowserMenuBuilder
@@ -84,6 +85,7 @@ class HomeMenu(
             isHighlighted = { true },
         ) {
             onItemTapped.invoke(Item.ReconnectSync)
+            ReportManager.getInstance().report("home_menu_sync_reconnect")
         }
     }
 
@@ -94,6 +96,7 @@ class HomeMenu(
             primaryTextColor,
         ) {
             onItemTapped.invoke(Item.Quit)
+            ReportManager.getInstance().report("home_menu_qiut")
         }
     }
 
@@ -114,6 +117,7 @@ class HomeMenu(
                     primaryTextColor,
                 ) {
                     onItemTapped.invoke(Item.SyncAccount(accountManager.accountState))
+                    ReportManager.getInstance().report("home_menu_sync_and_save_data")
                 }
             }
         }
@@ -125,6 +129,7 @@ class HomeMenu(
         initialState = { context.settings().openNextTabInDesktopMode },
     ) { checked ->
         onItemTapped.invoke(Item.DesktopMode(checked))
+        ReportManager.getInstance().report("home_menu_desktop_site")
     }
 
     @Suppress("ComplexMethod")
@@ -137,6 +142,7 @@ class HomeMenu(
             primaryTextColor,
         ) {
             onItemTapped.invoke(Item.Bookmarks)
+            ReportManager.getInstance().report("home_menu_bookmarks")
         }
 
         val historyItem = BrowserMenuImageText(
@@ -145,6 +151,7 @@ class HomeMenu(
             primaryTextColor,
         ) {
             onItemTapped.invoke(Item.History)
+            ReportManager.getInstance().report("home_menu_history")
         }
 
         val downloadsItem = BrowserMenuImageText(
@@ -153,6 +160,7 @@ class HomeMenu(
             primaryTextColor,
         ) {
             onItemTapped.invoke(Item.Downloads)
+            ReportManager.getInstance().report("home_menu_downloads")
         }
 
         val extensionsItem = BrowserMenuImageText(
@@ -161,6 +169,7 @@ class HomeMenu(
             primaryTextColor,
         ) {
             onItemTapped.invoke(Item.Extensions)
+            ReportManager.getInstance().report("home_menu_add_ons")
         }
 
         val manageAccountAndDevicesItem = SimpleBrowserMenuItem(
@@ -168,6 +177,7 @@ class HomeMenu(
             textColorResource = primaryTextColor,
         ) {
             onItemTapped.invoke(Item.ManageAccountAndDevices)
+            ReportManager.getInstance().report("home_menu_manage_account_and_devices")
         }
 
         val whatsNewItem = BrowserMenuHighlightableItem(
@@ -180,6 +190,7 @@ class HomeMenu(
             isHighlighted = { WhatsNew.shouldHighlightWhatsNew(context) },
         ) {
             onItemTapped.invoke(Item.WhatsNew)
+            ReportManager.getInstance().report("home_menu_whats_new")
         }
 
         val helpItem = BrowserMenuImageText(
@@ -188,6 +199,7 @@ class HomeMenu(
             primaryTextColor,
         ) {
             onItemTapped.invoke(Item.Help)
+            ReportManager.getInstance().report("home_menu_help")
         }
 
         val customizeHomeItem = BrowserMenuImageText(
@@ -196,6 +208,7 @@ class HomeMenu(
             primaryTextColor,
         ) {
             onItemTapped.invoke(Item.CustomizeHome)
+            ReportManager.getInstance().report("home_menu_menu_customize_home")
         }
 
         // Use nimbus to set the icon and title.
@@ -206,6 +219,7 @@ class HomeMenu(
             primaryTextColor,
         ) {
             onItemTapped.invoke(Item.Settings)
+            ReportManager.getInstance().report("home_menu_settings")
         }
 
         // Only query account manager if it has been initialized.

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import com.max.browser.core.ReportManager
 import mozilla.appservices.places.BookmarkRoot
 import mozilla.components.browser.menu.view.MenuButton
 import mozilla.components.service.glean.private.NoExtras
@@ -67,12 +68,26 @@ class HomeMenuBuilder(
             onMenuBuilderChanged = { menuButton.get()?.menuBuilder = it },
         )
 
-        menuButton.get()?.setColorFilter(
-            ContextCompat.getColor(
-                context,
-                ThemeManager.resolveAttribute(R.attr.textPrimary, context),
-            ),
-        )
+        menuButton.get()?.let {
+            it.setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    ThemeManager.resolveAttribute(R.attr.textPrimary, context),
+                ),
+            )
+
+            val internalObserver = object : mozilla.components.concept.menu.MenuButton.Observer {
+                override fun onShow() {
+                    ReportManager.getInstance().report("home_menu")
+                }
+
+                override fun onDismiss() {
+
+                }
+            }
+            it.register(internalObserver)
+        }
+
     }
 
     /**

@@ -27,6 +27,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -255,47 +256,61 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val directions: NavDirections? = when (preference.key) {
             resources.getString(R.string.pref_key_sign_in) -> {
+                ReportManager.getInstance().report("settings_sign_in")
                 SettingsFragmentDirections.actionSettingsFragmentToTurnOnSyncFragment()
             }
             resources.getString(R.string.pref_key_tabs) -> {
+                ReportManager.getInstance().report("settings_tabs")
                 SettingsFragmentDirections.actionSettingsFragmentToTabsSettingsFragment()
             }
             resources.getString(R.string.pref_key_home) -> {
+                ReportManager.getInstance().report("settings_home")
                 SettingsFragmentDirections.actionSettingsFragmentToHomeSettingsFragment()
             }
             resources.getString(R.string.pref_key_search_settings) -> {
+                ReportManager.getInstance().report("settings_search")
                 SettingsFragmentDirections.actionSettingsFragmentToSearchEngineFragment()
             }
             resources.getString(R.string.pref_key_tracking_protection_settings) -> {
+                ReportManager.getInstance().report("settings_tracking_protection")
                 TrackingProtection.etpSettings.record(NoExtras())
                 SettingsFragmentDirections.actionSettingsFragmentToTrackingProtectionFragment()
             }
             resources.getString(R.string.pref_key_site_permissions) -> {
+                ReportManager.getInstance().report("settings_permissions")
                 SettingsFragmentDirections.actionSettingsFragmentToSitePermissionsFragment()
             }
             resources.getString(R.string.pref_key_private_browsing) -> {
+                ReportManager.getInstance().report("settings_private_browsing")
                 SettingsFragmentDirections.actionSettingsFragmentToPrivateBrowsingFragment()
             }
             resources.getString(R.string.pref_key_https_only_settings) -> {
+                ReportManager.getInstance().report("settings_https_only")
                 SettingsFragmentDirections.actionSettingsFragmentToHttpsOnlyFragment()
             }
             resources.getString(R.string.pref_key_accessibility) -> {
+                ReportManager.getInstance().report("settings_accessibility")
                 SettingsFragmentDirections.actionSettingsFragmentToAccessibilityFragment()
             }
             resources.getString(R.string.pref_key_language) -> {
+                ReportManager.getInstance().report("settings_language")
                 SettingsFragmentDirections.actionSettingsFragmentToLocaleSettingsFragment()
             }
             resources.getString(R.string.pref_key_addons) -> {
+                ReportManager.getInstance().report("settings_addons")
                 Addons.openAddonsInSettings.record(mozilla.components.service.glean.private.NoExtras())
                 SettingsFragmentDirections.actionSettingsFragmentToAddonsFragment()
             }
             resources.getString(R.string.pref_key_data_choices) -> {
+                ReportManager.getInstance().report("settings_data_collection")
                 SettingsFragmentDirections.actionSettingsFragmentToDataChoicesFragment()
             }
             resources.getString(R.string.pref_key_sync_debug) -> {
+                ReportManager.getInstance().report("settings_sync_debug")
                 SettingsFragmentDirections.actionSettingsFragmentToSyncDebugFragment()
             }
             resources.getString(R.string.pref_key_help) -> {
+                ReportManager.getInstance().report("settings_help")
                 (activity as HomeActivity).openToBrowserAndLoad(
                     searchTermOrURL = SupportUtils.getSumoURLForTopic(
                         requireContext(),
@@ -307,6 +322,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 null
             }
             resources.getString(R.string.pref_key_rate) -> {
+                ReportManager.getInstance().report("settings_rate")
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SupportUtils.RATE_APP_URL)))
                 } catch (e: ActivityNotFoundException) {
@@ -321,34 +337,44 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 null
             }
             resources.getString(R.string.pref_key_passwords) -> {
+                ReportManager.getInstance().report("settings_sign_in_info_and_password")
                 SettingsFragmentDirections.actionSettingsFragmentToSavedLoginsAuthFragment()
             }
             resources.getString(R.string.pref_key_credit_cards) -> {
+                ReportManager.getInstance().report("settings_credit_cards")
                 SettingsFragmentDirections.actionSettingsFragmentToAutofillSettingFragment()
             }
             resources.getString(R.string.pref_key_about) -> {
+                ReportManager.getInstance().report("settings_about")
                 SettingsFragmentDirections.actionSettingsFragmentToAboutFragment()
             }
             resources.getString(R.string.pref_key_account) -> {
+                ReportManager.getInstance().report("settings_account")
                 SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment()
             }
             resources.getString(R.string.pref_key_account_auth_error) -> {
+                ReportManager.getInstance().report("settings_account_auth_error")
                 SettingsFragmentDirections.actionSettingsFragmentToAccountProblemFragment()
             }
             resources.getString(R.string.pref_key_delete_browsing_data) -> {
+                ReportManager.getInstance().report("settings_delete_browsing_data")
                 SettingsFragmentDirections.actionSettingsFragmentToDeleteBrowsingDataFragment()
             }
             resources.getString(R.string.pref_key_delete_browsing_data_on_quit_preference) -> {
+                ReportManager.getInstance().report("settings_delete_browsing_data_on_quit")
                 SettingsFragmentDirections.actionSettingsFragmentToDeleteBrowsingDataOnQuitFragment()
             }
             resources.getString(R.string.pref_key_notifications) -> {
+                ReportManager.getInstance().report("settings_notification")
                 context?.navigateToNotificationsSettings()
                 null
             }
             resources.getString(R.string.pref_key_customize) -> {
+                ReportManager.getInstance().report("settings_customize")
                 SettingsFragmentDirections.actionSettingsFragmentToCustomizationFragment()
             }
             resources.getString(R.string.pref_key_privacy_link) -> {
+                ReportManager.getInstance().report("settings_privacy_link")
                 val intent = SupportUtils.createCustomTabIntent(
                     requireContext(),
                     SupportUtils.getMozillaPageUrl(SupportUtils.MozillaPage.PRIVATE_NOTICE),
@@ -357,6 +383,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 null
             }
             resources.getString(R.string.pref_key_your_rights) -> {
+                ReportManager.getInstance().report("settings_your_rights")
                 val context = requireContext()
                 val intent = SupportUtils.createCustomTabIntent(
                     context,
@@ -366,15 +393,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 null
             }
             resources.getString(R.string.pref_key_debug_settings) -> {
+                ReportManager.getInstance().report("settings_debug")
                 SettingsFragmentDirections.actionSettingsFragmentToSecretSettingsFragment()
             }
             resources.getString(R.string.pref_key_secret_debug_info) -> {
+                ReportManager.getInstance().report("settings_secret_debug_info")
                 SettingsFragmentDirections.actionSettingsFragmentToSecretInfoSettingsFragment()
             }
             resources.getString(R.string.pref_key_nimbus_experiments) -> {
+                ReportManager.getInstance().report("settings_nimbus_experiments")
                 SettingsFragmentDirections.actionSettingsFragmentToNimbusExperimentsFragment()
             }
             resources.getString(R.string.pref_key_override_amo_collection) -> {
+                ReportManager.getInstance().report("settings_override_amo_collection")
                 val context = requireContext()
                 val dialogView = LayoutInflater.from(context).inflate(R.layout.amo_collection_override_dialog, null)
 
@@ -414,6 +445,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 null
             }
             resources.getString(R.string.pref_key_start_profiler) -> {
+                ReportManager.getInstance().report("settings_start_profiler")
                 if (profilerViewModel.getProfilerState().value == true) {
                     SettingsFragmentDirections.actionSettingsFragmentToStopProfilerDialog()
                 } else {

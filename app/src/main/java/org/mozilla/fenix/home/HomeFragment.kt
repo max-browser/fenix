@@ -23,9 +23,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.constraintlayout.widget.ConstraintSet.BOTTOM
-import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
-import androidx.constraintlayout.widget.ConstraintSet.TOP
+import androidx.constraintlayout.widget.ConstraintSet.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
@@ -44,6 +42,7 @@ import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.MainScope
@@ -92,14 +91,7 @@ import org.mozilla.fenix.components.TabCollectionStorage
 import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
 import org.mozilla.fenix.databinding.FragmentHomeBinding
-import org.mozilla.fenix.ext.components
-import org.mozilla.fenix.ext.containsQueryParameters
-import org.mozilla.fenix.ext.hideToolbar
-import org.mozilla.fenix.ext.nav
-import org.mozilla.fenix.ext.requireComponents
-import org.mozilla.fenix.ext.runIfFragmentIsAttached
-import org.mozilla.fenix.ext.scaleToBottomOfView
-import org.mozilla.fenix.ext.settings
+import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.gleanplumb.DefaultMessageController
 import org.mozilla.fenix.gleanplumb.MessagingFeature
 import org.mozilla.fenix.home.mozonline.showPrivacyPopWindow
@@ -207,10 +199,7 @@ class HomeFragment : Fragment() {
 
         bundleArgs = args.toBundle()
 
-        if (!onboarding.userHasBeenOnboarded() &&
-            requireContext().settings().shouldShowPrivacyPopWindow &&
-            Config.channel.isMozillaOnline
-        ) {
+        if (!onboarding.userHasBeenOnboarded() && requireContext().settings().shouldShowPrivacyPopWindow && Config.channel.isMozillaOnline) {
             showPrivacyPopWindow(requireContext(), requireActivity())
         }
 
@@ -250,8 +239,12 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch(IO) {
             if (requireContext().settings().showPocketRecommendationsFeature) {
                 val categories = components.core.pocketStoriesService.getStories()
-                    .groupBy { story -> story.category }
-                    .map { (category, stories) -> PocketRecommendedStoriesCategory(category, stories) }
+                    .groupBy { story -> story.category }.map { (category, stories) ->
+                        PocketRecommendedStoriesCategory(
+                            category,
+                            stories,
+                        )
+                    }
 
                 components.appStore.dispatch(AppAction.PocketStoriesCategoriesChange(categories))
 
@@ -360,7 +353,11 @@ class HomeFragment : Fragment() {
                 }
 
                 UnifiedSearch.searchMenuTapped.record(NoExtras())
-                searchSelectorMenu.menuController.show(anchor = it, orientation = orientation, forceOrientation = true)
+                searchSelectorMenu.menuController.show(
+                    anchor = it,
+                    orientation = orientation,
+                    forceOrientation = true,
+                )
             }
         }
 
@@ -629,11 +626,9 @@ class HomeFragment : Fragment() {
         }
 
         consumeFlow(requireComponents.core.store) { flow ->
-            flow.map { state -> state.search }
-                .ifChanged()
-                .collect { search ->
-                    updateSearchSelectorMenu(search.searchEngines)
-                }
+            flow.map { state -> state.search }.ifChanged().collect { search ->
+                updateSearchSelectorMenu(search.searchEngines)
+            }
         }
 
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
@@ -645,25 +640,27 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateSearchSelectorMenu(searchEngines: List<SearchEngine>) {
-        val searchEngineList = searchEngines
-            .map {
-                TextMenuCandidate(
-                    text = it.name,
-                    start = DrawableMenuIcon(
-                        drawable = it.icon.toDrawable(resources),
+        val searchEngineList = searchEngines.map {
+            TextMenuCandidate(
+                text = it.name,
+                start = DrawableMenuIcon(
+                    drawable = it.icon.toDrawable(resources),
+                ),
+            ) {
+                sessionControlInteractor.onMenuItemTapped(
+                    SearchSelectorMenu.Item.SearchEngine(
+                        it,
                     ),
-                ) {
-                    sessionControlInteractor.onMenuItemTapped(SearchSelectorMenu.Item.SearchEngine(it))
-                }
+                )
             }
+        }
 
         searchSelectorMenu.menuController.submitList(searchSelectorMenu.menuItems(searchEngineList))
     }
 
     private fun observeSearchEngineChanges() {
         consumeFlow(store) { flow ->
-            flow.map { state -> state.search.selectedOrDefaultSearchEngine }
-                .ifChanged()
+            flow.map { state -> state.search.selectedOrDefaultSearchEngine }.ifChanged()
                 .collect { searchEngine ->
                     val name = searchEngine?.name
                     val icon = searchEngine?.let {
@@ -696,13 +693,11 @@ class HomeFragment : Fragment() {
                     EBAY_SPONSORED_TITLE -> EBAY_SPONSORED_TITLE
                     else -> null
                 }
-            }
-                .ifChanged()
-                .collect {
-                    topSitesFeature.withFeature {
-                        it.storage.notifyObservers { onStorageUpdated() }
-                    }
+            }.ifChanged().collect {
+                topSitesFeature.withFeature {
+                    it.storage.notifyObservers { onStorageUpdated() }
                 }
+            }
         }
     }
 
@@ -796,8 +791,7 @@ class HomeFragment : Fragment() {
                                     isDisplayedWithBrowserToolbar = false,
                                 )
                                     .setText(it.context.getString(R.string.onboarding_firefox_account_sync_is_on))
-                                    .setAnchorView(binding.toolbarLayout)
-                                    .show()
+                                    .setAnchorView(binding.toolbarLayout).show()
                             }
                         }
                     }
@@ -808,8 +802,7 @@ class HomeFragment : Fragment() {
 
         if (browsingModeManager.mode.isPrivate &&
             // We will be showing the search dialog and don't want to show the CFR while the dialog shows
-            !bundleArgs.getBoolean(FOCUS_ON_ADDRESS_BAR) &&
-            context.settings().shouldShowPrivateModeCfr
+            !bundleArgs.getBoolean(FOCUS_ON_ADDRESS_BAR) && context.settings().shouldShowPrivateModeCfr
         ) {
             recommendPrivateBrowsingShortcut()
         }
@@ -886,18 +879,16 @@ class HomeFragment : Fragment() {
     @SuppressLint("InflateParams")
     private fun recommendPrivateBrowsingShortcut() {
         context?.let { context ->
-            val layout = LayoutInflater.from(context)
-                .inflate(R.layout.pbm_shortcut_popup, null)
-            val privateBrowsingRecommend =
-                PopupWindow(
-                    layout,
-                    min(
-                        (resources.displayMetrics.widthPixels / CFR_WIDTH_DIVIDER).toInt(),
-                        (resources.displayMetrics.heightPixels / CFR_WIDTH_DIVIDER).toInt(),
-                    ),
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    true,
-                )
+            val layout = LayoutInflater.from(context).inflate(R.layout.pbm_shortcut_popup, null)
+            val privateBrowsingRecommend = PopupWindow(
+                layout,
+                min(
+                    (resources.displayMetrics.widthPixels / CFR_WIDTH_DIVIDER).toInt(),
+                    (resources.displayMetrics.heightPixels / CFR_WIDTH_DIVIDER).toInt(),
+                ),
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                true,
+            )
             layout.findViewById<Button>(R.id.cfr_pos_button).apply {
                 setOnClickListener {
                     PrivateShortcutCreateManager.createPrivateShortcut(context)
@@ -945,10 +936,9 @@ class HomeFragment : Fragment() {
 
     @VisibleForTesting
     internal fun navigateToSearch() {
-        val directions =
-            HomeFragmentDirections.actionGlobalSearchDialog(
-                sessionId = null,
-            )
+        val directions = HomeFragmentDirections.actionGlobalSearchDialog(
+            sessionId = null,
+        )
 
         nav(R.id.homeFragment, directions, getToolbarNavOptions(requireContext()))
 
@@ -975,10 +965,7 @@ class HomeFragment : Fragment() {
                 view = view,
                 duration = Snackbar.LENGTH_LONG,
                 isDisplayedWithBrowserToolbar = false,
-            )
-                .setText(string)
-                .setAnchorView(snackbarAnchorView)
-                .show()
+            ).setText(string).setAnchorView(snackbarAnchorView).show()
         }
     }
 
@@ -1000,8 +987,8 @@ class HomeFragment : Fragment() {
 
         binding.tabButton.setCountWithAnimation(tabCount)
         // The add_tabs_to_collections_button is added at runtime. We need to search for it in the same way.
-        sessionControlView?.view?.findViewById<MaterialButton>(R.id.add_tabs_to_collections_button)
-            ?.isVisible = tabCount > 0
+        sessionControlView?.view?.findViewById<MaterialButton>(R.id.add_tabs_to_collections_button)?.isVisible =
+            tabCount > 0
     }
 
     @VisibleForTesting
@@ -1010,8 +997,7 @@ class HomeFragment : Fragment() {
 
     private fun applyWallpaper(wallpaperName: String, orientationChange: Boolean) {
         when {
-            !shouldEnableWallpaper() ||
-                (wallpaperName == lastAppliedWallpaperName && !orientationChange) -> return
+            !shouldEnableWallpaper() || (wallpaperName == lastAppliedWallpaperName && !orientationChange) -> return
             Wallpaper.nameIsDefault(wallpaperName) -> {
                 binding.wallpaperImageView.isVisible = false
                 lastAppliedWallpaperName = wallpaperName
@@ -1051,10 +1037,11 @@ class HomeFragment : Fragment() {
      */
     @VisibleForTesting
     internal fun applyWallpaperTextColor() {
-        val tintColor = when (val color = requireContext().settings().currentWallpaperTextColor.toInt()) {
-            0 -> null // a null ColorStateList will clear the current tint
-            else -> ColorStateList.valueOf(color)
-        }
+        val tintColor =
+            when (val color = requireContext().settings().currentWallpaperTextColor.toInt()) {
+                0 -> null // a null ColorStateList will clear the current tint
+                else -> ColorStateList.valueOf(color)
+            }
 
         binding.wordmarkText.imageTintList = tintColor
         binding.privateBrowsingButton.imageTintList = tintColor
