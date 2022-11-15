@@ -17,8 +17,10 @@ import androidx.annotation.StyleRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.core.content.ContextCompat
 import mozilla.components.support.ktx.android.content.getColorFromAttr
 import mozilla.components.support.ktx.android.view.getWindowInsetsController
+import org.mozilla.fenix.Config
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
@@ -51,13 +53,13 @@ abstract class ThemeManager {
                         updateLightSystemBars(window, context)
                     }
                     Configuration.UI_MODE_NIGHT_YES -> {
-                        clearLightSystemBars(window)
+                        clearLightSystemBars(window, context)
                         updateNavigationBar(window, context)
                     }
                 }
             }
             BrowsingMode.Private -> {
-                clearLightSystemBars(window)
+                clearLightSystemBars(window, context)
                 updateNavigationBar(window, context)
             }
         }
@@ -94,12 +96,13 @@ abstract class ThemeManager {
                 // API level can display handle light navigation bar color
                 window.getWindowInsetsController().isAppearanceLightNavigationBars = true
 
-                updateNavigationBar(window, context)
+                updateLightNavigationBar(window, context)
             }
         }
 
-        private fun clearLightSystemBars(window: Window) {
+        private fun clearLightSystemBars(window: Window, context: Context) {
             if (SDK_INT >= Build.VERSION_CODES.M) {
+                window.statusBarColor = context.getColor(android.R.color.transparent)
                 window.getWindowInsetsController().isAppearanceLightStatusBars = false
             }
 
@@ -111,6 +114,14 @@ abstract class ThemeManager {
 
         private fun updateNavigationBar(window: Window, context: Context) {
             window.navigationBarColor = context.getColorFromAttr(R.attr.layer1)
+        }
+
+        private fun updateLightNavigationBar(window: Window, context: Context) {
+            if (Config.channel.isMax) {
+                window.navigationBarColor = ContextCompat.getColor(context, R.color.day_light_layer_1_color)
+            } else {
+                window.navigationBarColor = context.getColorFromAttr(R.attr.layer1)
+            }
         }
     }
 }
