@@ -4,6 +4,8 @@ import org.gradle.internal.logging.text.StyledTextOutput.Style
 import org.gradle.internal.logging.text.StyledTextOutputFactory
 import org.mozilla.fenix.gradle.tasks.ApkSizeTask
 
+import static org.gradle.api.tasks.testing.TestResult.ResultType
+
 plugins {
     id "com.jetbrains.python.envs" version "0.0.26"
     id "com.google.protobuf" version "0.8.19"
@@ -17,9 +19,7 @@ apply plugin: 'jacoco'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'androidx.benchmark'
-
-
-import static org.gradle.api.tasks.testing.TestResult.ResultType
+apply plugin: 'android-junk-code'
 
 apply from: 'benchmark.gradle'
 
@@ -265,6 +265,21 @@ android {
 
 }
 
+androidJunkCode {
+    variantConfig {
+        maxRelease {
+            packageBase = "org.mozilla.fenix"
+            packageCount = 50
+            activityCountPerPackage = 5
+            excludeActivityJavaFile = false
+            otherCountPerPackage = 50
+            methodCountPerClass = 20
+            resPrefix = "j_"
+            drawableCount = 300
+            stringCount = 300
+        }
+    }
+}
 android.applicationVariants.all { variant ->
 
 // -------------------------------------------------------------------------------------------------
