@@ -56,7 +56,7 @@
     <string name="recently_saved_menu_item_remove">Rake</string>
 
     <!-- About content. The first parameter is the name of the application. (For example: Fenix) -->
-    <string name="about_content">%1$s berhemeke Mozillayê ye.</string>
+    <string name="about_content">%1$s berhemeke Max ye.</string>
 
     <!-- Private Browsing -->
     <!-- Explanation for private browsing displayed to users on home view when they first enable private mode

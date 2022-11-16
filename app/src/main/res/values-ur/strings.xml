@@ -49,7 +49,7 @@
     <string name="recently_saved_show_all_content_description_2">تمام محفوظ کردہ بک مارکس دکھائیں۔</string>
 
     <!-- About content. The first parameter is the name of the application. (For example: Fenix) -->
-    <string name="about_content">%1$s ءMozilla کے ذریعہ تیار کیا گیا ہے۔</string>
+    <string name="about_content">%1$s Max کے ذریعہ تیار کیا گیا ہے۔</string>
 
     <string name="private_browsing_common_myths">نجی براؤزنگ کے بارے میں عمومی فرضی داستان</string>
 
