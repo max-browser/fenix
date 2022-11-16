@@ -55,7 +55,7 @@ class AutofillSettingFragment : BiometricPromptPreferenceFragment() {
      */
     private val creditCardPreferences: List<Int> = listOf(
         R.string.pref_key_credit_cards_save_and_autofill_cards,
-        R.string.pref_key_credit_cards_sync_cards_across_devices,
+//        R.string.pref_key_credit_cards_sync_cards_across_devices,
         R.string.pref_key_credit_cards_manage_cards,
     )
 
@@ -153,26 +153,26 @@ class AutofillSettingFragment : BiometricPromptPreferenceFragment() {
             showToolbar(getString(R.string.preferences_credit_cards))
         }
 
-        SyncPreferenceView(
-            syncPreference = requirePreference(R.string.pref_key_credit_cards_sync_cards_across_devices),
-            lifecycleOwner = viewLifecycleOwner,
-            accountManager = requireComponents.backgroundServices.accountManager,
-            syncEngine = SyncEngine.CreditCards,
-            loggedOffTitle = requireContext()
-                .getString(R.string.preferences_credit_cards_sync_cards_across_devices),
-            loggedInTitle = requireContext()
-                .getString(R.string.preferences_credit_cards_sync_cards),
-            onSyncSignInClicked = {
-                findNavController().navigate(
-                    NavGraphDirections.actionGlobalTurnOnSync(),
-                )
-            },
-            onReconnectClicked = {
-                findNavController().navigate(
-                    AutofillSettingFragmentDirections.actionGlobalAccountProblemFragment(),
-                )
-            },
-        )
+//        SyncPreferenceView(
+//            syncPreference = requirePreference(R.string.pref_key_credit_cards_sync_cards_across_devices),
+//            lifecycleOwner = viewLifecycleOwner,
+//            accountManager = requireComponents.backgroundServices.accountManager,
+//            syncEngine = SyncEngine.CreditCards,
+//            loggedOffTitle = requireContext()
+//                .getString(R.string.preferences_credit_cards_sync_cards_across_devices),
+//            loggedInTitle = requireContext()
+//                .getString(R.string.preferences_credit_cards_sync_cards),
+//            onSyncSignInClicked = {
+//                findNavController().navigate(
+//                    NavGraphDirections.actionGlobalTurnOnSync(),
+//                )
+//            },
+//            onReconnectClicked = {
+//                findNavController().navigate(
+//                    AutofillSettingFragmentDirections.actionGlobalAccountProblemFragment(),
+//                )
+//            },
+//        )
 
         togglePrefsEnabled(creditCardPreferences, true)
     }
