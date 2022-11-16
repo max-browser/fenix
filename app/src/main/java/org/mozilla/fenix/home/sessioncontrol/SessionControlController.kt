@@ -10,6 +10,7 @@ import android.widget.EditText
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -642,6 +643,7 @@ class DefaultSessionControlController(
     ) {
         if (newMode == BrowsingMode.Private) {
             activity.settings().incrementNumTimesPrivateModeOpened()
+            ReportManager.getInstance().report("private_mode")
         }
 
         if (userHasBeenOnboarded) {
