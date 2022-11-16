@@ -88,12 +88,12 @@ class TrackingProtectionFragment : PreferenceFragmentCompat() {
 
         val learnMorePreference = requirePreference<Preference>(R.string.pref_key_etp_learn_more)
         learnMorePreference.setOnPreferenceClickListener {
-            (activity as HomeActivity).openToBrowserAndLoad(
-                searchTermOrURL = SupportUtils.getGenericSumoURLForTopic
-                (SupportUtils.SumoTopic.TRACKING_PROTECTION),
-                newTab = true,
-                from = BrowserDirection.FromTrackingProtection,
-            )
+//            (activity as HomeActivity).openToBrowserAndLoad(
+//                searchTermOrURL = SupportUtils.getGenericSumoURLForTopic
+//                (SupportUtils.SumoTopic.TRACKING_PROTECTION),
+//                newTab = true,
+//                from = BrowserDirection.FromTrackingProtection,
+//            )
             true
         }
         learnMorePreference.summary = getString(
