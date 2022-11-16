@@ -113,8 +113,8 @@ class ShareViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         viewModelScope.launch(ioDispatcher) {
-            val devices = buildDeviceList(fxaAccountManager)
-            devicesListLiveData.postValue(devices)
+            // val devices = buildDeviceList(fxaAccountManager)
+            // devicesListLiveData.postValue(devices)
         }
     }
 
