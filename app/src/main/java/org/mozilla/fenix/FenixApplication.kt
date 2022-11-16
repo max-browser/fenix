@@ -175,7 +175,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
 
     @CallSuper
     open fun setupInAllProcesses() {
-        setupCrashReporting()
+        // setupCrashReporting()
 
         // We want the log messages of all builds to go to Android logcat
         Log.addSink(FenixLogSink(logsDebug = Config.channel.isDebug))
