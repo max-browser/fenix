@@ -384,7 +384,7 @@ open class DefaultToolbarMenu(
                 historyItem,
                 downloadsItem,
                 extensionsItem,
-                syncMenuItem(),
+//                syncMenuItem(),
                 BrowserMenuDivider(),
                 findInPageItem,
                 desktopSiteItem,

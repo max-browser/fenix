@@ -180,27 +180,27 @@ class HomeMenu(
             ReportManager.getInstance().report("home_menu_manage_account_and_devices")
         }
 
-        val whatsNewItem = BrowserMenuHighlightableItem(
-            context.getString(R.string.browser_menu_whats_new),
-            R.drawable.ic_whats_new,
-            iconTintColorResource = primaryTextColor,
-            highlight = BrowserMenuHighlight.LowPriority(
-                notificationTint = getColor(context, R.color.fx_mobile_icon_color_information),
-            ),
-            isHighlighted = { WhatsNew.shouldHighlightWhatsNew(context) },
-        ) {
-            onItemTapped.invoke(Item.WhatsNew)
-            ReportManager.getInstance().report("home_menu_whats_new")
-        }
+//        val whatsNewItem = BrowserMenuHighlightableItem(
+//            context.getString(R.string.browser_menu_whats_new),
+//            R.drawable.ic_whats_new,
+//            iconTintColorResource = primaryTextColor,
+//            highlight = BrowserMenuHighlight.LowPriority(
+//                notificationTint = getColor(context, R.color.fx_mobile_icon_color_information),
+//            ),
+//            isHighlighted = { WhatsNew.shouldHighlightWhatsNew(context) },
+//        ) {
+//            onItemTapped.invoke(Item.WhatsNew)
+//            ReportManager.getInstance().report("home_menu_whats_new")
+//        }
 
-        val helpItem = BrowserMenuImageText(
-            context.getString(R.string.browser_menu_help),
-            R.drawable.mozac_ic_help,
-            primaryTextColor,
-        ) {
-            onItemTapped.invoke(Item.Help)
-            ReportManager.getInstance().report("home_menu_help")
-        }
+//        val helpItem = BrowserMenuImageText(
+//            context.getString(R.string.browser_menu_help),
+//            R.drawable.mozac_ic_help,
+//            primaryTextColor,
+//        ) {
+//            onItemTapped.invoke(Item.Help)
+//            ReportManager.getInstance().report("home_menu_help")
+//        }
 
         val customizeHomeItem = BrowserMenuImageText(
             context.getString(R.string.browser_menu_customize_home_1),
@@ -238,14 +238,14 @@ class HomeMenu(
             historyItem,
             downloadsItem,
             extensionsItem,
-            syncSignInMenuItem(),
+//            syncSignInMenuItem(),
             accountAuthItem,
             if (Config.channel.isMozillaOnline) manageAccountAndDevicesItem else null,
             BrowserMenuDivider(),
             desktopItem,
             BrowserMenuDivider(),
-            whatsNewItem,
-            helpItem,
+//            whatsNewItem,
+//            helpItem,
             customizeHomeItem,
             settingsItem,
             if (settings.shouldDeleteBrowsingDataOnQuit) quitItem else null,
