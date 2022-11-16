@@ -5,4 +5,5 @@
 <resources>
     <!-- Name of the application -->
     <string name="app_name" translatable="false">Max Debug</string>
+    <string name="firefox" translatable="false">Max Browser</string>
 </resources>
