@@ -1938,7 +1938,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">自動的に閉じる機能が有効です</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">ウェブサイトやメール、メッセージのリンクを自動的に %s で開きます。</string>
+    <string name="default_browser_experiment_card_text">ウェブサイトやメール、メッセージのリンクを自動的に Max Browser で開きます。</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">削除</string>

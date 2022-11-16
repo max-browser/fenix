@@ -1835,7 +1835,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Em-serriñ enaouet</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Digeriñ liammoù al lec’hiennoù, posteloù ha kemennadennoù e %s en un doare emgefreek.</string>
+    <string name="default_browser_experiment_card_text">Digeriñ liammoù al lec’hiennoù, posteloù ha kemennadennoù e Max Browser en un doare emgefreek.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Dilemel</string>

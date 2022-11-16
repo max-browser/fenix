@@ -1939,7 +1939,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Automatisk attlating aktivert</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Vel at lenker frå nettstadar, e-postmeldingar og meldingar skal opnast automatisk i %s.</string>
+    <string name="default_browser_experiment_card_text">Vel at lenker frå nettstadar, e-postmeldingar og meldingar skal opnast automatisk i Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Fjern</string>

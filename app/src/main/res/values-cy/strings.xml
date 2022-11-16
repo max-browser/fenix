@@ -1911,7 +1911,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Autogau wedi’i alluogi</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Gosod dolenni o wefannau, e-byst, a negeseuon i agor yn awtomatig yn %s.</string>
+    <string name="default_browser_experiment_card_text">Gosod dolenni o wefannau, e-byst, a negeseuon i agor yn awtomatig yn Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Tynnu</string>

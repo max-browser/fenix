@@ -1925,7 +1925,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Automatisch sluiten ingeschakeld</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Koppelingen van websites, e-mail en berichten automatisch in %s openen.</string>
+    <string name="default_browser_experiment_card_text">Koppelingen van websites, e-mail en berichten automatisch in Max Browser openen.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Verwijderen</string>

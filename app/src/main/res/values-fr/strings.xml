@@ -1945,7 +1945,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Fermeture automatique activée</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Faites en sorte que les liens des sites web, des courriels et des messages s’ouvrent automatiquement dans %s.</string>
+    <string name="default_browser_experiment_card_text">Faites en sorte que les liens des sites web, des courriels et des messages s’ouvrent automatiquement dans Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Supprimer</string>

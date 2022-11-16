@@ -1947,7 +1947,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">ປິດອັດຕະໂນມັດເປີດ</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">ຕັ້ງລິ້ງຈາກເວັບໄຊທ໌, ອີເມວ ແລະຂໍ້ຄວາມໃຫ້ເປີດໂດຍອັດຕະໂນມັດໃນ %s.</string>
+    <string name="default_browser_experiment_card_text">ຕັ້ງລິ້ງຈາກເວັບໄຊທ໌, ອີເມວ ແລະຂໍ້ຄວາມໃຫ້ເປີດໂດຍອັດຕະໂນມັດໃນ Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">ລົບ</string>

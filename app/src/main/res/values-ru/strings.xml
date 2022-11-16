@@ -1942,7 +1942,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Автозакрытие включено</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Настройте автоматическое открытие ссылок с сайтов, из электронных писем и сообщений в %s.</string>
+    <string name="default_browser_experiment_card_text">Настройте автоматическое открытие ссылок с сайтов, из электронных писем и сообщений в Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Убрать</string>

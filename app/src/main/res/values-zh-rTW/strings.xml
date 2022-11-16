@@ -1946,7 +1946,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">已開啟分頁自動關閉功能</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">設定使用 %s 自動開啟網站、郵件、簡訊當中的鏈結。</string>
+    <string name="default_browser_experiment_card_text">設定使用 Max Browser 自動開啟網站、郵件、簡訊當中的鏈結。</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">移除</string>

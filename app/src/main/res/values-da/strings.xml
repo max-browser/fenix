@@ -1900,7 +1900,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Automatisk lukning aktiveret</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Indstil links fra websteder, mails og beskeder til automatisk at blive åbnet i %s.</string>
+    <string name="default_browser_experiment_card_text">Indstil links fra websteder, mails og beskeder til automatisk at blive åbnet i Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Fjern</string>

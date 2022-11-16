@@ -1914,7 +1914,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Awtomatiske začinjenje zmóžnjene</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Nastajće wotkazy z websydłow, mejlkow a powěsćow, zo bychu so awtomatisce we %s wočinili.</string>
+    <string name="default_browser_experiment_card_text">Nastajće wotkazy z websydłow, mejlkow a powěsćow, zo bychu so awtomatisce we Max Browser wočinili.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Wotstronić</string>

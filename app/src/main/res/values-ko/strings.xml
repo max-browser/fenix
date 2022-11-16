@@ -1963,7 +1963,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">자동 닫기 사용함</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">%s에서 자동으로 열리도록 웹 사이트, 이메일 및 메시지의 링크를 설정합니다.</string>
+    <string name="default_browser_experiment_card_text">Max Browser에서 자동으로 열리도록 웹 사이트, 이메일 및 메시지의 링크를 설정합니다.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">삭제</string>

@@ -1899,7 +1899,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Tampadura auto activada</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Causir de dobrir los sites web, los corrièls e messatges automaticament dins %s.</string>
+    <string name="default_browser_experiment_card_text">Causir de dobrir los sites web, los corrièls e messatges automaticament dins Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Suprimir</string>

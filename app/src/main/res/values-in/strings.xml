@@ -1922,7 +1922,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Tutup-otomatis diaktifkan</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Setel tautan dari situs web, surel, dan pesan untuk secara otomatis dibuka di %s.</string>
+    <string name="default_browser_experiment_card_text">Setel tautan dari situs web, surel, dan pesan untuk secara otomatis dibuka di Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Hapus</string>

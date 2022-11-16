@@ -1921,7 +1921,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Automatické zatváranie povolené</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Nastavte si automatické otváranie webových stránok, e-mailov a správ vo %se.</string>
+    <string name="default_browser_experiment_card_text">Nastavte si automatické otváranie webových stránok, e-mailov a správ vo Max Browsere.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Odstrániť</string>

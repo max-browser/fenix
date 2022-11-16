@@ -1914,7 +1914,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Automatysk slute ynskeakele</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Keppelingen fan websites, e-mail en berjochten automatysk yn %s iepenje.</string>
+    <string name="default_browser_experiment_card_text">Keppelingen fan websites, e-mail en berjochten automatysk yn Max Browser iepenje.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Fuortsmite</string>

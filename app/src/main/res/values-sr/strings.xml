@@ -1919,7 +1919,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Аутоматско затварање омогућено</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Подешава самостално отварање адреса са страница, мејлова и порука унутар %s-a.</string>
+    <string name="default_browser_experiment_card_text">Подешава самостално отварање адреса са страница, мејлова и порука унутар Max Browser-a.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Уклони</string>

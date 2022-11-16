@@ -1916,7 +1916,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Otomatik kapatma açıldı</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Web siteleri, e-postalar ve mesajlardaki bağlantılar otomatik olarak %s’ta açılsın.</string>
+    <string name="default_browser_experiment_card_text">Web siteleri, e-postalar ve mesajlardaki bağlantılar otomatik olarak Max Browser’ta açılsın.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Kaldır</string>

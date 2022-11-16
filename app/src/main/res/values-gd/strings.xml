@@ -1820,7 +1820,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Tha an dùnadh fèin-obrachail an comas</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Suidhich ceanglaichean o làraichean-lìn, puist-d agus teachdaireachdan airson ’s gun tèid am fosgladh gu fèin-obrachail ann am %s.</string>
+    <string name="default_browser_experiment_card_text">Suidhich ceanglaichean o làraichean-lìn, puist-d agus teachdaireachdan airson ’s gun tèid am fosgladh gu fèin-obrachail ann am Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Thoir air falbh</string>
