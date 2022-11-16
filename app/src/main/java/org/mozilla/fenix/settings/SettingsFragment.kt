@@ -66,7 +66,7 @@ import kotlin.system.exitProcess
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private val args by navArgs<SettingsFragmentArgs>()
-    private lateinit var accountUiView: AccountUiView
+//    private lateinit var accountUiView: AccountUiView
     private val profilerViewModel: ProfilerViewModel by activityViewModels()
 
     @VisibleForTesting
@@ -74,11 +74,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         private fun updateAccountUi(profile: Profile? = null) {
             val context = context ?: return
             lifecycleScope.launch {
-                accountUiView.updateAccountUIState(
-                    context = context,
-                    profile = profile
-                        ?: context.components.backgroundServices.accountManager.accountProfile(),
-                )
+//                accountUiView.updateAccountUIState(
+//                    context = context,
+//                    profile = profile
+//                        ?: context.components.backgroundServices.accountManager.accountProfile(),
+//                )
             }
         }
 
@@ -96,13 +96,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        accountUiView = AccountUiView(
-            fragment = this,
-            scope = lifecycleScope,
-            accountManager = requireComponents.backgroundServices.accountManager,
-            httpClient = requireComponents.core.client,
-            updateFxAAllowDomesticChinaServerMenu = ::updateFxAAllowDomesticChinaServerMenu,
-        )
+//        accountUiView = AccountUiView(
+//            fragment = this,
+//            scope = lifecycleScope,
+//            accountManager = requireComponents.backgroundServices.accountManager,
+//            httpClient = requireComponents.core.client,
+//            updateFxAAllowDomesticChinaServerMenu = ::updateFxAAllowDomesticChinaServerMenu,
+//        )
 
         // It's important to update the account UI state in onCreate since that ensures we'll never
         // display an incorrect state in the UI. We take care to not also call it as part of onResume
@@ -110,10 +110,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // For example, if user is signed-in, and we don't perform this call in onCreate, we'll briefly
         // display a "Sign In" preference, which will then get replaced by the correct account information
         // once this call is ran in onResume shortly after.
-        accountUiView.updateAccountUIState(
-            requireContext(),
-            requireComponents.backgroundServices.accountManager.accountProfile(),
-        )
+//        accountUiView.updateAccountUIState(
+//            requireContext(),
+//            requireComponents.backgroundServices.accountManager.accountProfile(),
+//        )
 
         val booleanPreferenceTelemetryAllowList = listOf(
             requireContext().getString(R.string.pref_key_show_search_suggestions),
@@ -201,7 +201,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        accountUiView.cancel()
+//        accountUiView.cancel()
     }
 
     private fun update(shouldUpdateAccountUIState: Boolean) {
@@ -241,10 +241,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupPreferences()
 
         if (shouldUpdateAccountUIState) {
-            accountUiView.updateAccountUIState(
-                requireContext(),
-                requireComponents.backgroundServices.accountManager.accountProfile(),
-            )
+//            accountUiView.updateAccountUIState(
+//                requireContext(),
+//                requireComponents.backgroundServices.accountManager.accountProfile(),
+//            )
         }
     }
 

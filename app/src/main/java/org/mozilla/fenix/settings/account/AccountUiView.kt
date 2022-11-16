@@ -29,14 +29,14 @@ class AccountUiView(
     private val updateFxAAllowDomesticChinaServerMenu: () -> Unit,
 ) {
 
-    private val preferenceSignIn =
-        fragment.requirePreference<Preference>(R.string.pref_key_sign_in)
-    private val preferenceFirefoxAccount =
-        fragment.requirePreference<AccountPreference>(R.string.pref_key_account)
-    private val preferenceFirefoxAccountAuthError =
-        fragment.requirePreference<AccountAuthErrorPreference>(R.string.pref_key_account_auth_error)
-    private val accountPreferenceCategory =
-        fragment.requirePreference<PreferenceCategory>(R.string.pref_key_account_category)
+//    private val preferenceSignIn =
+//        fragment.requirePreference<Preference>(R.string.pref_key_sign_in)
+//    private val preferenceFirefoxAccount =
+//        fragment.requirePreference<AccountPreference>(R.string.pref_key_account)
+//    private val preferenceFirefoxAccountAuthError =
+//        fragment.requirePreference<AccountAuthErrorPreference>(R.string.pref_key_account_auth_error)
+//    private val accountPreferenceCategory =
+//        fragment.requirePreference<PreferenceCategory>(R.string.pref_key_account_category)
 
     private var avatarJob: Job? = null
 
@@ -44,54 +44,54 @@ class AccountUiView(
      * Updates the UI to reflect current account state.
      * Possible conditions are logged-in without problems, logged-out, and logged-in but needs to re-authenticate.
      */
-    fun updateAccountUIState(context: Context, profile: Profile?) {
-        val account = accountManager.authenticatedAccount()
-
-        updateFxAAllowDomesticChinaServerMenu()
-
-        // Signed-in, no problems.
-        if (account != null && !accountManager.accountNeedsReauth()) {
-            preferenceSignIn.isVisible = false
-
-            avatarJob?.cancel()
-            val avatarUrl = profile?.avatar?.url
-            if (avatarUrl != null) {
-                avatarJob = scope.launch {
-                    val roundedAvatarDrawable = toRoundedDrawable(avatarUrl, context)
-                    preferenceFirefoxAccount.icon = roundedAvatarDrawable ?: genericAvatar(context)
-                }
-            } else {
-                avatarJob = null
-                preferenceFirefoxAccount.icon = genericAvatar(context)
-            }
-
-            preferenceSignIn.onPreferenceClickListener = null
-            preferenceFirefoxAccountAuthError.isVisible = false
-            preferenceFirefoxAccount.isVisible = true
-            accountPreferenceCategory.isVisible = true
-
-            preferenceFirefoxAccount.displayName = profile?.displayName
-            preferenceFirefoxAccount.email = profile?.email
-
-            // Signed-in, need to re-authenticate.
-        } else if (account != null && accountManager.accountNeedsReauth()) {
-            preferenceFirefoxAccount.isVisible = false
-            preferenceFirefoxAccountAuthError.isVisible = true
-            accountPreferenceCategory.isVisible = true
-
-            preferenceSignIn.isVisible = false
-            preferenceSignIn.onPreferenceClickListener = null
-
-            preferenceFirefoxAccountAuthError.email = profile?.email
-
-            // Signed-out.
-        } else {
-            preferenceSignIn.isVisible = true
-            preferenceFirefoxAccount.isVisible = false
-            preferenceFirefoxAccountAuthError.isVisible = false
-            accountPreferenceCategory.isVisible = false
-        }
-    }
+//    fun updateAccountUIState(context: Context, profile: Profile?) {
+//        val account = accountManager.authenticatedAccount()
+//
+//        updateFxAAllowDomesticChinaServerMenu()
+//
+//        // Signed-in, no problems.
+//        if (account != null && !accountManager.accountNeedsReauth()) {
+//            preferenceSignIn.isVisible = false
+//
+//            avatarJob?.cancel()
+//            val avatarUrl = profile?.avatar?.url
+//            if (avatarUrl != null) {
+//                avatarJob = scope.launch {
+//                    val roundedAvatarDrawable = toRoundedDrawable(avatarUrl, context)
+//                    preferenceFirefoxAccount.icon = roundedAvatarDrawable ?: genericAvatar(context)
+//                }
+//            } else {
+//                avatarJob = null
+//                preferenceFirefoxAccount.icon = genericAvatar(context)
+//            }
+//
+//            preferenceSignIn.onPreferenceClickListener = null
+//            preferenceFirefoxAccountAuthError.isVisible = false
+//            preferenceFirefoxAccount.isVisible = true
+//            accountPreferenceCategory.isVisible = true
+//
+//            preferenceFirefoxAccount.displayName = profile?.displayName
+//            preferenceFirefoxAccount.email = profile?.email
+//
+//            // Signed-in, need to re-authenticate.
+//        } else if (account != null && accountManager.accountNeedsReauth()) {
+//            preferenceFirefoxAccount.isVisible = false
+//            preferenceFirefoxAccountAuthError.isVisible = true
+//            accountPreferenceCategory.isVisible = true
+//
+//            preferenceSignIn.isVisible = false
+//            preferenceSignIn.onPreferenceClickListener = null
+//
+//            preferenceFirefoxAccountAuthError.email = profile?.email
+//
+//            // Signed-out.
+//        } else {
+//            preferenceSignIn.isVisible = true
+//            preferenceFirefoxAccount.isVisible = false
+//            preferenceFirefoxAccountAuthError.isVisible = false
+//            accountPreferenceCategory.isVisible = false
+//        }
+//    }
 
     /**
      * Cancel any running coroutine jobs for loading account images.
