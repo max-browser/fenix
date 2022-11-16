@@ -1934,7 +1934,7 @@ Tiktiwin tigejdanin yuzzlen ur nṣeḥḥi ara
     <string name="inactive_tabs_auto_close_message_snackbar">Amdal awurman yermed</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Sbadu iseɣwan seg yismal web, seg yimaylen d yiznan i twaledyawt s wudem awurman deg Firefox.</string>
+    <string name="default_browser_experiment_card_text">Sbadu iseɣwan seg yismal web, seg yimaylen d yiznan i twaledyawt s wudem awurman deg %s.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Kkes</string>

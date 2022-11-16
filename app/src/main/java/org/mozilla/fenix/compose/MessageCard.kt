@@ -209,7 +209,14 @@ private fun MessageCardPreview() {
                 .padding(all = 16.dp),
         ) {
             MessageCard(
-                messageText = stringResource(id = R.string.default_browser_experiment_card_text),
+                messageText = String.format(
+                    stringResource(
+                        id = R.string.default_browser_experiment_card_text
+                    ),
+                    stringResource(
+                        id = R.string.firefox,
+                    ),
+                ),
                 titleText = stringResource(id = R.string.bookmark_empty_title_error),
                 onClick = {},
                 onCloseButtonClick = {},
@@ -229,7 +236,14 @@ private fun MessageCardWithoutTitlePreview() {
                 .padding(all = 16.dp),
         ) {
             MessageCard(
-                messageText = stringResource(id = R.string.default_browser_experiment_card_text),
+                messageText = String.format(
+                    stringResource(
+                        id = R.string.default_browser_experiment_card_text
+                    ),
+                    stringResource(
+                        id = R.string.firefox,
+                    ),
+                ),
                 onClick = {},
                 onCloseButtonClick = {},
             )
@@ -248,7 +262,14 @@ private fun MessageCardWithButtonLabelPreview() {
                 .padding(all = 16.dp),
         ) {
             MessageCard(
-                messageText = stringResource(id = R.string.default_browser_experiment_card_text),
+                messageText = String.format(
+                    stringResource(
+                        id = R.string.default_browser_experiment_card_text
+                    ),
+                    stringResource(
+                        id = R.string.firefox,
+                    ),
+                ),
                 titleText = stringResource(id = R.string.bookmark_empty_title_error),
                 buttonText = stringResource(id = R.string.preferences_set_as_default_browser),
                 onClick = {},

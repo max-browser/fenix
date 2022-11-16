@@ -1929,7 +1929,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Automatisk stängning aktiverad</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Ställ in länkar från webbplatser, e-post och meddelanden så att de öppnas automatiskt i Firefox.</string>
+    <string name="default_browser_experiment_card_text">Ställ in länkar från webbplatser, e-post och meddelanden så att de öppnas automatiskt i %s.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Ta bort</string>

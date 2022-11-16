@@ -2001,7 +2001,7 @@
     <string name="inactive_tabs_survey_close_button_content_description">أغلِق</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">اضبط روابط المواقع والبريد الإلكتروني والرسائل لتفتح تلقائيًا في Firefox.</string>
+    <string name="default_browser_experiment_card_text">اضبط روابط المواقع والبريد الإلكتروني والرسائل لتفتح تلقائيًا في %s.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">أزِل</string>

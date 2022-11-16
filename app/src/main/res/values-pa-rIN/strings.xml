@@ -1932,7 +1932,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">ਆਪੇ ਬੰਦ ਕਰਨਾ ਸਮਰੱਥ ਹੈ</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">ਵੈੱਬਸਾਈਟਾਂ, ਈਮੇਲਾਂ ਅਤੇ ਸੁਨੇਹਿਆਂ ਨੂੰ Firefox ਵਿੱਚ ਆਪਣੇ ਖੋਲ੍ਹਣ ਲਈ ਲਿੰਕ ਸੈੱਟ ਕਰੋ।</string>
+    <string name="default_browser_experiment_card_text">ਵੈੱਬਸਾਈਟਾਂ, ਈਮੇਲਾਂ ਅਤੇ ਸੁਨੇਹਿਆਂ ਨੂੰ %s ਵਿੱਚ ਆਪਣੇ ਖੋਲ੍ਹਣ ਲਈ ਲਿੰਕ ਸੈੱਟ ਕਰੋ।</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">ਹਟਾਓ</string>

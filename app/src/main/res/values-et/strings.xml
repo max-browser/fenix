@@ -1829,7 +1829,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Automaatne sulgemine on lubatud</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Määra Firefox automaatselt avama linke, e-posti ja sõnumeid.</string>
+    <string name="default_browser_experiment_card_text">Määra %s automaatselt avama linke, e-posti ja sõnumeid.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Eemalda</string>

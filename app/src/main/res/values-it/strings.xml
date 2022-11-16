@@ -1957,7 +1957,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Chiusura automatica attiva</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Apri link da siti web, email e messaggi in Firefox per impostazione predefinita.</string>
+    <string name="default_browser_experiment_card_text">Apri link da siti web, email e messaggi in %s per impostazione predefinita.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Elimina</string>

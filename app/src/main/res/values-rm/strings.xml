@@ -1917,7 +1917,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Activà la serrada automatica</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Definescha che colliaziuns da websites, e-mails e messadis vegnan averts automaticamain en Firefox.</string>
+    <string name="default_browser_experiment_card_text">Definescha che colliaziuns da websites, e-mails e messadis vegnan averts automaticamain en %s.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Allontanar</string>

@@ -1953,7 +1953,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Mboty jehegui jurujapyre</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Emboheko ñanduti renda juajuha, ñanduti veve ha ñe’ẽmondo ijuruja hag̃ua ijehegui Firefox-pe.</string>
+    <string name="default_browser_experiment_card_text">Emboheko ñanduti renda juajuha, ñanduti veve ha ñe’ẽmondo ijuruja hag̃ua ijehegui %s-pe.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Mboguete</string>

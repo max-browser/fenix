@@ -1918,7 +1918,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Włączono automatyczne zamykanie</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Ustaw automatyczne otwieranie odnośników z witryn, wiadomości e-mail i SMS-ów w Firefoksie.</string>
+    <string name="default_browser_experiment_card_text">Ustaw automatyczne otwieranie linków ze stron internetowych, e-maili i wiadomości tekstowych w przeglądarce Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Usuń</string>

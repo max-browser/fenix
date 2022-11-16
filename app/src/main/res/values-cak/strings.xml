@@ -1873,7 +1873,7 @@ Achi\'el: \nhttps://www.google.com/search?q=%s</string>
     <string name="inactive_tabs_7_days">1 wuqq\'ij</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Nub\'än kinuk\'ulem ximonel ajk\'amaya\'l taq ruxaq, taq taqoya\'l chuqa\' taq rutzijol richin yejaq pa ruyonil pa Firefox.</string>
+    <string name="default_browser_experiment_card_text">Nub\'än kinuk\'ulem ximonel ajk\'amaya\'l taq ruxaq, taq taqoya\'l chuqa\' taq rutzijol richin yejaq pa ruyonil pa %s.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Tiyuj</string>

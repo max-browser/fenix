@@ -1748,7 +1748,7 @@
     <string name="inactive_tabs_survey_close_button_content_description">Užverti</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Leiskite saitams iš svetainių, el. laiškų, ir žinučių būti automatiškai atvertiems per „Firefox“.</string>
+    <string name="default_browser_experiment_card_text">Leiskite saitams iš svetainių, el. laiškų, ir žinučių būti automatiškai atvertiems per „%s“.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Pašalinti</string>

@@ -1927,7 +1927,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Automatikus bezárás engedélyezve</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Állítsa be a webhelyek, e-mailek és üzenetek hivatkozásait, hogy azok automatikusan a Firefoxban nyíljanak meg.</string>
+    <string name="default_browser_experiment_card_text">Állítsa be a webhelyek, e-mailek és üzenetek hivatkozásait, hogy azok automatikusan a %sban nyíljanak meg.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Eltávolítás</string>

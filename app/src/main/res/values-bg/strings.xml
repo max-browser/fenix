@@ -1623,7 +1623,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Автоматичното затваряне е включено</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Задайте Firefox като стандартно приложение за отваряне на страници, електронна поща и съобщения.</string>
+    <string name="default_browser_experiment_card_text">Задайте %s като стандартно приложение за отваряне на страници, електронна поща и съобщения.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Премахване</string>

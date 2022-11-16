@@ -1527,7 +1527,7 @@
     <string name="inactive_tabs_title">လှုပ်ရှားမှုမရှိသော တပ်ဗ်များ </string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Firefox တွင် ဝက်ဘ်ဆိုက်များ၊ အီးမေးလ်များ နှင့် မက်ဆေ့ခ်ျများမှ လင့်ခ်များ အလိုအလျောက် ပွင့်ရန်  သတ်မှတ်ပါ။</string>
+    <string name="default_browser_experiment_card_text">%s တွင် ဝက်ဘ်ဆိုက်များ၊ အီးမေးလ်များ နှင့် မက်ဆေ့ခ်ျများမှ လင့်ခ်များ အလိုအလျောက် ပွင့်ရန်  သတ်မှတ်ပါ။</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">ဖယ်ရှားပါ</string>

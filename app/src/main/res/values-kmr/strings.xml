@@ -1908,7 +1908,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Girtina bixweber çalak bû</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Bila lînkên ji malperan, e-posteyan û peyaman xweber di Firefoxê de bên vekirin.</string>
+    <string name="default_browser_experiment_card_text">Bila lînkên ji malperan, e-posteyan û peyaman xweber di %sê de bên vekirin.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Rake</string>

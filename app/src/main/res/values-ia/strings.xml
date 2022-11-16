@@ -1965,7 +1965,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Auto-clausura activate</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Stabilir qual ligamines de sitos web, e-mails e messages se aperi automaticamente in Firefox.</string>
+    <string name="default_browser_experiment_card_text">Stabilir qual ligamines de sitos web, e-mails e messages se aperi automaticamente in %s.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Remover</string>

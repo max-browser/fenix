@@ -1902,7 +1902,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Tự động đóng đã bật</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Đặt các liên kết từ trang web, email và tin nhắn để tự động mở trong Firefox.</string>
+    <string name="default_browser_experiment_card_text">Đặt các liên kết từ trang web, email và tin nhắn để tự động mở trong %s.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Xóa</string>

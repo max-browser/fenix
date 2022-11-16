@@ -1907,7 +1907,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Автожабу іске қосылған</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Веб-сайттар, эл. пошта хаттары және хабарламалардан сілтемелерді Firefox-та автоматты түрде ашылатындай етіп баптау.</string>
+    <string name="default_browser_experiment_card_text">Веб-сайттар, эл. пошта хаттары және хабарламалардан сілтемелерді %s-та автоматты түрде ашылатындай етіп баптау.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Өшіру</string>

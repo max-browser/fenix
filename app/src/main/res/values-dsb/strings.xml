@@ -1881,7 +1881,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Awtomatiske zacynjanje zmóžnjone</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Nastajśo wótkaze z websedłow, mejlkow a powěsćow, aby se awtomatiski we Firefox wócynili.</string>
+    <string name="default_browser_experiment_card_text">Nastajśo wótkaze z websedłow, mejlkow a powěsćow, aby se awtomatiski we %s wócynili.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Wótwónoźeś</string>

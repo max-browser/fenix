@@ -1883,7 +1883,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">ස්වයං වැසීම සබලයි</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">ෆයර්ෆොක්ස් හි ස්වයංක්‍රීයව විවෘත වීමට අඩවි, වි-තැපැල් සහ පණිවිඩ වලින් සබැඳි සකසන්න.</string>
+    <string name="default_browser_experiment_card_text">මැක්ස් බ්‍රවුසරයේ ස්වයංක්‍රීයව විවෘත වීමට අඩවි, ඊමේල් සහ පණිවිඩ වලින් සබැඳි සකසන්න.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">ඉවත් කරන්න</string>

@@ -1645,7 +1645,7 @@
     <string moz:RemovedIn="99" name="inactive_tabs_survey_close_button_content_description" tools:ignore="UnusedResources">Ябу</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Вебсайтлардан, эл. хатлардан һәм хәбәрләрдән сылтамаларны автоматик рәвештә Firefox-та ачылсын.</string>
+    <string name="default_browser_experiment_card_text">Вебсайтлардан, эл. хатлардан һәм хәбәрләрдән сылтамаларны автоматик рәвештә %s-та ачылсын.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Бетерү</string>
