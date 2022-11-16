@@ -172,7 +172,6 @@ android {
             pseudoLocalesEnabled true
             signingConfig signingConfigs.debug
             debuggable true
-            resValue "string", "app_name", "Max Debug"
         }
 
         maxRelease releaseTemplate >> {
@@ -183,7 +182,6 @@ android {
             manifestPlaceholders = [
                     "deepLinkScheme": deepLinkSchemeValue
             ]
-            resValue "string", "app_name", "Max Browser"
         }
     }
 
