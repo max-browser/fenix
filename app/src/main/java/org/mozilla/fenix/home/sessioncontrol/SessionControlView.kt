@@ -136,21 +136,25 @@ private fun onboardingAdapterItems(onboardingState: OnboardingState): List<Adapt
         ),
     )
     // Customize FxA items based on where we are with the account state:
-    items.addAll(
-        when (onboardingState) {
-            OnboardingState.SignedOutNoAutoSignIn -> {
-                listOf(
-                    AdapterItem.OnboardingManualSignIn,
-                )
-            }
-            OnboardingState.SignedIn -> listOf()
-        },
-    )
+//    items.addAll(
+//        when (onboardingState) {
+//            OnboardingState.SignedOutNoAutoSignIn -> {
+//                listOf(
+//                    AdapterItem.OnboardingManualSignIn,
+//                )
+//            }
+//            OnboardingState.SignedIn -> listOf()
+//        },
+//    )
 
+    when (onboardingState) {
+        OnboardingState.SignedOutNoAutoSignIn -> {}
+        OnboardingState.SignedIn -> {}
+    }
     items.addAll(
         listOf(
-            AdapterItem.OnboardingTrackingProtection,
-            AdapterItem.OnboardingPrivacyNotice,
+//            AdapterItem.OnboardingTrackingProtection,
+//            AdapterItem.OnboardingPrivacyNotice,
             AdapterItem.OnboardingFinish,
             AdapterItem.BottomSpacer,
         ),
@@ -218,9 +222,9 @@ class SessionControlView(
 
                     if (!featureRecommended && !context.settings().showHomeOnboardingDialog) {
                         if (!context.settings().showHomeOnboardingDialog && (
-                            context.settings().showSyncCFR ||
-                                context.settings().shouldShowJumpBackInCFR
-                            )
+                                    context.settings().showSyncCFR ||
+                                            context.settings().shouldShowJumpBackInCFR
+                                    )
                         ) {
                             featureRecommended = HomeCFRPresenter(
                                 context = context,
