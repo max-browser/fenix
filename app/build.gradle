@@ -75,6 +75,18 @@ android {
         } else {
             buildConfigField "boolean", "MOZILLA_ONLINE", "false"
         }
+
+        bundle {
+            language {
+                enableSplit = false
+            }
+            density {
+                enableSplit = true
+            }
+            abi {
+                enableSplit = true
+            }
+        }
     }
 
     signingConfigs {
