@@ -68,6 +68,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?attr/accentHighContrast"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/allow"
             app:layout_constraintEnd_toStartOf="@id/dismiss"
             app:layout_constraintStart_toStartOf="@id/title"
