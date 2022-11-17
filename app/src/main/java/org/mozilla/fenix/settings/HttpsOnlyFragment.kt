@@ -38,10 +38,11 @@ class HttpsOnlyFragment : Fragment() {
         val learnMore = requireContext().getString(R.string.preferences_http_only_learn_more)
 
         binding.httpsOnlySummary.run {
-            text = combineTextWithLink(summary, learnMore).apply {
-                setActionToUrlClick(this)
-            }
-            movementMethod = LinkMovementMethod.getInstance()
+            text = summary
+//            text = combineTextWithLink(summary, learnMore).apply {
+//                setActionToUrlClick(this)
+//            }
+//            movementMethod = LinkMovementMethod.getInstance()
         }
 
         binding.httpsOnlySwitch.run {
