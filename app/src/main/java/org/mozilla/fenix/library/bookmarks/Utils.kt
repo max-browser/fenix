@@ -19,7 +19,7 @@ fun rootTitles(context: Context, withMobileRoot: Boolean): Map<String, String> =
     )
 } else {
     mapOf(
-//        "root" to context.getString(R.string.library_desktop_bookmarks_root),
+        "root" to context.getString(R.string.library_desktop_bookmarks_root),
         "menu" to context.getString(R.string.library_desktop_bookmarks_menu),
         "toolbar" to context.getString(R.string.library_desktop_bookmarks_toolbar),
         "unfiled" to context.getString(R.string.library_desktop_bookmarks_unfiled),

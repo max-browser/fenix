@@ -26,10 +26,12 @@ class DesktopFolders(
             BookmarkRoot.Mobile.id -> {
                 // We're going to make a copy of the mobile node, and add-in a synthetic child folder to the top of the
                 // children's list that contains all of the desktop roots.
-                val childrenWithVirtualFolder =
-                    listOfNotNull(virtualDesktopFolder()) + node.children.orEmpty()
-
-                node.copy(children = childrenWithVirtualFolder)
+                // Max not support login function, so we turn off returning this folder
+//                val childrenWithVirtualFolder =
+//                    listOfNotNull(virtualDesktopFolder()) + node.children.orEmpty()
+//
+//                node.copy(children = childrenWithVirtualFolder)
+                node
             }
             BookmarkRoot.Root.id ->
                 node.copy(
