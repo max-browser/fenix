@@ -472,10 +472,11 @@ fun PoweredByPocketHeader(
     textColor: Color = FirefoxTheme.colors.textPrimary,
     linkTextColor: Color = FirefoxTheme.colors.textAccent,
 ) {
-    val link = stringResource(R.string.pocket_stories_feature_learn_more)
-    val text = stringResource(R.string.pocket_stories_feature_caption, link)
-    val linkStartIndex = text.indexOf(link)
-    val linkEndIndex = linkStartIndex + link.length
+//    val link = stringResource(R.string.pocket_stories_feature_learn_more)
+//    val text = stringResource(R.string.pocket_stories_feature_caption, link)
+//    val linkStartIndex = text.indexOf(link)
+//    val linkEndIndex = linkStartIndex + link.length
+    val text = stringResource(R.string.pocket_stories_feature_caption, "")
 
     Column(
         modifier = modifier.semantics {
@@ -524,12 +525,14 @@ fun PoweredByPocketHeader(
                         textColor = textColor,
                         linkTextColor = linkTextColor,
                         linkTextDecoration = TextDecoration.Underline,
-                        clickableStartIndex = linkStartIndex,
-                        clickableEndIndex = linkEndIndex,
+//                        clickableStartIndex = linkStartIndex,
+//                        clickableEndIndex = linkEndIndex,
+                        clickableStartIndex = 0,
+                        clickableEndIndex = 0,
                     ) {
-                        onLearnMoreClicked(
-                            "https://www.mozilla.org/en-US/firefox/pocket/?$POCKET_FEATURE_UTM_KEY_VALUE",
-                        )
+//                        onLearnMoreClicked(
+//                            "https://www.mozilla.org/en-US/firefox/pocket/?$POCKET_FEATURE_UTM_KEY_VALUE",
+//                        )
                     }
                 }
             }

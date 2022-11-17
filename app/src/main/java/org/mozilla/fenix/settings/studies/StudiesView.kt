@@ -116,7 +116,8 @@ class StudiesView(
         val appName = context.getString(R.string.app_name)
         val description = context.getString(R.string.studies_description_2, appName)
         val learnMore = context.getString(R.string.studies_learn_more)
-        val rawText = "$description <a href=\"$sumoUrl\">$learnMore</a>"
+//        val rawText = "$description <a href=\"$sumoUrl\">$learnMore</a>"
+        val rawText = "$description"
         val text = HtmlCompat.fromHtml(rawText, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
         val spannableStringBuilder = SpannableStringBuilder(text)
