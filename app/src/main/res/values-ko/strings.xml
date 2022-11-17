@@ -2000,7 +2000,7 @@
     <string name="experiments_snackbar">데이터를 보내려면 원격 분석을 활성화하세요.</string>
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">설정으로 이동</string>
-    <string name="firefox_suggest_header">Firefox 제안</string>
+    <string name="firefox_suggest_header">%s 제안</string>
 
     <!-- Accessibility services actions labels. These will be appended to accessibility actions like "Double tap to.." but not by or applications but by services like Talkback. -->
     <!-- Action label for elements that can be collapsed if interacting with them. Talkback will append this to say "Double tap to collapse". -->

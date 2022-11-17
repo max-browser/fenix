@@ -1963,7 +1963,7 @@
     <string name="experiments_snackbar">ڈیٹا پٹھݨ کیتے ٹیلی میٹری فعال کرو۔</string>
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">ترتیباں تے ون٘ڄو</string>
-    <string name="firefox_suggest_header">فائرفوکس تجویز</string>
+    <string name="firefox_suggest_header">میکس براؤزر کی سفارش</string>
 
     <!-- Accessibility services actions labels. These will be appended to accessibility actions like "Double tap to.." but not by or applications but by services like Talkback. -->
     <!-- Action label for elements that can be collapsed if interacting with them. Talkback will append this to say "Double tap to collapse". -->

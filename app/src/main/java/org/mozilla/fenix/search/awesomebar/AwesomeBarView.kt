@@ -108,7 +108,10 @@ class AwesomeBarView(
                 components.core.icons,
                 getDrawable(activity, R.drawable.ic_search_results_tab),
                 excludeSelectedSession = !fromHomeFragment,
-                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+                suggestionsHeader = String.format(
+                    activity.getString(R.string.firefox_suggest_header),
+                    activity.getString(R.string.firefox)
+                ),
             )
 
         historyStorageProvider =
@@ -117,7 +120,10 @@ class AwesomeBarView(
                 loadUrlUseCase,
                 components.core.icons,
                 engineForSpeculativeConnects,
-                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+                suggestionsHeader = String.format(
+                    activity.getString(R.string.firefox_suggest_header),
+                    activity.getString(R.string.firefox)
+                ),
             )
 
         combinedHistoryProvider =
@@ -128,7 +134,10 @@ class AwesomeBarView(
                 icons = components.core.icons,
                 engine = engineForSpeculativeConnects,
                 maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
-                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+                suggestionsHeader = String.format(
+                    activity.getString(R.string.firefox_suggest_header),
+                    activity.getString(R.string.firefox)
+                ),
             )
 
         bookmarksStorageSuggestionProvider =
@@ -138,7 +147,10 @@ class AwesomeBarView(
                 icons = components.core.icons,
                 indicatorIcon = getDrawable(activity, R.drawable.ic_search_results_bookmarks),
                 engine = engineForSpeculativeConnects,
-                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+                suggestionsHeader = String.format(
+                    activity.getString(R.string.firefox_suggest_header),
+                    activity.getString(R.string.firefox)
+                ),
             )
 
         syncedTabsStorageSuggestionProvider =
@@ -151,7 +163,10 @@ class AwesomeBarView(
                     getDrawable(activity, R.drawable.ic_search_results_device_mobile),
                     getDrawable(activity, R.drawable.ic_search_results_device_tablet),
                 ),
-                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+                suggestionsHeader = String.format(
+                    activity.getString(R.string.firefox_suggest_header),
+                    activity.getString(R.string.firefox)
+                ),
             )
 
         val searchBitmap = getDrawable(activity, R.drawable.ic_search)!!.apply {

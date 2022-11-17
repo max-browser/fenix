@@ -1869,5 +1869,5 @@
     <string name="experiments_snackbar">Pro odesílání dat povolte telemetrii.</string>
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">Přejít do nastavení</string>
-    <string name="firefox_suggest_header">Návrhy od Firefoxu</string>
+    <string name="firefox_suggest_header">Návrhy od %su</string>
 </resources>

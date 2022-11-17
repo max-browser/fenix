@@ -1956,7 +1956,7 @@
     <string name="experiments_snackbar">Омогућите телеметрију да шаље податке.</string>
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">Иди у подешавања</string>
-    <string name="firefox_suggest_header">Firefox предлози</string>
+    <string name="firefox_suggest_header">%s предлози</string>
 
     <!-- Accessibility services actions labels. These will be appended to accessibility actions like "Double tap to.." but not by or applications but by services like Talkback. -->
     <!-- Action label for elements that can be collapsed if interacting with them. Talkback will append this to say "Double tap to collapse". -->
