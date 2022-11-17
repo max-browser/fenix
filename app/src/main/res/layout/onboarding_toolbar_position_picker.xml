@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- This Source Code Form is subject to the terms of the Mozilla Public
+<?xml version="1.0" encoding="utf-8"?><!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/onboarding_card"
+    style="@style/OnboardingCardLight"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/OnboardingCardLight"
     android:layout_marginHorizontal="@dimen/home_item_horizontal_margin"
     android:paddingTop="16dp"
     android:paddingBottom="16dp">
@@ -51,17 +50,19 @@
 
     <ImageView
         android:id="@+id/toolbar_bottom_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:contentDescription="@string/preference_bottom_toolbar"
         android:foreground="@drawable/rounded_ripple"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintDimensionRatio="136:80"
         app:layout_constraintEnd_toStartOf="@+id/toolbar_top_image"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description_text"
+        app:layout_constraintWidth_percent="0.36"
         app:srcCompat="@drawable/onboarding_toolbar_bottom" />
 
     <TextView
@@ -72,10 +73,10 @@
         android:text="@string/preference_bottom_toolbar"
         android:textColor="?attr/textPrimary"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/toolbar_bottom_image"
         app:layout_constraintStart_toStartOf="@id/toolbar_bottom_image"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_bottom_image"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/toolbar_bottom_image" />
 
     <TextView
         android:id="@+id/toolbar_top_title"
@@ -85,10 +86,10 @@
         android:text="@string/preference_top_toolbar"
         android:textColor="?attr/textPrimary"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/toolbar_top_image"
         app:layout_constraintStart_toStartOf="@id/toolbar_top_image"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_top_image"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/toolbar_top_image" />
 
     <org.mozilla.fenix.onboarding.OnboardingRadioButton
         android:id="@+id/toolbar_top_radio_button"
@@ -106,16 +107,18 @@
 
     <ImageView
         android:id="@+id/toolbar_top_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/preference_top_toolbar"
         android:foreground="@drawable/rounded_ripple"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintDimensionRatio="136:80"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/toolbar_bottom_image"
         app:layout_constraintTop_toBottomOf="@+id/description_text"
+        app:layout_constraintWidth_percent="0.36"
         app:srcCompat="@drawable/onboarding_toolbar_top" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- This Source Code Form is subject to the terms of the Mozilla Public
+<?xml version="1.0" encoding="utf-8"?><!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/onboarding_card"
+    style="@style/OnboardingCardLight"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/OnboardingCardLight"
-    android:paddingTop="16dp"
-    android:layout_marginHorizontal="@dimen/home_item_horizontal_margin">
+    android:layout_marginHorizontal="@dimen/home_item_horizontal_margin"
+    android:paddingTop="16dp">
 
     <TextView
         android:id="@+id/header_text"
@@ -62,17 +61,20 @@
 
     <ImageView
         android:id="@+id/theme_light_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/onboarding_theme_light_title"
         android:foreground="@drawable/rounded_ripple"
+        android:scaleType="fitCenter"
+        app:layout_constraintDimensionRatio="136:80"
         app:layout_constraintEnd_toStartOf="@+id/theme_dark_image"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description_text"
-        app:srcCompat="@drawable/onboarding_light_theme" />
+        app:layout_constraintWidth_percent="0.36"
+        app:srcCompat="@drawable/img_max_onboarding_light_theme" />
 
     <org.mozilla.fenix.onboarding.OnboardingRadioButton
         android:id="@+id/theme_dark_radio_button"
@@ -89,18 +91,21 @@
 
     <ImageView
         android:id="@+id/theme_dark_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:contentDescription="@string/onboarding_theme_dark_title"
         android:foreground="@drawable/rounded_ripple"
+        android:scaleType="fitCenter"
+        app:layout_constraintDimensionRatio="136:80"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/theme_light_image"
         app:layout_constraintTop_toBottomOf="@+id/description_text"
-        app:srcCompat="@drawable/onboarding_dark_theme" />
+        app:layout_constraintWidth_percent="0.36"
+        app:srcCompat="@drawable/img_max_onboarding_dark_theme" />
 
     <TextView
         android:id="@+id/dark_theme_title"
