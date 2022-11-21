@@ -343,11 +343,12 @@ class SearchDialogFragment : AppCompatDialogFragment(), UserInteractionHandler {
             view = view,
         )
 
-        binding.qrScanButton.isVisible = when {
-            showUnifiedSearchFeature -> false
-            requireContext().hasCamera() -> true
-            else -> false
-        }
+//        binding.qrScanButton.isVisible = when {
+//            showUnifiedSearchFeature -> false
+//            requireContext().hasCamera() -> true
+//            else -> false
+//        }
+        binding.qrScanButton.isVisible = false
 
         binding.qrScanButton.increaseTapArea(TAP_INCREASE_DPS)
 
