@@ -45,8 +45,6 @@
 
     <!-- Home - Recently saved bookmarks -->
     <!-- Title for the home screen section with recently saved bookmarks. -->
-    <string moz:RemovedIn="106" name="recent_bookmarks_title" tools:ignore="UnusedResources">Oxirgi xatchoʻplar</string>
-    <!-- Title for the home screen section with recently saved bookmarks. -->
     <string name="recently_saved_title">Yaqinda saqlangan</string>
     <!-- Content description for the button which navigates the user to show all of their saved bookmarks. -->
     <string name="recently_saved_show_all_content_description_2">Barcha saqlangan xatchoʻplarni koʻrsatish</string>
@@ -260,36 +258,12 @@
     <string name="search_header_menu_item">Bu safar qidiramiz:</string>
 
     <!-- Home onboarding -->
-    <!-- Onboarding home screen dialog title text. The first parameter is the name of the application.-->
-    <string moz:RemovedIn="106" name="onboarding_home_screen_title_3" tools:ignore="UnusedResources">%1$sda yangiliklar</string>
-    <!-- Onboarding home screen dialog description text. -->
-    <string moz:RemovedIn="106" name="onboarding_home_screen_description_2" tools:ignore="UnusedResources">Endi toʻxtagan joydan davom etish osonroq.</string>
-    <!-- Onboarding home screen dialog title text for the home section. The first parameter is the name of the application.-->
-    <string moz:RemovedIn="106" name="onboarding_home_screen_section_home_title_3" tools:ignore="UnusedResources">Moslashtirilgan %1$s bosh sahifasi</string>
-    <!-- Onboarding home screen dialog description text for the home section. -->
-    <string moz:RemovedIn="106" name="onboarding_home_screen_section_home_description_2" tools:ignore="UnusedResources">Ochiq varaqlar, xatchoʻplar va tarixiga oʻting.</string>
-    <!-- Onboarding home screen dialog description text for the tab tray section. -->
-    <string moz:RemovedIn="106" name="onboarding_home_screen_section_cleaner_tab_tray_title_2" tools:ignore="UnusedResources">Qulay tartibli varaqlar</string>
-    <!-- Onboarding home screen dialog description text for the tab tray section. -->
-    <string moz:RemovedIn="106" name="onboarding_home_screen_section_cleaner_tab_tray_description_2" tools:ignore="UnusedResources">Yaxshilangan tartib va avtomatik yopiladigan varaqlar yordamida tartibsizliklarni toʻgʻrilang.</string>
-    <!-- Onboarding home screen dialog description text for the history section. -->
-    <string moz:RemovedIn="106" name="onboarding_home_screen_section_useful_history_title_2" tools:ignore="UnusedResources">Oxirgi qidiruvlar</string>
-    <!-- Onboarding home screen dialog description text for the history section. -->
-    <string moz:RemovedIn="106" name="onboarding_home_screen_section_useful_history_description_2" tools:ignore="UnusedResources">Bosh sahifa va varaqlar orqali oxirgi qidiruvlarga yana tashrif buyuring.</string>
-
-    <!-- Onboarding home screen popup dialog, shown on top of the Jump back in section. Firefox is intentionally hardcoded. -->
-    <string moz:RemovedIn="106" name="onboarding_home_screen_jump_back_contextual_hint" tools:ignore="UnusedResources">Moslashtirilgan Firefox bosh sahifasi endi toʻxtagan joydan davom etishni osonlashtiradi. Oxirgi varaqlar, xatchoʻplar va qidiruv natijalarini endi osongina topasiz.</string>
-
     <!-- Onboarding home screen popup dialog, shown on top of the Jump back in section. -->
     <string name="onboarding_home_screen_jump_back_contextual_hint_2">Moshlashtirilgan bosh sahifangizni kutib oling. Oxirgi varaqlar, xatchoʻplar va qidiruv natijalar shu yerda chiqadi.</string>
-    <!-- Home onboarding dialog welcome screen title text. -->
-    <string moz:RemovedIn="106" name="onboarding_home_welcome_title" tools:ignore="UnusedResources">Mustaqil internetga xush kelibsiz</string>
     <!-- Home onboarding dialog welcome screen title text. -->
     <string name="onboarding_home_welcome_title_2">Shaxsiy internetga xush kelibsiz</string>
     <!-- Home onboarding dialog welcome screen description text. -->
     <string name="onboarding_home_welcome_description">Koʻplab ranglar. Yaxshiroq maxfiylik. Odamlarga foydali bir xil majburiyat.</string>
-    <!-- Home onboarding dialog sign into sync screen title text. -->
-    <string moz:RemovedIn="106" name="onboarding_home_sync_title_2" tools:ignore="UnusedResources">Telefondan noutbukka yoki aksincha qayting</string>
     <!-- Home onboarding dialog sign into sync screen title text. -->
     <string name="onboarding_home_sync_title_3">Ekranlarga oʻtish har doimgidan osonroq</string>
     <!-- Home onboarding dialog sign into sync screen description text. -->
@@ -1254,33 +1228,20 @@
     <string name="delete_history_group_snackbar">Guruh oʻchirildi</string>
 
     <!-- Onboarding -->
-    <!-- Text for onboarding welcome message
-    The first parameter is the name of the app (e.g. Firefox Preview) -->
-    <string moz:RemovedIn="106" name="onboarding_header" tools:ignore="UnusedResources">%sga xush kelibsiz!</string>
     <!-- Text for onboarding welcome header. -->
     <string name="onboarding_header_2">Yaxshiroq internetga xush kelibsiz</string>
     <!-- Text for the onboarding welcome message. -->
     <string name="onboarding_message">Foyda uchun emas, insonlar uchun tuzilgan brauzer.</string>
-    <!-- text for the Firefox account onboarding sign in card header. The word "Firefox" should not be translated -->
-    <string moz:removedIn="106" name="onboarding_account_sign_in_header_1" tools:ignore="UnusedResources">Firefoxni qurilmalarga sinxronlash</string>
     <!-- Text for the Firefox account onboarding sign in card header. -->
     <string name="onboarding_account_sign_in_header">Qolgan joyidan davom eting</string>
-    <!-- Text for the button to learn more about signing in to your Firefox account. The first parameter is the name of the application.-->
-    <string moz:removedIn="106" name="onboarding_manual_sign_in_description_2" tools:ignore="UnusedResources">Xatchoʻp, tarix va parollarni bu qurilmadagi %1$sga oʻtkazing.</string>
     <!-- Text for the button to learn more about signing in to your Firefox account. -->
     <string name="onboarding_manual_sign_in_description">Ekranlar oʻrtasida uzluksiz oʻtish uchun yorliqlar va parollarni qurilmalar oʻrtasida sinxronlang.</string>
-    <!-- text for the button to manually sign into Firefox account. -->
-    <string moz:removedIn="106" name="onboarding_firefox_account_sign_in_1" tools:ignore="UnusedResources">Roʻyxatdan oʻtish</string>
     <!-- Text for the button to manually sign into Firefox account. -->
     <string name="onboarding_firefox_account_sign_in">Kirish</string>
     <!-- text to display in the snackbar once account is signed-in -->
     <string name="onboarding_firefox_account_sync_is_on">Sinxronizatsiya yoqilgan</string>
-    <!-- text for the tracking protection onboarding card header -->
-    <string moz:removedIn="106" name="onboarding_tracking_protection_header_3" tools:ignore="UnusedResources">Doimiy maxfiylik</string>
     <!-- Text for the tracking protection onboarding card header -->
     <string name="onboarding_tracking_protection_header">Standart maxfiylik himoyasi</string>
-    <!-- text for the tracking protection card description. The first parameter is the name of the application.-->
-    <string moz:removedIn="106" name="onboarding_tracking_protection_description_4" tools:ignore="UnusedResources">Kompaniyalarning sizni onlayn kuzatishlarini %1$s avtomatik ravishda bloklaydi.</string>
     <!-- Text for the tracking protection card description. -->
     <string name="onboarding_tracking_protection_description">Kuzatuvchilar sizni saytlar boʻylab kuzatish uchun cookie-fayllardan foydalanishiga yoʻl qoʻyilmaydi.</string>
     <!-- text for tracking protection radio button option for standard level of blocking -->
@@ -1294,17 +1255,10 @@
     <string name="onboarding_tracking_protection_strict_button_description_3">Sahifalar tezroq yuklanishi uchun koʻproq kuzatuvchilarni bloklaydi, lekin baʼzi sahifalar toʻgʻri ishlamasligi mumkin.</string>
     <!-- text for the toolbar position card header  -->
     <string name="onboarding_toolbar_placement_header_1">Asboblar paneli joylashuvini tanlang</string>
-    <!-- text for the toolbar position card description -->
-    <string moz:removedIn="106" name="onboarding_toolbar_placement_description_1" tools:ignore="UnusedResources">Asboblar paneliga oson kirishni taʼminlang. Uni pastki qismda qoldiring yoki yuqoriga koʻchiring.</string>
     <!-- Text for the toolbar position card description -->
     <string name="onboarding_toolbar_placement_description">Uni pastki qismida qoldiring yoki yuqoriga koʻchiring.</string>
-    <!-- text for the privacy notice onboarding card header -->
-    <string moz:removedIn="106" name="onboarding_privacy_notice_header" tools:ignore="UnusedResources">Sizning maxfiyligingiz</string>
     <!-- Text for the privacy notice onboarding card header -->
     <string name="onboarding_privacy_notice_header_1">Maʼlumotlaringizni oʻzingiz boshqaring</string>
-    <!-- text for the privacy notice onboarding card description
-    The first parameter is the name of the app (e.g. Firefox Preview) Substitute %s for long browser name. -->
-    <string moz:removedIn="106" name="onboarding_privacy_notice_description2" tools:ignore="UnusedResources">Maʼlumotlaringizni onlayn va biz bilan ulashishingizni nazorat qilish uchun  %sni yaratdik.</string>
     <!-- Text for the privacy notice onboarding card description. -->
     <string name="onboarding_privacy_notice_description">Firefox sizga nimalarni onlayn va nimalarni bizga ulashishingiz uchun nazoratni sizga taqdim etadi.</string>
     <!-- Text for the button to read the privacy notice -->
@@ -1399,13 +1353,350 @@
     <!-- Option for enhanced tracking protection for the custom protection settings for cookies-->
     <string name="preference_enhanced_tracking_protection_custom_cookies_3">Barcha uchinchi tomon cookie fayllar (saytlarning buzilishiga olib kelishi mumkin)</string>
 
+    <!-- Option for enhanced tracking protection for the custom protection settings for cookies-->
+    <string name="preference_enhanced_tracking_protection_custom_cookies_4">Barcha cookie fayllar (saytlar ishlashini buzadi)</string>
+    <!-- Option for enhanced tracking protection for the custom protection settings for cookies-->
+    <string name="preference_enhanced_tracking_protection_custom_cookies_5">Saytlararo cookie fayllarni izolyatsiyalash</string>
+    <!-- Preference for enhanced tracking protection for the custom protection settings for tracking content -->
+    <string name="preference_enhanced_tracking_protection_custom_tracking_content">Tarkibni kuzatish</string>
+    <!-- Option for enhanced tracking protection for the custom protection settings for tracking content-->
+    <string name="preference_enhanced_tracking_protection_custom_tracking_content_1">Barcha varaqlarda</string>
+    <!-- Option for enhanced tracking protection for the custom protection settings for tracking content-->
+    <string name="preference_enhanced_tracking_protection_custom_tracking_content_2">Faqat maxsiy varaqlarda</string>
+    <!-- Preference for enhanced tracking protection for the custom protection settings -->
+    <string name="preference_enhanced_tracking_protection_custom_cryptominers">Kriptomaynerlar</string>
+    <!-- Preference for enhanced tracking protection for the custom protection settings -->
+    <string name="preference_enhanced_tracking_protection_custom_fingerprinters">Raqamli imzo yigʻuvchilar</string>
+    <!-- Button label for navigating to the Enhanced Tracking Protection details -->
+    <string name="enhanced_tracking_protection_details">Tafsilotlar</string>
+    <!-- Header for categories that are being being blocked by current Enhanced Tracking Protection settings -->
+    <string name="enhanced_tracking_protection_blocked">Bloklangan</string>
+    <!-- Header for categories that are being not being blocked by current Enhanced Tracking Protection settings -->
+    <string name="enhanced_tracking_protection_allowed">Ruxsat berilgan</string>
+    <!-- Category of trackers (social media trackers) that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_social_media_trackers_title">Ijtimoiy tarmoq kuzatuvchilari</string>
+
+    <!-- Description of social media trackers that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_social_media_trackers_description">Ijtimoiy tarmoqlarning sahifadagi brauzeringiz faoliyatini kuzatib borish imkoniyatini cheklaydi.</string>
+    <!-- Category of trackers (cross-site tracking cookies) that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_cookies_title">Saytlararo kuzatuvchi cookie fayllar</string>
+    <!-- Category of trackers (cross-site tracking cookies) that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_cookies_title_2">Saytlararo cookie fayllar</string>
+    <!-- Description of cross-site tracking cookies that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_cookies_description">Reklama tarmoqlari va analitik kompaniyalar koʻplab saytlarda brauzer maʼlumotlarini yigʻish uchun foydalanadigan cookie fayllarni bloklaydi.</string>
+
+    <!-- Category of trackers (fingerprinters) that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_fingerprinters_title">Raqamli imzo yigʻuvchilar</string>
+    <!-- Description of fingerprinters that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_fingerprinters_description">Qurilmangiz haqida kuzatib borish uchun ishlatilishi mumkin boʻlgan yagona aniqlanadigan maʼlumotlarni toʻplashni toʻxtatadi.</string>
+    <!-- Category of trackers (tracking content) that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_tracking_content_title">Kontentni kuzatish</string>
+    <!-- Description of tracking content that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_tracking_content_description">Kuzatuv kodini oʻz ichiga olgan reklamalar, videolar va boshqa kontentni yuklashni toʻxtatadi. Baʼzi veb-saytlarning ishlashiga taʼsir qilishi mumkin.</string>
+
+    <!-- Enhanced Tracking Protection message that protection is currently on for this site -->
+    <string name="etp_panel_on">Ushbu sayt uchun himoya yoqilgan</string>
+    <!-- Enhanced Tracking Protection message that protection is currently off for this site -->
+    <string name="etp_panel_off">Ushbu sayt uchun himoya oʻchirilgan</string>
+    <!-- Header for exceptions list for which sites enhanced tracking protection is always off -->
+    <string name="enhanced_tracking_protection_exceptions">Ushbu sayt uchun takomillashtirilgan kuzatuvdan himoya oʻchirilgan.</string>
+    <!-- Content description (not visible, for screen readers etc.): Navigate
+    back from ETP details (Ex: Tracking content) -->
+    <string name="etp_back_button_content_description">Orqaga oʻting</string>
+    <!-- About page link text to open what's new link -->
+    <string name="about_whats_new">%sdagi yangiliklar</string>
+    <!-- Open source licenses page title
+    The first parameter is the app name -->
+    <string name="open_source_licenses_title">%s | OSS kutubxonlari</string>
+    <!-- Category of trackers (redirect trackers) that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_redirect_trackers_title">Qayta yoʻnaltiruvchi kuzatuvchilar</string>
+    <!-- Description of redirect tracker cookies that can be blocked by Enhanced Tracking Protection -->
+    <string name="etp_redirect_trackers_description">Maʼlum kuzatuv saytlariga yoʻnaltirish orqali oʻrnatilgan cookie fayllarini oʻchiradi.</string>
+
+    <!-- Description of the SmartBlock Enhanced Tracking Protection feature. The * symbol is intentionally hardcoded here,
+         as we use it on the UI to indicate which trackers have been partially unblocked.  -->
+    <string name="preference_etp_smartblock_description">Quyida belgilangan ayrim kuzatuvchilar ushbu sahifada qisman ochilgan, chunki siz ular bilan muloqot qilgansiz *.</string>
+    <!-- Text displayed that links to website about enhanced tracking protection SmartBlock -->
+    <string name="preference_etp_smartblock_learn_more">Batafsil maʼlumot</string>
+
+    <!-- About page link text to open support link -->
+    <string name="about_support">Qoʻllab-quvvatlash</string>
+    <!-- About page link text to list of past crashes (like about:crashes on desktop) -->
+    <string name="about_crashes">Nosozliklar</string>
+    <!-- About page link text to open privacy notice link -->
+    <string name="about_privacy_notice">Maxfiylik eslatmalari</string>
+    <!-- About page link text to open know your rights link -->
+    <string name="about_know_your_rights">Huquqlaringizni biling</string>
+    <!-- About page link text to open licensing information link -->
+    <string name="about_licensing_information">Litsenziya maʼlumotlari</string>
+    <!-- About page link text to open a screen with libraries that are used -->
+    <string name="about_other_open_source_libraries">Biz foydalanadigan kutubxonalar</string>
+    <!-- Toast shown to the user when they are activating the secret dev menu
+        The first parameter is number of long clicks left to enable the menu -->
+    <string name="about_debug_menu_toast_progress">Nosozliklarni tuzatish menyusi: faollashtirish uchun %1$d tugmachani bosing</string>
+    <string name="about_debug_menu_toast_done">Nosozliklarni tuzatish menyusi yoqilgan</string>
+
+    <!-- Browser long press popup menu -->
+    <!-- Copy the current url -->
+    <string name="browser_toolbar_long_press_popup_copy">Nusxa olish</string>
+    <!-- Paste & go the text in the clipboard. '&amp;' is replaced with the ampersand symbol: & -->
+    <string name="browser_toolbar_long_press_popup_paste_and_go">Qoʻyish va oʻtish</string>
+    <!-- Paste the text in the clipboard -->
+    <string name="browser_toolbar_long_press_popup_paste">Qoʻyish</string>
+    <!-- Snackbar message shown after an URL has been copied to clipboard. -->
+    <string name="browser_toolbar_url_copied_to_clipboard_snackbar">URL buferga koʻchirildi</string>
+
+    <!-- Title text for the Add To Homescreen dialog -->
+    <string name="add_to_homescreen_title">Bosh ekranga qoʻshish</string>
+    <!-- Cancel button text for the Add to Homescreen dialog -->
+    <string name="add_to_homescreen_cancel">Bekor qilish</string>
+    <!-- Add button text for the Add to Homescreen dialog -->
+    <string name="add_to_homescreen_add">Qoʻshish</string>
+    <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
+    <string name="add_to_homescreen_continue">Saytga oʻting</string>
+    <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
+    <string name="add_to_homescreen_text_placeholder">Yorliq nomi</string>
+
+    <!-- Describes the add to homescreen functionality -->
+    <string name="add_to_homescreen_description_2">Tez kirish uchun ushbu saytni qurilmangizning bosh ekraniga osongina qoʻshishingiz mumkin.</string>
+
+    <!-- Preference for managing the settings for logins and passwords in Fenix -->
+    <string name="preferences_passwords_logins_and_passwords">Login va parollar</string>
+    <!-- Preference for managing the saving of logins and passwords in Fenix -->
+    <string name="preferences_passwords_save_logins">Login va parollarni saqlang</string>
+    <!-- Preference option for asking to save passwords in Fenix -->
+    <string name="preferences_passwords_save_logins_ask_to_save">Saqlash soʻralsin</string>
+    <!-- Preference option for never saving passwords in Fenix -->
+    <string name="preferences_passwords_save_logins_never_save">Hech qachon saqlanmasin</string>
+    <!-- Preference for autofilling saved logins in Firefox (in web content), %1$s will be replaced with the app name -->
+    <string name="preferences_passwords_autofill2">%1$sda avtomatik toʻldirilsin</string>
+    <!-- Description for the preference for autofilling saved logins in Firefox (in web content), %1$s will be replaced with the app name -->
+    <string name="preferences_passwords_autofill_description">%1$s dan foydalanganda saytlarda foydalanuvchi nomlari va parollarni toʻldiring va saqlang.</string>
+    <!-- Preference for autofilling logins from Fenix in other apps (e.g. autofilling the Twitter app) -->
+    <string name="preferences_android_autofill">Boshqa ilovalarda avtomatik toʻldirish</string>
+    <!-- Description for the preference for autofilling logins from Fenix in other apps (e.g. autofilling the Twitter app) -->
+    <string name="preferences_android_autofill_description">Qurilmangizdagi boshqa ilovalarda foydalanuvchi nomlari va parollarni kiriting.</string>
+    <!-- Preference option for adding a login -->
+    <string name="preferences_logins_add_login">Login qoʻshish</string>
+
+    <!-- Preference for syncing saved logins in Fenix -->
+    <string name="preferences_passwords_sync_logins">Loginlarni sinxronlash</string>
+    <!-- Preference for syncing saved logins in Fenix, when not signed in-->
+    <string name="preferences_passwords_sync_logins_across_devices">Loginlarni qurilmalararo sinxronlang</string>
+    <!-- Preference to access list of saved logins -->
+    <string name="preferences_passwords_saved_logins">Saqlangan loginlar</string>
+    <!-- Description of empty list of saved passwords. Placeholder is replaced with app name.  -->
+    <string name="preferences_passwords_saved_logins_description_empty_text">Siz saqlagan yoki %s bilan sinxronlangan loginlar shu yerda koʻrinadi.</string>
+    <!-- Preference to access list of saved logins -->
+    <string name="preferences_passwords_saved_logins_description_empty_learn_more_link">Sinxronlash haqida batafsil maʼlumot</string>
+    <!-- Preference to access list of login exceptions that we never save logins for -->
+    <string name="preferences_passwords_exceptions">Istisnolar</string>
+    <!-- Empty description of list of login exceptions that we never save logins for -->
+    <string name="preferences_passwords_exceptions_description_empty">Saqlanmagan login va parollar shu yerda koʻrsatiladi.</string>
+    <!-- Description of list of login exceptions that we never save logins for -->
+    <string name="preferences_passwords_exceptions_description">Ushbu saytlar uchun login va parollar saqlanmaydi.</string>
+    <!-- Text on button to remove all saved login exceptions -->
+    <string name="preferences_passwords_exceptions_remove_all">Barcha istisnolarni oʻchirib tashlash</string>
+    <!-- Hint for search box in logins list -->
+    <string name="preferences_passwords_saved_logins_search">Loginlarni qidirish</string>
+    <!-- The header for the site that a login is for -->
+    <string name="preferences_passwords_saved_logins_site">Sayt</string>
+    <!-- The header for the username for a login -->
+    <string name="preferences_passwords_saved_logins_username">Foydalanuvchi nomi</string>
+    <!-- The header for the password for a login -->
+    <string name="preferences_passwords_saved_logins_password">Parol</string>
+    <!-- Shown in snackbar to tell user that the password has been copied -->
+    <string name="logins_password_copied">Parol buferga nusxalandi</string>
+    <!-- Shown in snackbar to tell user that the username has been copied -->
+    <string name="logins_username_copied">Foydalanuvchi nomi buferga nusxalandi</string>
+    <!-- Content Description (for screenreaders etc) read for the button to copy a password in logins-->
+    <string name="saved_logins_copy_password">Paroldan nusxa olish</string>
+    <!-- Content Description (for screenreaders etc) read for the button to clear a password while editing a login-->
+    <string name="saved_logins_clear_password">Parolni tozalash</string>
+    <!-- Content Description (for screenreaders etc) read for the button to copy a username in logins -->
+    <string name="saved_login_copy_username">Foydalanuvchi nomidan nusxa olish</string>
+    <!-- Content Description (for screenreaders etc) read for the button to clear a username while editing a login -->
+    <string name="saved_login_clear_username">Foydalanuvchi nomini tozalash</string>
+    <!-- Content Description (for screenreaders etc) read for the button to clear the hostname field while creating a login -->
+    <string name="saved_login_clear_hostname">Host nomini tozalash</string>
+    <!-- Content Description (for screenreaders etc) read for the button to open a site in logins -->
+    <string name="saved_login_open_site">Saytni brauzerda ochish</string>
+    <!-- Content Description (for screenreaders etc) read for the button to reveal a password in logins -->
+    <string name="saved_login_reveal_password">Parolni koʻrsatish</string>
+    <!-- Content Description (for screenreaders etc) read for the button to hide a password in logins -->
+    <string name="saved_login_hide_password">Parolni yashirish</string>
+    <!-- Message displayed in biometric prompt displayed for authentication before allowing users to view their logins -->
+    <string name="logins_biometric_prompt_message">Saqlangan loginlaringizni koʻrish uchun qulfni oching</string>
+    <!-- Title of warning dialog if users have no device authentication set up -->
+    <string name="logins_warning_dialog_title">Login va parollaringizni himoya qiling</string>
+    <!-- Message of warning dialog if users have no device authentication set up -->
+    <string name="logins_warning_dialog_message">Saqlangan login va parollaringizni kimdir qurilmangizga ega boʻlsa, ularga kirishdan himoya qilish uchun qurilmani qulflang, PIN kod yoki parol oʻrnating.</string>
+    <!-- Negative button to ignore warning dialog if users have no device authentication set up -->
+    <string name="logins_warning_dialog_later">Keyinroq</string>
+    <!-- Positive button to send users to set up a pin of warning dialog if users have no device authentication set up -->
+    <string name="logins_warning_dialog_set_up_now">Hoziroq sozlash</string>
+    <!-- Title of PIN verification dialog to direct users to re-enter their device credentials to access their logins -->
+    <string name="logins_biometric_prompt_message_pin">Qurilmangizning qulfini oching</string>
     <!-- Title for Accessibility Force Enable Zoom Preference -->
     <string name="preference_accessibility_force_enable_zoom">Barcha veb-saytlarni kattalashtirish</string>
     <!-- Summary for Accessibility Force Enable Zoom Preference -->
     <string name="preference_accessibility_force_enable_zoom_summary">Bu ishorani taqiqlovchi saytlar uchun ham chimdish va kattalashtirishga ruxsat berishni yoqing.</string>
 
+    <!-- Saved logins sorting strategy menu item -by name- (if selected, it will sort saved logins alphabetically) -->
+    <string name="saved_logins_sort_strategy_alphabetically">Nomi boʻyicha (A-Z)</string>
+    <!-- Saved logins sorting strategy menu item -by last used- (if selected, it will sort saved logins by last used) -->
+    <string name="saved_logins_sort_strategy_last_used">Soʻnggi foydalanilgan</string>
+    <!-- Content description (not visible, for screen readers etc.): Sort saved logins dropdown menu chevron icon -->
+    <string name="saved_logins_menu_dropdown_chevron_icon_content_description">Loginlarni saralash menyusi</string>
+
+    <!-- Autofill -->
+    <!-- Preference and title for managing the autofill settings -->
+    <string name="preferences_autofill">Avtomatik toʻldirish</string>
+    <!-- Preference and title for managing the settings for addresses -->
+    <string name="preferences_addresses">Manzillar</string>
+    <!-- Preference and title for managing the settings for credit cards -->
+    <string name="preferences_credit_cards">Kredit kartalar</string>
+    <!-- Preference for saving and autofilling credit cards -->
+    <string name="preferences_credit_cards_save_and_autofill_cards">Kartalarni saqlash va avtomatik toʻldirish</string>
+    <!-- Preference summary for saving and autofilling credit card data -->
+    <string name="preferences_credit_cards_save_and_autofill_cards_summary">Maʼlumotlar shifrlangan</string>
+    <!-- Preference option for syncing credit cards across devices. This is displayed when the user is not signed into sync -->
+    <string name="preferences_credit_cards_sync_cards_across_devices">Kartalarni qurilmalar oʻrtasida sinxronlash</string>
+    <!-- Preference option for syncing credit cards across devices. This is displayed when the user is signed into sync -->
+    <string name="preferences_credit_cards_sync_cards">Kartalarni sinxronlash</string>
+    <!-- Preference option for adding a credit card -->
+    <string name="preferences_credit_cards_add_credit_card">Kredit karta qoʻshish</string>
+    <!-- Preference option for managing saved credit cards -->
+    <string name="preferences_credit_cards_manage_saved_cards">Saqlangan kartalarni boshqarish</string>
+    <!-- Preference option for adding an address -->
+    <string name="preferences_addresses_add_address">Manzil qoʻshish</string>
+    <!-- Preference option for managing saved addresses -->
+    <string name="preferences_addresses_manage_addresses">Manzillarni boshqarish</string>
+    <!-- Preference for saving and autofilling addresses -->
+    <string name="preferences_addresses_save_and_autofill_addresses">Manzillarni saqlash va avtomatik toʻldirish</string>
+    <!-- Preference summary for saving and autofilling address data -->
+    <string name="preferences_addresses_save_and_autofill_addresses_summary">Raqamlar, email va yetkazib berish manzillari kabi maʼlumotlar ham kiradi</string>
+
+    <!-- Title of the "Add card" screen -->
+    <string name="credit_cards_add_card">Karta qoʻshish</string>
+    <!-- Title of the "Edit card" screen -->
+    <string name="credit_cards_edit_card">Kartani tahrirlash</string>
+    <!-- The header for the card number of a credit card -->
+    <string name="credit_cards_card_number">Karta raqami</string>
+    <!-- The header for the expiration date of a credit card -->
+    <string name="credit_cards_expiration_date">Muddati</string>
+
+    <!-- The label for the expiration date month of a credit card to be used by a11y services-->
+    <string name="credit_cards_expiration_date_month">Tugash muddati sanasi va oyi</string>
+    <!-- The label for the expiration date year of a credit card to be used by a11y services-->
+    <string name="credit_cards_expiration_date_year">Tugash muddati yili</string>
+    <!-- The header for the name on the credit card -->
+    <string name="credit_cards_name_on_card">Karta egasi nomi</string>
+    <!-- The text for the "Delete card" menu item for deleting a credit card -->
+    <string name="credit_cards_menu_delete_card">Kartani oʻchirish</string>
+    <!-- The text for the "Delete card" button for deleting a credit card -->
+    <string name="credit_cards_delete_card_button">Kartani oʻchirish</string>
+
+    <!-- The text for the positive button on "Delete card" dialog -->
+    <string name="credit_cards_delete_dialog_button">Oʻchirish</string>
+    <!-- The title for the "Save" menu item for saving a credit card -->
+    <string name="credit_cards_menu_save">Saqlash</string>
+    <!-- The text for the "Save" button for saving a credit card -->
+    <string name="credit_cards_save_button">Saqlash</string>
+    <!-- The text for the "Cancel" button for cancelling adding, updating or deleting a credit card -->
+    <string name="credit_cards_cancel_button">Bekor qilish</string>
+    <!-- Title of the "Saved cards" screen -->
+    <string name="credit_cards_saved_cards">Saqlangan kartalar</string>
+    <!-- Error message for credit card number validation -->
+    <string name="credit_cards_number_validation_error_message">Yaroqli kredit karta raqamini kiriting</string>
+    <!-- Error message for credit card name on card validation -->
+    <string name="credit_cards_name_on_card_validation_error_message">Ushbu maydonni toʻldiring</string>
+    <!-- Message displayed in biometric prompt displayed for authentication before allowing users to view their saved credit cards -->
+    <string name="credit_cards_biometric_prompt_message">Saqlangan kartalaringizni koʻrish uchun qulfni oching</string>
+    <!-- Title of warning dialog if users have no device authentication set up -->
+    <string name="credit_cards_warning_dialog_title">Kredit kartalaringizni himoya qiling</string>
+    <!-- Message of warning dialog if users have no device authentication set up -->
+    <string name="credit_cards_warning_dialog_message">Agar qurilmangiz boshqa birovda boʻlsa, saqlangan kredit kartalaringizga kirishdan himoya qilish uchun qurilmani qulflash uchun grafik kalit, PIN kod yoki parolni sozlang.</string>
+    <!-- Positive button to send users to set up a pin of warning dialog if users have no device authentication set up -->
+    <string name="credit_cards_warning_dialog_set_up_now">Hozir sozlash</string>
+    <!-- Negative button to ignore warning dialog if users have no device authentication set up -->
+    <string name="credit_cards_warning_dialog_later">Keyinroq</string>
+    <!-- Title of PIN verification dialog to direct users to re-enter their device credentials to access their credit cards -->
+    <string name="credit_cards_biometric_prompt_message_pin">Qurilmangizning qulfini oching</string>
+    <!-- Message displayed in biometric prompt for authentication, before allowing users to use their stored credit card information -->
+    <string name="credit_cards_biometric_prompt_unlock_message">Saqlangan kredit karta maʼlumotlaridan foydalanish uchun qulfni oching</string>
+    <!-- Title of the "Add address" screen -->
+    <string name="addresses_add_address">Manzil qoʻshish</string>
+    <!-- Title of the "Edit address" screen -->
+    <string name="addresses_edit_address">Manzilni tahrirlash</string>
+    <!-- Title of the "Manage addresses" screen -->
+    <string name="addresses_manage_addresses">Manzillarni boshqarish</string>
+    <!-- The header for the first name of an address -->
+    <string name="addresses_first_name">Ismi</string>
+    <!-- The header for the middle name of an address -->
+    <string name="addresses_middle_name">Otasining ismi</string>
+    <!-- The header for the last name of an address -->
+    <string name="addresses_last_name">Familiyasi</string>
+    <!-- The header for the street address of an address -->
+    <string name="addresses_street_address">Koʻcha manzili</string>
+    <!-- The header for the city of an address -->
+    <string name="addresses_city">Shahar</string>
+    <!-- The header for the subregion of an address when "state" should be used -->
+    <string name="addresses_state">Shtat</string>
+    <!-- The header for the subregion of an address when "province" should be used -->
+    <string name="addresses_province">Viloyat</string>
+    <!-- The header for the zip code of an address -->
+    <string name="addresses_zip">Pochta indeksi</string>
+    <!-- The header for the country or region of an address -->
+    <string name="addresses_country">Mamlakat yoki mintaqa</string>
+    <!-- The header for the phone number of an address -->
+    <string name="addresses_phone">Telefon</string>
+    <!-- The header for the email of an address -->
+    <string name="addresses_email">Email</string>
+    <!-- The text for the "Save" button for saving an address -->
+    <string name="addresses_save_button">Saqlash</string>
+    <!-- The text for the "Cancel" button for cancelling adding, updating or deleting an address -->
+    <string name="addresses_cancel_button">Bekor qilish</string>
+    <!-- The text for the "Delete address" button for deleting an address -->
+    <string name="addressess_delete_address_button">Manzilni oʻchirish</string>
+    <!-- The title for the "Delete address" confirmation dialog -->
+    <string name="addressess_confirm_dialog_message">Haqiqatan ham bu manzilni oʻchirib tashlamoqchimisiz?</string>
+    <!-- The text for the positive button on "Delete address" dialog -->
+    <string name="addressess_confirm_dialog_ok_button">Oʻchirish</string>
+    <!-- The text for the negative button on "Delete address" dialog -->
+    <string name="addressess_confirm_dialog_cancel_button">Bekor qilish</string>
+    <!-- The text for the "Save address" menu item for saving an address -->
+    <string name="address_menu_save_address">Manzilni saqlash</string>
+    <!-- The text for the "Delete address" menu item for deleting an address -->
+    <string name="address_menu_delete_address">Manzilni oʻchirish</string>
+
+    <!-- Title of the Add search engine screen -->
+    <string name="search_engine_add_custom_search_engine_title">Qidiruv tizimini qoʻshish</string>
+    <!-- Title of the Edit search engine screen -->
+    <string name="search_engine_edit_custom_search_engine_title">Qidiruv tizimini tahrirlash</string>
+    <!-- Content description (not visible, for screen readers etc.): Title for the button to add a search engine in the action bar -->
+    <string name="search_engine_add_button_content_description">Qoʻshish</string>
+    <!-- Content description (not visible, for screen readers etc.): Title for the button to save a search engine in the action bar -->
+    <string name="search_engine_add_custom_search_engine_edit_button_content_description">Saqlash</string>
+    <!-- Text for the menu button to edit a search engine -->
+    <string name="search_engine_edit">Tahrirlash</string>
+    <!-- Text for the menu button to delete a search engine -->
+    <string name="search_engine_delete">Oʻchirish</string>
+
+    <!-- Text for the button to create a custom search engine on the Add search engine screen -->
+    <string name="search_add_custom_engine_label_other">Boshqa</string>
+    <!-- Placeholder text shown in the Search Engine Name TextField before a user enters text -->
+    <string name="search_add_custom_engine_name_hint">Nomi</string>
+    <!-- Placeholder text shown in the Search String TextField before a user enters text -->
+    <string name="search_add_custom_engine_search_string_hint">Foydalanish uchun qidiruv qatori</string>
     <!-- Description text for the Search String TextField. The %s is part of the string -->
     <string formatted="false" name="search_add_custom_engine_search_string_example">Soʻrovni “%s” bilan almashtiring. Masalan:\nhttps://www.google.com/search?q=%s</string>
+
+    <!-- Accessibility description for the form in which details about the custom search engine are entered -->
+    <string name="search_add_custom_engine_form_description">Maxsus qidiruv tizimining tafsilotlari</string>
+
+    <!-- Text shown when a user leaves the name field empty -->
+    <string name="search_add_custom_engine_error_empty_name">Qidiruv tizimi nomini kiriting</string>
 
     <!-- Heading for the instructions to allow a permission -->
     <string name="phone_feature_blocked_intro">Ruxsat berish uchun:</string>

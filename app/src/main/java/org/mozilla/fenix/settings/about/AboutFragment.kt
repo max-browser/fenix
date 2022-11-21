@@ -16,6 +16,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import mozilla.components.service.glean.private.NoExtras
 import org.mozilla.fenix.*
+import mozilla.components.support.utils.ext.getPackageInfoCompat
+import org.mozilla.fenix.BrowserDirection
+import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.crashes.CrashListActivity
 import org.mozilla.fenix.databinding.FragmentAboutBinding
@@ -93,7 +96,7 @@ class AboutFragment : Fragment(), AboutPageListener {
     private fun populateAboutHeader() {
         val aboutText = try {
             val packageInfo =
-                requireContext().packageManager.getPackageInfo(requireContext().packageName, 0)
+                requireContext().packageManager.getPackageInfoCompat(requireContext().packageName, 0)
             val versionCode = PackageInfoCompat.getLongVersionCode(packageInfo).toString()
             val maybeFenixGitHash = if (BuildConfig.GIT_HASH.isNotBlank()) ", ${BuildConfig.GIT_HASH}" else ""
             val componentsAbbreviation = getString(R.string.components_abbreviation)

@@ -1212,7 +1212,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         viewLifecycleOwner.lifecycleScope.launch(Main) {
             val sitePermissions: SitePermissions? = tab.content.url.getOrigin()?.let { origin ->
                 val storage = requireComponents.core.permissionStorage
-                storage.findSitePermissionsBy(origin)
+                storage.findSitePermissionsBy(origin, tab.content.private)
             }
 
             view?.let {
@@ -1325,6 +1325,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                 isDisplayedWithBrowserToolbar = false,
             ).setText(getString(R.string.full_screen_notification)).show()
             activity?.enterToImmersiveMode()
+            (view as? SwipeGestureLayout)?.isSwipeEnabled = false
             browserToolbarView.collapse()
             browserToolbarView.view.isVisible = false
             val browserEngine = binding.swipeRefresh.layoutParams as CoordinatorLayout.LayoutParams
@@ -1339,6 +1340,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
             MediaState.fullscreen.record(NoExtras())
         } else {
             activity?.exitImmersiveMode()
+            (view as? SwipeGestureLayout)?.isSwipeEnabled = true
             (activity as? HomeActivity)?.let { activity ->
                 activity.themeManager.applyStatusBarTheme(activity)
             }
