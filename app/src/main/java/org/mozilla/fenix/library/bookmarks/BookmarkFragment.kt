@@ -47,14 +47,7 @@ import org.mozilla.fenix.R
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.StoreProvider
 import org.mozilla.fenix.databinding.FragmentBookmarkBinding
-import org.mozilla.fenix.ext.bookmarkStorage
-import org.mozilla.fenix.ext.components
-import org.mozilla.fenix.ext.getRootView
-import org.mozilla.fenix.ext.minus
-import org.mozilla.fenix.ext.nav
-import org.mozilla.fenix.ext.requireComponents
-import org.mozilla.fenix.ext.setTextColor
-import org.mozilla.fenix.ext.toShortUrl
+import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.library.LibraryPageFragment
 import org.mozilla.fenix.utils.allowUndo
 
@@ -285,7 +278,7 @@ class BookmarkFragment : LibraryPageFragment<BookmarkNode>(), UserInteractionHan
         loadBookmarkNode(currentGuid)
             ?.let { node ->
                 val rootNode = node - pendingBookmarksToDelete
-                bookmarkInteractor.onBookmarksChanged(rootNode)
+                bookmarkInteractor?.onBookmarksChanged(rootNode)
             }
     }
 
