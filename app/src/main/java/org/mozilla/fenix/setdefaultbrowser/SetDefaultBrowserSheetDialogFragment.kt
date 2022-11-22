@@ -84,9 +84,10 @@ class SetDefaultBrowserSheetDialogFragment : FenixDialogFragment() {
     }
 
     private fun initUi() {
-binding.apply {
-    tvTitle.text = getString(R.string.notification_default_browser_text, getString(R.string.app_name))
-}
+        binding.apply {
+            tvTitle.text =
+                getString(R.string.notification_default_browser_text, getString(R.string.app_name))
+        }
 
     }
 

@@ -373,6 +373,14 @@ open class DefaultToolbarMenu(
         }
     }
 
+    private val setDefaultBrowser = BrowserMenuImageText(
+        label = context.getString(R.string.preferences_set_as_default_browser),
+        imageResource = R.drawable.max_ic_set_default_browser_menu,
+        iconTintColorResource = primaryTextColor(),
+    ) {
+        onItemTapped.invoke(ToolbarMenu.Item.SetDefaultBrowser)
+    }
+
     @VisibleForTesting(otherwise = PRIVATE)
     val coreMenuItems by lazy {
         val menuItems =
@@ -396,6 +404,7 @@ open class DefaultToolbarMenu(
                 installToHomescreen.apply { visible = ::canInstall },
                 addRemoveTopSitesItem,
                 saveToCollectionItem,
+                if(context.settings().isDefaultBrowserBlocking()) null else setDefaultBrowser,
                 BrowserMenuDivider(),
                 settingsItem,
                 if (shouldDeleteDataOnQuit) deleteDataOnQuit else null,

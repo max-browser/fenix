@@ -25,6 +25,7 @@ import org.mozilla.fenix.R
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.accounts.AccountState
 import org.mozilla.fenix.ext.nav
+import org.mozilla.fenix.ext.openSetDefaultBrowserOption
 import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.settings.SupportUtils
 import org.mozilla.fenix.settings.deletebrowsingdata.deleteAndQuit
@@ -207,6 +208,9 @@ class HomeMenuBuilder(
             }
             is HomeMenu.Item.DesktopMode -> {
                 context.settings().openNextTabInDesktopMode = item.checked
+            }
+            HomeMenu.Item.SetDefaultBrowser -> {
+                homeActivity.openSetDefaultBrowserOption()
             }
         }
     }

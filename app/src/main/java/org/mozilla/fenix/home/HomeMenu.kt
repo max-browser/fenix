@@ -5,7 +5,6 @@
 package org.mozilla.fenix.home
 
 import android.content.Context
-import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -16,11 +15,7 @@ import mozilla.components.browser.menu.BrowserMenuBuilder
 import mozilla.components.browser.menu.BrowserMenuHighlight
 import mozilla.components.browser.menu.BrowserMenuItem
 import mozilla.components.browser.menu.ext.getHighlight
-import mozilla.components.browser.menu.item.BrowserMenuDivider
-import mozilla.components.browser.menu.item.BrowserMenuHighlightableItem
-import mozilla.components.browser.menu.item.BrowserMenuImageSwitch
-import mozilla.components.browser.menu.item.BrowserMenuImageText
-import mozilla.components.browser.menu.item.SimpleBrowserMenuItem
+import mozilla.components.browser.menu.item.*
 import mozilla.components.concept.sync.AccountObserver
 import mozilla.components.concept.sync.AuthType
 import mozilla.components.concept.sync.OAuthAccount
@@ -33,7 +28,6 @@ import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.theme.ThemeManager
-import org.mozilla.fenix.whatsnew.WhatsNew
 
 @Suppress("LargeClass", "LongMethod")
 class HomeMenu(
@@ -61,6 +55,8 @@ class HomeMenu(
         object Quit : Item()
         object ReconnectSync : Item()
         data class DesktopMode(val checked: Boolean) : Item()
+        object SetDefaultBrowser : Item()
+
     }
 
     private val primaryTextColor = ThemeManager.resolveAttribute(R.attr.textPrimary, context)
@@ -233,6 +229,15 @@ class HomeMenu(
                 null
             }
 
+        val setDefaultBrowserItem = BrowserMenuImageText(
+            context.getString(R.string.preferences_set_as_default_browser),
+            R.drawable.max_ic_set_default_browser_menu,
+            primaryTextColor,
+        ) {
+            onItemTapped.invoke(Item.SetDefaultBrowser)
+            ReportManager.getInstance().report("home_menu_set_default_browser")
+        }
+
         val menuItems = listOfNotNull(
             bookmarksItem,
             historyItem,
@@ -247,6 +252,7 @@ class HomeMenu(
 //            whatsNewItem,
 //            helpItem,
             customizeHomeItem,
+            if (settings.isDefaultBrowserBlocking()) null else setDefaultBrowserItem,
             settingsItem,
             if (settings.shouldDeleteBrowsingDataOnQuit) quitItem else null,
         ).also { items ->
