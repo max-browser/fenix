@@ -153,7 +153,9 @@
     <action
         android:id="@+id/action_global_tabSettingsFragment"
         app:destination="@id/tabsSettingsFragment" />
-
+    <action
+        android:id="@+id/action_global_setDefaultBrowserSheetDialogFragment"
+        app:destination="@id/setDefaultBrowserSheetDialogFragment" />
     <dialog
         android:id="@+id/tabsTrayFragment"
         android:name="org.mozilla.fenix.tabstray.TabsTrayFragment">
@@ -1060,6 +1062,12 @@
             android:name="activeSessionId"
             app:argType="string"
             app:nullable="true" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/setDefaultBrowserSheetDialogFragment"
+        android:name="org.mozilla.fenix.setdefaultbrowser.SetDefaultBrowserSheetDialogFragment"
+        tools:layout="@layout/fragment_set_default_browser_dialog_sheet">
     </dialog>
 
     <navigation

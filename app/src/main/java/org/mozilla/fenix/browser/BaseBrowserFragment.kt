@@ -109,6 +109,7 @@ import org.mozilla.fenix.home.HomeScreenViewModel
 import org.mozilla.fenix.home.SharedViewModel
 import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.perf.MarkersFragmentLifecycleCallbacks
+import org.mozilla.fenix.setdefaultbrowser.checkToShowSetDefaultBrowserSheetDialogFragment
 import org.mozilla.fenix.settings.SupportUtils
 import org.mozilla.fenix.settings.biometric.BiometricPromptFeature
 import org.mozilla.fenix.theme.ThemeManager
@@ -214,6 +215,8 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                 BrowserFragmentState(),
             )
         }
+
+        checkToShowSetDefaultBrowserSheetDialogFragment()
 
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(

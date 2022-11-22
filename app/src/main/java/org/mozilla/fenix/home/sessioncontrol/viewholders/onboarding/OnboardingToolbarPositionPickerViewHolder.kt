@@ -13,6 +13,7 @@ import org.mozilla.fenix.databinding.OnboardingToolbarPositionPickerBinding
 import org.mozilla.fenix.ext.asActivity
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.onboarding.OnboardingRadioButton
+import org.mozilla.fenix.setdefaultbrowser.setAfterUpdatingTheme
 import org.mozilla.fenix.utils.view.addToRadioGroup
 
 class OnboardingToolbarPositionPickerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -43,6 +44,7 @@ class OnboardingToolbarPositionPickerViewHolder(view: View) : RecyclerView.ViewH
             )
 
             itemView.context.asActivity()?.recreate()
+            onChangeToolbarPosition()
         }
 
         binding.toolbarBottomImage.setOnClickListener {
@@ -53,6 +55,7 @@ class OnboardingToolbarPositionPickerViewHolder(view: View) : RecyclerView.ViewH
             )
 
             radioBottomToolbar.performClick()
+            onChangeToolbarPosition()
         }
 
         radioTopToolbar.onClickListener {
@@ -62,6 +65,7 @@ class OnboardingToolbarPositionPickerViewHolder(view: View) : RecyclerView.ViewH
                 ),
             )
             itemView.context.asActivity()?.recreate()
+            onChangeToolbarPosition()
         }
 
         binding.toolbarTopImage.setOnClickListener {
@@ -72,6 +76,10 @@ class OnboardingToolbarPositionPickerViewHolder(view: View) : RecyclerView.ViewH
             )
             radioTopToolbar.performClick()
         }
+    }
+
+    fun onChangeToolbarPosition() {
+        itemView.context.setAfterUpdatingTheme()
     }
 
     companion object {
