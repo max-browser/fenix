@@ -271,6 +271,30 @@
             android:exported="false"
             android:theme="@style/DialogActivityTheme" />
 
+        <activity
+            android:name="com.max.browser.core.pdf.PdfReaderActivity"
+            android:exported="true"
+            android:label="Max Pdf Reader"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:pathPattern=".*\\.pdf" />
+            </intent-filter>
+
+        </activity>
+
         <service
             android:name=".autofill.AutofillService"
             android:exported="true"
