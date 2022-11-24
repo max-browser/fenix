@@ -1965,4 +1965,7 @@
     <string name="cancel">取消</string>
     <string name="set_default_browser_dialog_sheet_desc">在下一个屏幕上选择Max Browser</string>
 
+    <string name="allow_to_access_media_file">允許存取 media 文件夾</string>
+    <string name="access">存取</string>
+
 </resources>

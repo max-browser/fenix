@@ -221,6 +221,9 @@ internal object AppStoreReducer {
             state.copy(wallpaperState = wallpaperState)
         }
         is AppAction.ResumedMetricsAction -> state
+        is AppAction.MyDocumentsChange -> state.copy(
+            myDocumentsItems = action.myDocumentsItems,
+        )
     }
 }
 

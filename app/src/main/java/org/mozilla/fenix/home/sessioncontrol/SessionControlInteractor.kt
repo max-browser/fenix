@@ -11,6 +11,9 @@ import mozilla.components.service.pocket.PocketStory
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.components.appstate.AppState
 import org.mozilla.fenix.gleanplumb.Message
+import org.mozilla.fenix.home.mydocuments.MyDocumentsItem
+import org.mozilla.fenix.home.mydocuments.controller.MyDocumentsController
+import org.mozilla.fenix.home.mydocuments.interactor.MyDocumentsInteractor
 import org.mozilla.fenix.home.pocket.PocketRecommendedStoriesCategory
 import org.mozilla.fenix.home.pocket.PocketStoriesController
 import org.mozilla.fenix.home.pocket.PocketStoriesInteractor
@@ -261,7 +264,9 @@ class SessionControlInteractor(
     private val recentBookmarksController: RecentBookmarksController,
     private val recentVisitsController: RecentVisitsController,
     private val pocketStoriesController: PocketStoriesController,
-) : CollectionInteractor,
+    private val myDocumentsController: MyDocumentsController,
+
+    ) : CollectionInteractor,
     OnboardingInteractor,
     TopSiteInteractor,
     TabSessionInteractor,
@@ -273,7 +278,9 @@ class SessionControlInteractor(
     RecentVisitsInteractor,
     CustomizeHomeIteractor,
     PocketStoriesInteractor,
-    SearchSelectorInteractor {
+    SearchSelectorInteractor,
+    MyDocumentsInteractor
+{
 
     override fun onCollectionAddTabTapped(collection: TabCollection) {
         controller.handleCollectionAddTabTapped(collection)
@@ -491,5 +498,17 @@ class SessionControlInteractor(
 
     override fun onMenuItemTapped(item: SearchSelectorMenu.Item) {
         controller.handleMenuItemTapped(item)
+    }
+
+    override fun onMyDocumentsShowAllClicked() {
+        myDocumentsController .handleMyDocumentsShowAllClicked()
+    }
+
+    override fun onMyDocumentsItemClicked(myDocumentsItem: MyDocumentsItem) {
+        myDocumentsController.handleMyDocumentsItemClicked(myDocumentsItem)
+    }
+
+    override fun onMyDocumentsGetPermissionClicked() {
+        myDocumentsController.handleMyDocumentsGetPermissionClicked()
     }
 }

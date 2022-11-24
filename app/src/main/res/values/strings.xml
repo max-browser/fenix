@@ -1863,4 +1863,9 @@
     <string name="cancel">Cancel</string>
     <string name="set_default_browser_dialog_sheet_desc">Choose Max Browser on next screen</string>
 
+    <string name="allow_to_access_media_file">Allow to access Media File</string>
+    <string name="access">Access</string>
+
+
+
 </resources>

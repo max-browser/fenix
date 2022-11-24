@@ -5,13 +5,19 @@
 package org.mozilla.fenix.home
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.StrictMode
+import android.os.storage.StorageManager
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -21,6 +27,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.annotation.VisibleForTesting
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -37,13 +44,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
+import com.max.browser.core.domain.repository.QueryDocRepository
+import com.max.browser.core.pdf.PdfReaderActivity
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.MainScope
@@ -77,12 +85,12 @@ import mozilla.components.service.glean.private.NoExtras
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.ktx.android.content.res.resolveAttribute
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifChanged
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.HomeScreen
 import org.mozilla.fenix.GleanMetrics.UnifiedSearch
 import org.mozilla.fenix.HomeActivity
-import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
 import org.mozilla.fenix.addons.showSnackBar
 import org.mozilla.fenix.browser.BrowserAnimator.Companion.getToolbarNavOptions
@@ -97,6 +105,8 @@ import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.gleanplumb.DefaultMessageController
 import org.mozilla.fenix.gleanplumb.MessagingFeature
 import org.mozilla.fenix.home.mozonline.showPrivacyPopWindow
+import org.mozilla.fenix.home.mydocuments.MyDocumentsFeature
+import org.mozilla.fenix.home.mydocuments.controller.DefaultMyDocumentsController
 import org.mozilla.fenix.home.pocket.DefaultPocketStoriesController
 import org.mozilla.fenix.home.pocket.PocketRecommendedStoriesCategory
 import org.mozilla.fenix.home.recentbookmarks.RecentBookmarksFeature
@@ -123,11 +133,13 @@ import org.mozilla.fenix.utils.Settings.Companion.TOP_SITES_PROVIDER_MAX_THRESHO
 import org.mozilla.fenix.utils.ToolbarPopupWindow
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wallpapers.Wallpaper
+import java.io.File
 import java.lang.ref.WeakReference
 import kotlin.math.min
 
 @Suppress("TooManyFunctions", "LargeClass")
 class HomeFragment : Fragment() {
+
     private val args by navArgs<HomeFragmentArgs>()
 
     @VisibleForTesting
@@ -190,6 +202,7 @@ class HomeFragment : Fragment() {
     private val recentSyncedTabFeature = ViewBoundFeatureWrapper<RecentSyncedTabFeature>()
     private val recentBookmarksFeature = ViewBoundFeatureWrapper<RecentBookmarksFeature>()
     private val historyMetadataFeature = ViewBoundFeatureWrapper<RecentVisitsFeature>()
+    private val myDocumentsFeature = ViewBoundFeatureWrapper<MyDocumentsFeature>()
 
     @VisibleForTesting
     internal var getMenuButton: () -> MenuButton? = { binding.menuButton }
@@ -347,6 +360,17 @@ class HomeFragment : Fragment() {
             binding.searchEngineIcon.isGone = it
         }
 
+        myDocumentsFeature.set(
+            feature = MyDocumentsFeature(
+                context = requireContext(),
+                appStore = components.appStore,
+                scope = viewLifecycleOwner.lifecycleScope,
+                queryDocRepository = QueryDocRepository(requireContext())
+            ),
+            owner = viewLifecycleOwner,
+            view = binding.root,
+        )
+
         binding.searchSelector.apply {
             setOnClickListener {
                 val orientation = if (context.settings().shouldUseBottomToolbar) {
@@ -418,6 +442,18 @@ class HomeFragment : Fragment() {
                 appStore = components.appStore,
                 navController = findNavController(),
             ),
+            myDocumentsController = DefaultMyDocumentsController(
+                navController = findNavController(),
+                appStore = components.appStore,
+                scope = viewLifecycleOwner.lifecycleScope,
+                store = components.core.store,
+                 onGetMyDocumentsPermission = {
+                    requestMediaDirectoryAccessPermission()
+                },
+                onOpenPdf = {
+                    openPdf(it)
+                }
+            ),
         )
 
         updateLayout(binding.root)
@@ -444,6 +480,16 @@ class HomeFragment : Fragment() {
             "HomeFragment.onCreateView",
         )
         return binding.root
+    }
+
+    private fun openPdf(uri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            component = ComponentName(requireContext(), PdfReaderActivity::class.java)
+            addCategory(Intent.CATEGORY_LAUNCHER)
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            setDataAndType(uri, requireContext().contentResolver.getType(uri))
+        }
+        startActivity(intent)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -861,6 +907,8 @@ class HomeFragment : Fragment() {
         // triggered to cause an automatic update on warm start (no tab selection occurs). So we
         // update it manually here.
         requireComponents.useCases.sessionUseCases.updateLastAccess()
+
+        myDocumentsFeature.get()?.start()
     }
 
     override fun onPause() {
@@ -1061,6 +1109,61 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun requestMediaDirectoryAccessPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val path = Environment.getExternalStorageDirectory().toString() + "/Android/media"
+            val file = File(path)
+            var startDir: String = ""
+            val finalDirPath: String
+            if (file.exists()) {
+                startDir = "Android%2Fmedia"
+            }
+            val sm: StorageManager = requireContext().getSystemService(Context.STORAGE_SERVICE) as StorageManager
+            val intent: Intent = sm.primaryStorageVolume.createOpenDocumentTreeIntent()
+            var uri: Uri? = intent.getParcelableExtra("android.provider.extra.INITIAL_URI")
+            var scheme: String = uri.toString()
+            scheme = scheme.replace("/root/", "/document/")
+            finalDirPath = "$scheme%3A$startDir"
+            uri = Uri.parse(finalDirPath)
+            intent.putExtra("android.provider.extra.INITIAL_URI", uri)
+            try {
+                startActivityForResult(
+                    intent, REQUEST_CODE_REQUEST_MEDIA_DIRECTORY_ACCESS_PERMISSION
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "requestMediaDirectoryAccessPermission error: $e")
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_REQUEST_MEDIA_DIRECTORY_ACCESS_PERMISSION) {
+            if (resultCode == AppCompatActivity.RESULT_OK) {
+                data?.let { data ->
+                    onGetMediaDirectoryAccessPermissionResult(data)
+                }
+            }
+        }
+    }
+
+    @SuppressLint("WrongConstant")
+    private fun onGetMediaDirectoryAccessPermissionResult(data: Intent) {
+        data.data?.let { directoryUri->
+            val takeFlags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            requireContext().contentResolver.takePersistableUriPermission(directoryUri, takeFlags)
+            Log.e(TAG, "onGetMediaDirectoryAccessPermissionResult: $directoryUri")
+            onGetMediaDirectoryAccessPermission(directoryUri)
+        }
+    }
+
+    private fun onGetMediaDirectoryAccessPermission(directoryUri: Uri) {
+        myDocumentsFeature.get()?.let {
+            it.saveMediaDirectoryUri(directoryUri)
+            it.start()
+        }
+    }
+
     companion object {
         const val ALL_NORMAL_TABS = "all_normal"
         const val ALL_PRIVATE_TABS = "all_private"
@@ -1080,5 +1183,8 @@ class HomeFragment : Fragment() {
 
         // Elevation for undo toasts
         internal const val TOAST_ELEVATION = 80f
+
+        private const val TAG = "HomeFragment"
+        const val REQUEST_CODE_REQUEST_MEDIA_DIRECTORY_ACCESS_PERMISSION = 56492
     }
 }

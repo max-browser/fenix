@@ -15,6 +15,8 @@ import mozilla.components.service.pocket.PocketStory.PocketSponsoredStory
 import org.mozilla.fenix.gleanplumb.MessagingState
 import org.mozilla.fenix.home.HomeFragment
 import org.mozilla.fenix.home.Mode
+import org.mozilla.fenix.home.mydocuments.MyDocumentsItem
+import org.mozilla.fenix.home.mydocuments.MyDocumentsItems
 import org.mozilla.fenix.home.pocket.PocketRecommendedStoriesCategory
 import org.mozilla.fenix.home.pocket.PocketRecommendedStoriesSelectedCategory
 import org.mozilla.fenix.home.recentbookmarks.RecentBookmark
@@ -70,4 +72,6 @@ data class AppState(
     val messaging: MessagingState = MessagingState(),
     val pendingDeletionHistoryItems: Set<PendingDeletionHistory> = emptySet(),
     val wallpaperState: WallpaperState = WallpaperState.default,
-) : State
+    val myDocumentsItems: MyDocumentsItems = MyDocumentsItems()
+
+    ) : State

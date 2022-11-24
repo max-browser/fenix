@@ -10,6 +10,7 @@ import android.text.Editable
 import android.util.Patterns
 import android.webkit.URLUtil
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.core.net.toUri
 import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.components.support.ktx.android.net.hostWithoutCommonPrefixes
@@ -144,3 +145,6 @@ fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(t
  */
 fun String?.replaceConsecutiveZeros(): String? =
     this?.replaceFirst(":0", ":")?.replace(":0", "")
+
+
+fun String.toComposeColor() = Color(android.graphics.Color.parseColor(this))

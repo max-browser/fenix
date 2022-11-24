@@ -14,6 +14,8 @@ import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.gleanplumb.Message
 import org.mozilla.fenix.gleanplumb.MessagingState
 import org.mozilla.fenix.home.Mode
+import org.mozilla.fenix.home.mydocuments.MyDocumentsItem
+import org.mozilla.fenix.home.mydocuments.MyDocumentsItems
 import org.mozilla.fenix.home.pocket.PocketRecommendedStoriesCategory
 import org.mozilla.fenix.home.pocket.PocketRecommendedStoriesSelectedCategory
 import org.mozilla.fenix.home.recentbookmarks.RecentBookmark
@@ -196,4 +198,7 @@ sealed class AppAction : Action {
      * Indicates that the app has been resumed and metrics that relate to that should be sent.
      */
     object ResumedMetricsAction : AppAction()
+
+    data class MyDocumentsChange(val myDocumentsItems: MyDocumentsItems) : AppAction()
+
 }

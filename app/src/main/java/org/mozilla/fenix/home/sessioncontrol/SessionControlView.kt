@@ -73,6 +73,9 @@ internal fun normalModeAdapterItems(
         items.add(AdapterItem.RecentBookmarks)
     }
 
+    items.add(AdapterItem.MyDocumentsHeader)
+    items.add(AdapterItem.MyDocumentsItems)
+
     if (settings.historyMetadataUIFeature && recentVisits.isNotEmpty()) {
         shouldShowCustomizeHome = true
         items.add(AdapterItem.RecentVisitsHeader)

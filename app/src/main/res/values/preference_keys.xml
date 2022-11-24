@@ -322,4 +322,7 @@
     <string name="pref_key_has_checked_setting_default_browser" translatable="false">pref_key_has_checked_setting_default_browser</string>
     <string name="pref_key_first_time_to_set_default_browser" translatable="false">pref_key_first_time_to_set_default_browser</string>
 
+    <!-- My Documents-->
+    <string name="pref_key_directory_access_permission_uri" translatable="false">pref_key_directory_access_permission_uri</string>
+
 </resources>
