@@ -82,10 +82,10 @@ import mozilla.components.feature.top.sites.TopSitesProviderConfig
 import mozilla.components.lib.state.ext.consumeFlow
 import mozilla.components.lib.state.ext.consumeFrom
 import mozilla.components.service.glean.private.NoExtras
+import mozilla.components.support.base.feature.PermissionsFeature
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.ktx.android.content.res.resolveAttribute
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifChanged
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.HomeScreen
@@ -365,7 +365,7 @@ class HomeFragment : Fragment() {
                 context = requireContext(),
                 appStore = components.appStore,
                 scope = viewLifecycleOwner.lifecycleScope,
-                queryDocRepository = QueryDocRepository(requireContext())
+                queryDocRepository = QueryDocRepository(requireContext()),
             ),
             owner = viewLifecycleOwner,
             view = binding.root,
@@ -448,7 +448,14 @@ class HomeFragment : Fragment() {
                 scope = viewLifecycleOwner.lifecycleScope,
                 store = components.core.store,
                  onGetMyDocumentsPermission = {
-                    requestMediaDirectoryAccessPermission()
+                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                         requestMediaDirectoryAccessPermission()
+
+                     } else {
+                         requestPermissions(MyDocumentsFeature.PERMISSIONS_BEFORE_API_28,
+                             REQUEST_CODE_MY_DOCUMENTS_PERMISSIONS)
+                     }
+
                 },
                 onOpenPdf = {
                     openPdf(it)
@@ -1128,7 +1135,7 @@ class HomeFragment : Fragment() {
             intent.putExtra("android.provider.extra.INITIAL_URI", uri)
             try {
                 startActivityForResult(
-                    intent, REQUEST_CODE_REQUEST_MEDIA_DIRECTORY_ACCESS_PERMISSION
+                    intent, REQUEST_CODE_MEDIA_DIRECTORY_ACCESS_PERMISSIONS
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "requestMediaDirectoryAccessPermission error: $e")
@@ -1138,7 +1145,7 @@ class HomeFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_REQUEST_MEDIA_DIRECTORY_ACCESS_PERMISSION) {
+        if (requestCode == REQUEST_CODE_MEDIA_DIRECTORY_ACCESS_PERMISSIONS) {
             if (resultCode == AppCompatActivity.RESULT_OK) {
                 data?.let { data ->
                     onGetMediaDirectoryAccessPermissionResult(data)
@@ -1164,6 +1171,18 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
+        val feature: PermissionsFeature? = when (requestCode) {
+            REQUEST_CODE_MY_DOCUMENTS_PERMISSIONS -> myDocumentsFeature.get()
+            else -> null
+        }
+        feature?.onPermissionsResult(permissions, grantResults)
+    }
+
     companion object {
         const val ALL_NORMAL_TABS = "all_normal"
         const val ALL_PRIVATE_TABS = "all_private"
@@ -1185,6 +1204,8 @@ class HomeFragment : Fragment() {
         internal const val TOAST_ELEVATION = 80f
 
         private const val TAG = "HomeFragment"
-        const val REQUEST_CODE_REQUEST_MEDIA_DIRECTORY_ACCESS_PERMISSION = 56492
+        const val REQUEST_CODE_MEDIA_DIRECTORY_ACCESS_PERMISSIONS = 3543
+        const val REQUEST_CODE_MY_DOCUMENTS_PERMISSIONS = 9235
+
     }
 }

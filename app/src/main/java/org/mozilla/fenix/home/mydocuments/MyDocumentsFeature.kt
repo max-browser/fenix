@@ -4,26 +4,24 @@
 
 package org.mozilla.fenix.home.mydocuments
 
+import android.Manifest
 import android.content.Context
 import android.net.Uri
-import androidx.annotation.VisibleForTesting
+import android.os.Build
+import android.os.Environment
+import android.util.Log
 import com.max.browser.core.domain.repository.QueryDocRepository
 import kotlinx.coroutines.*
 import mozilla.components.support.base.feature.LifecycleAwareFeature
+import mozilla.components.support.base.feature.OnNeedToRequestPermissions
+import mozilla.components.support.base.feature.PermissionsFeature
+import mozilla.components.support.ktx.android.content.isPermissionGranted
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.ext.getPreferenceKey
 import org.mozilla.fenix.ext.settings
 
-@VisibleForTesting
-internal const val MAX_RESULTS_TOTAL = 9
-
-@VisibleForTesting
-internal const val MIN_VIEW_TIME_OF_HIGHLIGHT = 10.0
-
-@VisibleForTesting
-internal const val MIN_FREQUENCY_OF_HIGHLIGHT = 4.0
 
 class MyDocumentsFeature(
     private val context: Context,
@@ -31,21 +29,40 @@ class MyDocumentsFeature(
     private val scope: CoroutineScope,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val queryDocRepository: QueryDocRepository,
-) : LifecycleAwareFeature {
+) : LifecycleAwareFeature, PermissionsFeature {
+
+    override val onNeedToRequestPermissions: OnNeedToRequestPermissions = { }
+
+    companion object {
+        val PERMISSIONS_BEFORE_API_28 = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
 
     private var job: Job? = null
 
     override fun start() {
         job = scope.launch(ioDispatcher) {
-            val key = context.getPreferenceKey(R.string.pref_key_directory_access_permission_uri)
-            val uri = context.settings().preferences.getString(key, "")
-            val hasPermission = uri != ""
+            val uriString = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val key =
+                    context.getPreferenceKey(R.string.pref_key_directory_access_permission_uri)
+                context.settings().preferences.getString(key, "")
+
+            } else {
+                Uri.fromFile(Environment.getRootDirectory()).toString()
+            }
+
+            val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                uriString != ""
+            } else {
+                context.isPermissionGranted(PERMISSIONS_BEFORE_API_28.asIterable())
+            }
+
             val items = ArrayList<MyDocumentsItem>()
+
             if (hasPermission) {
                 items.addAll(
                     queryDocRepository.queryDocumentFromDocumentTree(
                         context,
-                        Uri.parse(uri),
+                        Uri.parse(uriString),
                         "application/pdf",
                     ).map {
                         MyDocumentsItem(
@@ -60,6 +77,7 @@ class MyDocumentsFeature(
                     },
                 )
             }
+
             updateState(hasPermission, items)
         }
     }
@@ -80,5 +98,9 @@ class MyDocumentsFeature(
     fun saveMediaDirectoryUri(directoryUri: Uri) {
         val key = context.getPreferenceKey(R.string.pref_key_directory_access_permission_uri)
         context.settings().preferences.edit().putString(key, directoryUri.toString()).apply()
+    }
+
+    override fun onPermissionsResult(permissions: Array<String>, grantResults: IntArray) {
+        start()
     }
 }
