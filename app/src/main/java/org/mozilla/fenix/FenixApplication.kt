@@ -19,8 +19,7 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.work.Configuration.Builder
 import androidx.work.Configuration.Provider
-import com.max.browser.core.MaxBrowserApplicationDelegate
-import com.max.browser.core.ReportManager
+import com.max.browser.core.*
 import kotlinx.coroutines.*
 import mozilla.appservices.Megazord
 import mozilla.components.browser.state.action.SystemAction
@@ -55,6 +54,8 @@ import mozilla.components.support.rusthttp.RustHttpConfig
 import mozilla.components.support.rustlog.RustLog
 import mozilla.components.support.utils.logElapsedTime
 import mozilla.components.support.webextensions.WebExtensionSupport
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import org.mozilla.experiments.nimbus.NimbusInterface
 import org.mozilla.experiments.nimbus.internal.EnrolledExperiment
 import org.mozilla.fenix.GleanMetrics.*
@@ -64,6 +65,7 @@ import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.components.metrics.MetricServiceType
 import org.mozilla.fenix.components.metrics.MozillaProductDetector
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
+import org.mozilla.fenix.di.fenixViewModelModule
 import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.perf.*
@@ -101,7 +103,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
     private val  maxBrowserApplication = MaxBrowserApplicationDelegate()
 
     override fun onCreate() {
-        maxBrowserApplication.onCreate(this)
+        maxBrowserApplication.onCreate(this, fenixViewModelModule)
 
         // We measure ourselves to avoid a call into Glean before its loaded.
         val start = SystemClock.elapsedRealtimeNanos()
@@ -878,5 +880,6 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
             components.useCases.wallpaperUseCases.initialize()
         }
     }
+
 
 }

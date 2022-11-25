@@ -4,7 +4,11 @@
 
 package org.mozilla.fenix.ext
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import com.max.browser.core.pdf.PdfReaderActivity
 
 /**
  * Returns true if the url contains any query parameters specified by the [searchParameters].
@@ -30,5 +34,18 @@ fun Uri.containsQueryParameters(searchParameters: String): Boolean {
                 this.getQueryParameter(params.first()) == params.last()
         }
         else -> false
+    }
+}
+
+fun Uri.createOpenPdfIntent(context: Context): Intent {
+    val contentResolver = context.contentResolver
+    return Intent(Intent.ACTION_VIEW).apply {
+        component = ComponentName(context, PdfReaderActivity::class.java)
+        addCategory(Intent.CATEGORY_LAUNCHER)
+        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        setDataAndType(
+            this@createOpenPdfIntent,
+            contentResolver.getType(this@createOpenPdfIntent),
+        )
     }
 }

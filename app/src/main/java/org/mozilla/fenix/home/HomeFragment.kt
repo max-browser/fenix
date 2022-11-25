@@ -5,7 +5,6 @@
 package org.mozilla.fenix.home
 
 import android.annotation.SuppressLint
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -51,7 +50,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.domain.repository.QueryDocRepository
-import com.max.browser.core.pdf.PdfReaderActivity
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.MainScope
@@ -365,7 +363,7 @@ class HomeFragment : Fragment() {
                 context = requireContext(),
                 appStore = components.appStore,
                 scope = viewLifecycleOwner.lifecycleScope,
-                queryDocRepository = QueryDocRepository(requireContext()),
+                queryDocRepository = QueryDocRepository(),
             ),
             owner = viewLifecycleOwner,
             view = binding.root,
@@ -490,13 +488,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun openPdf(uri: Uri) {
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            component = ComponentName(requireContext(), PdfReaderActivity::class.java)
-            addCategory(Intent.CATEGORY_LAUNCHER)
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            setDataAndType(uri, requireContext().contentResolver.getType(uri))
-        }
-        startActivity(intent)
+        startActivity(uri.createOpenPdfIntent(requireContext()))
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

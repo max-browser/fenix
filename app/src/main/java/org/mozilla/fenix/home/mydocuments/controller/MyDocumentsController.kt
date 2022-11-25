@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import mozilla.components.browser.state.store.BrowserStore
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.AppStore
+import org.mozilla.fenix.home.HomeFragmentDirections
 import org.mozilla.fenix.home.mydocuments.MyDocumentsItem
 
 interface MyDocumentsController {
@@ -27,9 +28,9 @@ class DefaultMyDocumentsController(
 
     override fun handleMyDocumentsShowAllClicked() {
         dismissSearchDialogIfDisplayed()
-//        navController.navigate(
-//            HomeFragmentDirections.actionGlobalHistoryFragment(),
-//        )
+        navController.navigate(
+            HomeFragmentDirections.actionGlobalMyDocumentsFragment()
+        )
     }
 
     override fun handleMyDocumentsItemClicked(myDocumentsItem: MyDocumentsItem) {

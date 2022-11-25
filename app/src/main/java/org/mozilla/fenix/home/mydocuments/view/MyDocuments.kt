@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.max.browser.core.ext.getFileSizeString
+import com.max.browser.core.ext.toFileSizeString
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.Divider
 import org.mozilla.fenix.compose.EagerFlingBehavior
@@ -156,7 +156,7 @@ private fun MyDocumentsItem(
                     modifier = Modifier.weight(0.05f),
                 )
                 MyDocumentsItemSubText(
-                    text = "${myDocumentsItem.size.getFileSizeString()}",
+                    text = "${myDocumentsItem.size.toFileSizeString()}",
                     modifier = Modifier.weight(0.5f),
                 )
             }

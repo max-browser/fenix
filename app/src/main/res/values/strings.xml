@@ -1865,6 +1865,8 @@
 
     <string name="allow_to_access_media_file">Allow to access Media File</string>
     <string name="access">Access</string>
+    <string name="my_documents">My Documents</string>
+    <string name="no_document">No Document</string>
 
 
 

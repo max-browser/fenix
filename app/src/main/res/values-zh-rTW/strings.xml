@@ -1966,5 +1966,7 @@
 
     <string name="allow_to_access_media_file">允許存取 media 資料夾</string>
     <string name="access">存取</string>
+    <string name="my_documents">我的文件</string>
+    <string name="no_document">沒有文件</string>
 
 </resources>
