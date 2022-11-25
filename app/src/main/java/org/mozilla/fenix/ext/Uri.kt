@@ -27,11 +27,11 @@ fun Uri.containsQueryParameters(searchParameters: String): Boolean {
     return when (params.size) {
         1 -> {
             this.queryParameterNames.contains(params.first()) &&
-                this.getQueryParameter(params.first()).isNullOrBlank()
+                    this.getQueryParameter(params.first()).isNullOrBlank()
         }
         2 -> {
             this.queryParameterNames.contains(params.first()) &&
-                this.getQueryParameter(params.first()) == params.last()
+                    this.getQueryParameter(params.first()) == params.last()
         }
         else -> false
     }
@@ -45,7 +45,8 @@ fun Uri.createOpenPdfIntent(context: Context): Intent {
         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         setDataAndType(
             this@createOpenPdfIntent,
-            contentResolver.getType(this@createOpenPdfIntent),
+//            contentResolver.getType(this@createOpenPdfIntent),
+            "pdf",
         )
     }
 }

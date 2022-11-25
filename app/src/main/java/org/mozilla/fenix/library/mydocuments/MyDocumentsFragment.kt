@@ -1,7 +1,12 @@
 package org.mozilla.fenix.library.mydocuments
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +25,9 @@ import org.mozilla.fenix.ext.createOpenPdfIntent
 import org.mozilla.fenix.home.mydocuments.MyDocumentsItem
 
 class MyDocumentsFragment : Fragment() {
+    companion object {
+        const val REQUEST_CODE_PICK_PDF_FILE = 4895
+    }
 
     private var _binding: FragmentMyDocumentsBinding? = null
     private val binding get() = _binding!!
@@ -64,6 +72,9 @@ class MyDocumentsFragment : Fragment() {
             srlRefresh.setOnRefreshListener {
                 myDocumentsViewModel.queryDocuments(requireContext())
                 srlRefresh.isRefreshing = false
+            }
+            tvChooseOthers.setOnClickListener {
+                openPdfChooser()
             }
         }
     }
@@ -134,5 +145,28 @@ class MyDocumentsFragment : Fragment() {
 
     private fun openPdf(uri: Uri) {
         startActivity(uri.createOpenPdfIntent(requireContext()))
+    }
+
+    private fun openPdfChooser() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/pdf"
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(Environment.getRootDirectory()))
+            }
+        }
+
+        startActivityForResult(intent, REQUEST_CODE_PICK_PDF_FILE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_PICK_PDF_FILE && resultCode ==Activity.RESULT_OK ){
+            data?.data?.let { uri->
+                openPdf(uri)
+            }
+        }
+
     }
 }

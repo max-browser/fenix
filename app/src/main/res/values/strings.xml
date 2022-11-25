@@ -1867,6 +1867,8 @@
     <string name="access">Access</string>
     <string name="my_documents">My Documents</string>
     <string name="no_document">No Document</string>
+    <string name="choose_other_documents">Choose Other Documents</string>
+    <string name="please_choose_pdf">Please choose the pdf</string>
 
 
 

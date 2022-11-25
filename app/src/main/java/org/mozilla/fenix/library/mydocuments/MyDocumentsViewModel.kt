@@ -4,7 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import com.max.browser.core.base.BaseViewModel
+import com.max.browser.core.domain.repository.PdfCacheRepository
 import com.max.browser.core.domain.repository.QueryDocRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +16,7 @@ import org.mozilla.fenix.ext.getPreferenceKey
 import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.home.mydocuments.MyDocumentsFeature
 import org.mozilla.fenix.home.mydocuments.MyDocumentsItem
+import java.io.File
 
 
 sealed class MyDocumentsUiState {
@@ -23,7 +26,10 @@ sealed class MyDocumentsUiState {
     data class Success(val items: List<MyDocumentsItem>) : MyDocumentsUiState()
 }
 
-class MyDocumentsViewModel(private val queryDocRepository: QueryDocRepository) : BaseViewModel() {
+class MyDocumentsViewModel(
+    private val queryDocRepository: QueryDocRepository,
+    private val pdfCacheRepository: PdfCacheRepository,
+) : BaseViewModel() {
 
     private val _myDocumentsUiState =
         MutableStateFlow<MyDocumentsUiState>(MyDocumentsUiState.NoPermission)
@@ -50,27 +56,56 @@ class MyDocumentsViewModel(private val queryDocRepository: QueryDocRepository) :
             }
 
             if (hasPermission) {
-                val items = queryDocRepository.queryDocumentFromDocumentTree(
-                    context,
-                    Uri.parse(uriString),
-                    "application/pdf",
-                ).map {
-                    MyDocumentsItem(
-                        it.sourceFileName,
-                        it.sourceUri,
-                        it.mimeType,
-                        it.size,
-                        it.lastModified,
-                    )
-                }.sortedByDescending {
+                val items = ArrayList<MyDocumentsItem>()
+
+                items.addAll(
+                    queryDocRepository.queryDocumentFromDocumentTree(
+                        context,
+                        Uri.parse(uriString),
+                        "application/pdf",
+                    ).map {
+                        MyDocumentsItem(
+                            it.sourceFileName,
+                            it.sourceUri,
+                            it.mimeType,
+                            it.size,
+                            it.lastModified,
+                        )
+                    },
+                )
+
+                items.addAll(
+                    pdfCacheRepository.getPdfCache().filter { pdfCache ->
+                        var hasFound = false
+                        for (item in items) {
+                            if (pdfCache.sourceUri == item.uri.toString()) {
+                                hasFound = true
+                            }
+                        }
+                        return@filter !hasFound
+                    }.filter {
+                        return@filter pdfCacheRepository.getPdfCacheFile(context, it.md5).exists()
+                    }.map {
+                        val cacheFile = pdfCacheRepository.getPdfCacheFile(context, it.md5)
+
+                        MyDocumentsItem(
+                            it.sourceFileName,
+                            Uri.fromFile(cacheFile),
+                            "application/pdf",
+                            cacheFile.length(),
+                            it.createdDate,
+                        )
+                    },
+                )
+
+                val result = items.sortedByDescending {
                     it.lastModified
                 }
-
-                if (items.isEmpty()) {
+                if (result.isEmpty()) {
                     _myDocumentsUiState.value = MyDocumentsUiState.Empty
 
                 } else {
-                    _myDocumentsUiState.value = MyDocumentsUiState.Success(items)
+                    _myDocumentsUiState.value = MyDocumentsUiState.Success(result)
                 }
 
             } else {

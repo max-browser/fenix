@@ -56,7 +56,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_last_modified"
         app:layout_constraintTop_toTopOf="@+id/tv_last_modified"
         app:layout_constraintWidth_percent="0.05"
-        tools:text="|" />
+        android:text="|" />
 
     <TextView
         android:id="@+id/tv_file_size"

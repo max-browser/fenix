@@ -6,5 +6,5 @@ import org.mozilla.fenix.library.mydocuments.MyDocumentsViewModel
 
 
 val fenixViewModelModule = module {
-    viewModel { MyDocumentsViewModel(get()) }
+    viewModel { MyDocumentsViewModel(get(), get()) }
 }

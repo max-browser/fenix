@@ -49,6 +49,7 @@ import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
+import com.max.browser.core.domain.repository.PdfCacheRepository
 import com.max.browser.core.domain.repository.QueryDocRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -84,6 +85,7 @@ import mozilla.components.support.base.feature.PermissionsFeature
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.ktx.android.content.res.resolveAttribute
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifChanged
+import org.koin.android.ext.android.inject
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.HomeScreen
@@ -204,6 +206,9 @@ class HomeFragment : Fragment() {
 
     @VisibleForTesting
     internal var getMenuButton: () -> MenuButton? = { binding.menuButton }
+
+    private val pdfCacheRepository: PdfCacheRepository by inject()
+    private val queryDocRepository: QueryDocRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT ADD ANYTHING ABOVE THIS getProfilerTime CALL!
@@ -363,7 +368,8 @@ class HomeFragment : Fragment() {
                 context = requireContext(),
                 appStore = components.appStore,
                 scope = viewLifecycleOwner.lifecycleScope,
-                queryDocRepository = QueryDocRepository(),
+                queryDocRepository = queryDocRepository,
+                pdfCacheRepository = pdfCacheRepository,
             ),
             owner = viewLifecycleOwner,
             view = binding.root,

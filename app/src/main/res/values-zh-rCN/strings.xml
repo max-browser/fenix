@@ -1969,5 +1969,7 @@
     <string name="access">存取</string>
     <string name="my_documents">我的文件</string>
     <string name="no_document">沒有文件</string>
+    <string name="choose_other_documents">选择其他文件</string>
+    <string name="please_choose_pdf">请选择 pdf</string>
 
 </resources>

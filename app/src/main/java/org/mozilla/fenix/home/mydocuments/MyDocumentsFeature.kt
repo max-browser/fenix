@@ -9,7 +9,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.util.Log
+import com.max.browser.core.domain.repository.PdfCacheRepository
 import com.max.browser.core.domain.repository.QueryDocRepository
 import kotlinx.coroutines.*
 import mozilla.components.support.base.feature.LifecycleAwareFeature
@@ -29,6 +29,7 @@ class MyDocumentsFeature(
     private val scope: CoroutineScope,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val queryDocRepository: QueryDocRepository,
+    private val pdfCacheRepository: PdfCacheRepository,
 ) : LifecycleAwareFeature, PermissionsFeature {
 
     override val onNeedToRequestPermissions: OnNeedToRequestPermissions = { }
@@ -56,9 +57,11 @@ class MyDocumentsFeature(
                 context.isPermissionGranted(PERMISSIONS_BEFORE_API_28.asIterable())
             }
 
-            val items = ArrayList<MyDocumentsItem>()
+            val result: List<MyDocumentsItem>
 
             if (hasPermission) {
+                val items = ArrayList<MyDocumentsItem>()
+
                 items.addAll(
                     queryDocRepository.queryDocumentFromDocumentTree(
                         context,
@@ -72,13 +75,41 @@ class MyDocumentsFeature(
                             it.size,
                             it.lastModified,
                         )
-                    }.sortedByDescending {
-                        it.lastModified
                     },
                 )
+
+                items.addAll(
+                    pdfCacheRepository.getPdfCache().filter { pdfCache ->
+                        var hasFound = false
+                        for (item in items) {
+                            if (pdfCache.sourceUri == item.uri.toString()) {
+                                hasFound = true
+                            }
+                        }
+                        return@filter !hasFound
+                    }.filter {
+                        return@filter pdfCacheRepository.getPdfCacheFile(context, it.md5).exists()
+                    }.map {
+                        val cacheFile = pdfCacheRepository.getPdfCacheFile(context, it.md5)
+
+                        MyDocumentsItem(
+                            it.sourceFileName,
+                            Uri.fromFile(cacheFile),
+                            "application/pdf",
+                            cacheFile.length(),
+                            it.createdDate,
+                        )
+                    },
+                )
+
+                result = items.sortedByDescending {
+                    it.lastModified
+                }
+            } else {
+                result = emptyList<MyDocumentsItem>()
             }
 
-            updateState(hasPermission, items)
+            updateState(hasPermission, result)
         }
     }
 
