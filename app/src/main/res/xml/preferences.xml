@@ -82,10 +82,10 @@
             app:iconSpaceReserved="false"
             android:title="@string/preferences_language" />
 
-        <org.mozilla.fenix.settings.DefaultBrowserPreference
-            android:key="@string/pref_key_make_default_browser"
-            app:iconSpaceReserved="false"
-            android:title="@string/preferences_set_as_default_browser" />
+<!--        <org.mozilla.fenix.settings.DefaultBrowserPreference-->
+<!--            android:key="@string/pref_key_make_default_browser"-->
+<!--            app:iconSpaceReserved="false"-->
+<!--            android:title="@string/preferences_set_as_default_browser" />-->
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
