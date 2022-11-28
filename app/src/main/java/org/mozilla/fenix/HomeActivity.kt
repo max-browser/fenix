@@ -31,6 +31,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import mozilla.appservices.places.BookmarkRoot
@@ -71,6 +72,7 @@ import org.mozilla.fenix.addons.AddonPermissionsDetailsFragmentDirections
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
 import org.mozilla.fenix.browser.browsingmode.DefaultBrowsingModeManager
+import org.mozilla.fenix.components.Core
 import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.components.metrics.BreadcrumbsRecorder
 import org.mozilla.fenix.databinding.ActivityHomeBinding
@@ -871,10 +873,14 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             BrowsingMode.Normal -> false
         }
 
+        val eventName:String
+        val paramName :String
         // In situations where we want to perform a search but have no search engine (e.g. the user
         // has removed all of them, or we couldn't load any) we will pass searchTermOrURL to Gecko
         // and let it try to load whatever was entered.
         if ((!forceSearch && searchTermOrURL.isUrl()) || engine == null) {
+            eventName = "load_url"
+            paramName = "url"
             val tabId = if (newTab) {
                 components.useCases.tabsUseCases.addTab(
                     url = searchTermOrURL.toNormalizedUrl(),
@@ -894,6 +900,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
                 handleRequestDesktopMode(tabId)
             }
         } else {
+            eventName = "search_term"
+            paramName = "term"
             if (newTab) {
                 components.useCases.searchUseCases.newTabSearch
                     .invoke(
@@ -917,6 +925,32 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
                 "newTab: $newTab",
             )
         }
+
+        ReportManager.getInstance().report(
+            eventName,
+            Bundle().apply {
+                putString(paramName, searchTermOrURL)
+                val engineName = engine?.let { searchEngine ->
+                    when (searchEngine.type) {
+                        SearchEngine.Type.CUSTOM -> "custom"
+                        SearchEngine.Type.APPLICATION ->
+                            when (searchEngine.id) {
+                                Core.HISTORY_SEARCH_ENGINE_ID -> "history"
+                                Core.BOOKMARKS_SEARCH_ENGINE_ID -> "bookmarks"
+                                Core.TABS_SEARCH_ENGINE_ID -> "tabs"
+                                else -> "application"
+                            }
+                        else -> searchEngine.name
+                    } ?: run {
+                        "no_engine"
+                    }
+                }
+                putString("engine", engineName)
+                putString("private", if (private) "true" else "false")
+                putString("desktop_mode", if (requestDesktopMode) "true" else "false")
+            },
+        )
+
     }
 
     internal fun handleRequestDesktopMode(tabId: String) {

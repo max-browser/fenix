@@ -8,10 +8,12 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.text.SpannableString
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
+import com.max.browser.core.ReportManager
 import mozilla.components.browser.state.search.SearchEngine
 import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import mozilla.components.browser.state.store.BrowserStore
@@ -239,6 +241,10 @@ class SearchDialogController(
         } else {
             SearchShortcuts.selected.record(SearchShortcuts.SelectedExtra(engine))
         }
+
+        ReportManager.getInstance().report("search_shortcut_engine_selected", Bundle().apply {
+            putString("engine", engine)
+        })
     }
 
     override fun handleSearchShortcutsButtonClicked() {
