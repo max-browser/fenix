@@ -62,6 +62,7 @@ import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.components.metrics.MetricServiceType
 import org.mozilla.fenix.components.metrics.MozillaProductDetector
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
+import org.mozilla.fenix.di.fenixUseCaseModule
 import org.mozilla.fenix.di.fenixViewModelModule
 import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.nimbus.FxNimbus
@@ -134,7 +135,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
     }
 
     private fun initMaxBrowserApplication() {
-        maxBrowserApplication.onCreate(this@FenixApplication, fenixViewModelModule)
+        maxBrowserApplication.onCreate(this@FenixApplication, fenixViewModelModule, fenixUseCaseModule)
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage

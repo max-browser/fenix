@@ -51,8 +51,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
-import com.max.browser.core.domain.repository.PdfCacheRepository
-import com.max.browser.core.domain.repository.QueryDocRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.MainScope
@@ -108,6 +106,7 @@ import org.mozilla.fenix.gleanplumb.DefaultMessageController
 import org.mozilla.fenix.gleanplumb.MessagingFeature
 import org.mozilla.fenix.home.mozonline.showPrivacyPopWindow
 import org.mozilla.fenix.home.mydocuments.MyDocumentsFeature
+import org.mozilla.fenix.home.mydocuments.MyDocumentsUseCase
 import org.mozilla.fenix.home.mydocuments.controller.DefaultMyDocumentsController
 import org.mozilla.fenix.home.pocket.DefaultPocketStoriesController
 import org.mozilla.fenix.home.pocket.PocketRecommendedStoriesCategory
@@ -209,8 +208,7 @@ class HomeFragment : Fragment() {
     @VisibleForTesting
     internal var getMenuButton: () -> MenuButton? = { binding.menuButton }
 
-    private val pdfCacheRepository: PdfCacheRepository by inject()
-    private val queryDocRepository: QueryDocRepository by inject()
+    private val myDocumentsUseCase: MyDocumentsUseCase by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT ADD ANYTHING ABOVE THIS getProfilerTime CALL!
@@ -370,8 +368,7 @@ class HomeFragment : Fragment() {
                 context = requireContext(),
                 appStore = components.appStore,
                 scope = viewLifecycleOwner.lifecycleScope,
-                queryDocRepository = queryDocRepository,
-                pdfCacheRepository = pdfCacheRepository,
+                myDocumentsUseCase = myDocumentsUseCase,
             ),
             owner = viewLifecycleOwner,
             view = binding.root,

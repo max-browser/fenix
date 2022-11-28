@@ -8,9 +8,6 @@ import android.Manifest
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
-import com.max.browser.core.domain.repository.PdfCacheRepository
-import com.max.browser.core.domain.repository.QueryDocRepository
 import kotlinx.coroutines.*
 import mozilla.components.support.base.feature.LifecycleAwareFeature
 import mozilla.components.support.base.feature.OnNeedToRequestPermissions
@@ -28,8 +25,7 @@ class MyDocumentsFeature(
     private val appStore: AppStore,
     private val scope: CoroutineScope,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val queryDocRepository: QueryDocRepository,
-    private val pdfCacheRepository: PdfCacheRepository,
+    private val myDocumentsUseCase: MyDocumentsUseCase,
 ) : LifecycleAwareFeature, PermissionsFeature {
 
     override val onNeedToRequestPermissions: OnNeedToRequestPermissions = { }
@@ -45,10 +41,10 @@ class MyDocumentsFeature(
             val uriString = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val key =
                     context.getPreferenceKey(R.string.pref_key_directory_access_permission_uri)
-                context.settings().preferences.getString(key, "")
+                context.settings().preferences.getString(key, "") ?: ""
 
             } else {
-                Uri.fromFile(Environment.getRootDirectory()).toString()
+                ""
             }
 
             val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -57,56 +53,10 @@ class MyDocumentsFeature(
                 context.isPermissionGranted(PERMISSIONS_BEFORE_API_28.asIterable())
             }
 
-            val result: List<MyDocumentsItem>
-
-            if (hasPermission) {
-                val items = ArrayList<MyDocumentsItem>()
-
-                items.addAll(
-                    queryDocRepository.queryDocumentFromDocumentTree(
-                        context,
-                        Uri.parse(uriString),
-                        "application/pdf",
-                    ).map {
-                        MyDocumentsItem(
-                            it.sourceFileName,
-                            it.sourceUri,
-                            it.mimeType,
-                            it.size,
-                            it.lastModified,
-                        )
-                    },
-                )
-
-                items.addAll(
-                    pdfCacheRepository.getPdfCache().filter { pdfCache ->
-                        var hasFound = false
-                        for (item in items) {
-                            if (pdfCache.sourceUri == item.uri.toString()) {
-                                hasFound = true
-                            }
-                        }
-                        return@filter !hasFound
-                    }.filter {
-                        return@filter pdfCacheRepository.getPdfCacheFile(context, it.md5).exists()
-                    }.map {
-                        val cacheFile = pdfCacheRepository.getPdfCacheFile(context, it.md5)
-
-                        MyDocumentsItem(
-                            it.sourceFileName,
-                            Uri.fromFile(cacheFile),
-                            "application/pdf",
-                            cacheFile.length(),
-                            it.createdDate,
-                        )
-                    },
-                )
-
-                result = items.sortedByDescending {
-                    it.lastModified
-                }
+            val result = if (hasPermission) {
+                myDocumentsUseCase.queryDocument(context, uriString)
             } else {
-                result = emptyList<MyDocumentsItem>()
+                emptyList<MyDocumentsItem>()
             }
 
             updateState(hasPermission, result)

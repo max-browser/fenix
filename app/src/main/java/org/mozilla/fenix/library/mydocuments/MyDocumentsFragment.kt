@@ -152,7 +152,7 @@ class MyDocumentsFragment : Fragment() {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/pdf"
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(Environment.getRootDirectory()))
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(Environment.getExternalStorageDirectory()))
             }
         }
 
