@@ -27,6 +27,7 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -49,6 +50,7 @@ import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
+import com.max.browser.core.ReportManager
 import com.max.browser.core.domain.repository.PdfCacheRepository
 import com.max.browser.core.domain.repository.QueryDocRepository
 import kotlinx.coroutines.Dispatchers.IO
@@ -990,6 +992,29 @@ class HomeFragment : Fragment() {
         hideOnboardingIfNeeded()
         appBarLayout?.setExpanded(true, true)
         navigateToSearch()
+        reportStartBrowsing()
+    }
+
+    private fun reportStartBrowsing() {
+        ReportManager.getInstance().report(
+            "home_start_browsing",
+            Bundle().apply {
+                val mode = when (AppCompatDelegate.getDefaultNightMode()) {
+                    AppCompatDelegate.MODE_NIGHT_NO -> "light"
+                    AppCompatDelegate.MODE_NIGHT_YES -> "dark"
+                    else -> "follow_device"
+                }
+
+                putString("theme_mode", mode)
+
+                val position = when (requireContext().settings().toolbarPosition) {
+                    ToolbarPosition.TOP -> "top"
+                    ToolbarPosition.BOTTOM -> "bottom"
+                }
+                putString("toolbar_position", position)
+            },
+        )
+
     }
 
     @VisibleForTesting
