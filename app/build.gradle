@@ -9,10 +9,10 @@ import static org.gradle.api.tasks.testing.TestResult.ResultType
 plugins {
     id "com.jetbrains.python.envs" version "0.0.26"
     id "com.google.protobuf" version "0.8.19"
-    id 'com.google.gms.google-services'
 }
-
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'jacoco'
@@ -20,7 +20,6 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'androidx.benchmark'
 apply plugin: 'android-junk-code'
-
 apply from: 'benchmark.gradle'
 
 android {
@@ -741,6 +740,11 @@ dependencies {
     // Max Browser Core Library
     implementation project(":max-browser-core")
 
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:31.0.3')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.10.0")
 }
 
 protobuf {

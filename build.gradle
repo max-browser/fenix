@@ -72,9 +72,9 @@ buildscript {
 
         classpath "org.mozilla.components:tooling-glean-gradle:${Versions.mozilla_android_components}"
         classpath "org.mozilla.components:tooling-nimbus-gradle:${Versions.mozilla_android_components}"
-
-        classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.google.gms:google-services:4.3.14'
         classpath "com.github.qq549631030:android-junk-code:1.1.6"
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
