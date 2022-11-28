@@ -5,6 +5,7 @@
 package org.mozilla.fenix.components.toolbar
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
@@ -94,6 +95,13 @@ class DefaultBrowserToolbarMenuController(
         val sessionUseCases = activity.components.useCases.sessionUseCases
         val customTabUseCases = activity.components.useCases.customTabsUseCases
         trackToolbarItemInteraction(item)
+
+        var url = ""
+        store.state.selectedTab?.let {
+            getProperUrl(it)?.let {
+                url = it
+            }
+        }
 
         Do exhaustive when (item) {
             // TODO: These can be removed for https://github.com/mozilla-mobile/fenix/issues/17870
@@ -220,7 +228,9 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.Share -> {
-                ReportManager.getInstance().report("browser_menu_share")
+                ReportManager.getInstance().report("browser_menu_share", Bundle().apply {
+                    putString("url", url)
+                })
                 val directions = NavGraphDirections.actionGlobalShareFragment(
                     sessionId = currentSession?.id,
                     data = arrayOf(
@@ -256,7 +266,9 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.RequestDesktop -> {
-                ReportManager.getInstance().report("browser_menu_request_desktop")
+                ReportManager.getInstance().report("browser_menu_request_desktop", Bundle().apply {
+                    putString("url", url)
+                })
                 currentSession?.let {
                     sessionUseCases.requestDesktopSite.invoke(
                         item.isChecked,
@@ -265,7 +277,9 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.AddToTopSites -> {
-                ReportManager.getInstance().report("browser_menu_add_to_top_sites")
+                ReportManager.getInstance().report("browser_menu_add_to_top_sites", Bundle().apply {
+                    putString("url", url)
+                })
                 scope.launch {
                     val context = swipeRefresh.context
                     val numPinnedSites = topSitesStorage.cachedTopSites
@@ -302,7 +316,9 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.AddToHomeScreen -> {
-                ReportManager.getInstance().report("browser_menu_add_to_home_screen")
+                ReportManager.getInstance().report("browser_menu_add_to_home_screen", Bundle().apply {
+                    putString("url", url)
+                })
                 settings.installPwaOpened = true
                 MainScope().launch {
                     with(activity.components.useCases.webAppUseCases) {
@@ -328,7 +344,9 @@ class DefaultBrowserToolbarMenuController(
                 )
             }
             is ToolbarMenu.Item.SaveToCollection -> {
-                ReportManager.getInstance().report("browser_menu_save_to_collection")
+                ReportManager.getInstance().report("browser_menu_save_to_collection", Bundle().apply {
+                    putString("url", url)
+                })
                 Collections.saveButton.record(
                     Collections.SaveButtonExtra(
                         TELEMETRY_BROWSER_IDENTIFIER,
@@ -350,9 +368,13 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.Bookmark -> {
-                ReportManager.getInstance().report("browser_menu_bookmark")
                 store.state.selectedTab?.let {
-                    getProperUrl(it)?.let { url -> bookmarkTapped(url, it.content.title) }
+                    getProperUrl(it)?.let { url ->
+                        ReportManager.getInstance().report("browser_menu_bookmark", Bundle().apply {
+                            putString("url", url)
+                        })
+                        bookmarkTapped(url, it.content.title)
+                    }
                 }
             }
             is ToolbarMenu.Item.Bookmarks -> browserAnimator.captureEngineViewAndDrawStatically {
@@ -389,7 +411,9 @@ class DefaultBrowserToolbarMenuController(
                 activity.openSetDefaultBrowserOption()
             }
             is ToolbarMenu.Item.RemoveFromTopSites -> {
-                ReportManager.getInstance().report("browser_menu_remove_from_top_sites")
+                ReportManager.getInstance().report("browser_menu_remove_from_top_sites", Bundle().apply {
+                    putString("url", url)
+                })
                 scope.launch {
                     val removedTopSite: TopSite? =
                         pinnedSiteStorage

@@ -1260,6 +1260,13 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                     position = null,
                 )
 
+                ReportManager.getInstance().report(
+                    "add_bookmark",
+                    Bundle().apply {
+                        putString("url", sessionUrl)
+                    },
+                )
+
                 withContext(Main) {
                     view?.let {
                         FenixSnackbar.make(

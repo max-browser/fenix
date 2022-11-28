@@ -5,7 +5,9 @@
 package org.mozilla.fenix.tabstray
 
 import android.content.Context
+import android.os.Bundle
 import androidx.navigation.NavController
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mozilla.components.browser.state.selector.getNormalOrPrivateTabs
@@ -239,6 +241,12 @@ class DefaultNavigationInteractor(
             // tabs tray closes before the job is done.
             CoroutineScope(ioDispatcher).launch {
                 bookmarksUseCase.addBookmark(tab.content.url, tab.content.title)
+                ReportManager.getInstance().report(
+                    "add_bookmark",
+                    Bundle().apply {
+                        putString("url", tab.content.url)
+                    },
+                )
             }
         }
 
