@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -33,11 +34,7 @@ import org.mozilla.fenix.Config
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.databinding.FragmentAddOnsManagementBinding
-import org.mozilla.fenix.ext.components
-import org.mozilla.fenix.ext.getRootView
-import org.mozilla.fenix.ext.runIfFragmentIsAttached
-import org.mozilla.fenix.ext.settings
-import org.mozilla.fenix.ext.showToolbar
+import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.theme.ThemeManager
 import java.lang.ref.WeakReference
 import java.util.concurrent.CancellationException
@@ -283,6 +280,12 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
     }
 
     private val onPositiveButtonClicked: ((Addon) -> Unit) = { addon ->
+        ReportManager.getInstance().report(
+            "install_addon",
+            Bundle().apply {
+                putString("id", addon.id)
+            },
+        )
         binding?.addonProgressOverlay?.overlayCardView?.visibility = View.VISIBLE
 
         if (requireContext().settings().accessibilityServicesEnabled) {
@@ -294,6 +297,12 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
         val installOperation = requireContext().components.addonManager.installAddon(
             addon,
             onSuccess = {
+                ReportManager.getInstance().report(
+                    "install_addon_success",
+                    Bundle().apply {
+                        putString("id", addon.id)
+                    },
+                )
                 runIfFragmentIsAttached {
                     isInstallationInProgress = false
                     adapter?.updateAddon(it)
@@ -302,6 +311,13 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
                 }
             },
             onError = { _, e ->
+                ReportManager.getInstance().report(
+                    "install_addon_failure",
+                    Bundle().apply {
+                        putString("id", addon.id)
+                        putString("error", e.toString())
+                    },
+                )
                 this@AddonsManagementFragment.view?.let { view ->
                     // No need to display an error message if installation was cancelled by the user.
                     if (e !is CancellationException) {

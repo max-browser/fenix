@@ -16,6 +16,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import mozilla.components.concept.engine.webextension.EnableSource
@@ -127,6 +128,7 @@ class InstalledAddonDetailsFragment : Fragment() {
             val addonManager = v.context.components.addonManager
             switch.isClickable = false
             binding.removeAddOn.isEnabled = false
+
             if (isChecked) {
                 enableAddon(
                     addonManager,
@@ -172,6 +174,13 @@ class InstalledAddonDetailsFragment : Fragment() {
                 addonManager.disableAddon(
                     addon,
                     onSuccess = {
+                        ReportManager.getInstance().report(
+                            "disable_addon",
+                            Bundle().apply {
+                                putString("id", addon.id)
+                            },
+                        )
+
                         runIfFragmentIsAttached {
                             this.addon = it
                             switch.isClickable = true
@@ -309,6 +318,13 @@ class InstalledAddonDetailsFragment : Fragment() {
             requireContext().components.addonManager.uninstallAddon(
                 addon,
                 onSuccess = {
+                    ReportManager.getInstance().report(
+                        "remove_addon",
+                        Bundle().apply {
+                            putString("id", addon.id)
+                        },
+                    )
+
                     runIfFragmentIsAttached {
                         setAllInteractiveViewsClickable(binding, true)
                         context?.let {
