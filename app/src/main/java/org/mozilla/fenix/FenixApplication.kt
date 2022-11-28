@@ -19,11 +19,12 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.work.Configuration.Builder
 import androidx.work.Configuration.Provider
-import com.max.browser.core.*
+import com.max.browser.core.MaxBrowserApplicationDelegate
 import kotlinx.coroutines.*
 import mozilla.appservices.Megazord
 import mozilla.components.browser.state.action.SystemAction
 import mozilla.components.browser.state.selector.selectedTab
+import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.browser.storage.sync.GlobalPlacesDependencyProvider
 import mozilla.components.concept.base.crash.Breadcrumb
@@ -54,10 +55,6 @@ import mozilla.components.support.rusthttp.RustHttpConfig
 import mozilla.components.support.rustlog.RustLog
 import mozilla.components.support.utils.logElapsedTime
 import mozilla.components.support.webextensions.WebExtensionSupport
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
-import org.mozilla.experiments.nimbus.NimbusInterface
-import org.mozilla.experiments.nimbus.internal.EnrolledExperiment
 import org.mozilla.fenix.GleanMetrics.*
 import org.mozilla.fenix.components.Components
 import org.mozilla.fenix.components.Core
@@ -103,7 +100,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
     private val  maxBrowserApplication = MaxBrowserApplicationDelegate()
 
     override fun onCreate() {
-        maxBrowserApplication.onCreate(this, fenixViewModelModule)
+        initMaxBrowserApplication()
 
         // We measure ourselves to avoid a call into Glean before its loaded.
         val start = SystemClock.elapsedRealtimeNanos()
@@ -134,6 +131,10 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
             PerfStartup.applicationOnCreate.accumulateSamples(listOf(durationMillis))
         }
 
+    }
+
+    private fun initMaxBrowserApplication() {
+        maxBrowserApplication.onCreate(this@FenixApplication, fenixViewModelModule)
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
@@ -743,6 +744,29 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
                 }
             }
         }
+
+        val themeMode = when (AppCompatDelegate.getDefaultNightMode()) {
+            AppCompatDelegate.MODE_NIGHT_NO -> "light"
+            AppCompatDelegate.MODE_NIGHT_YES -> "dark"
+            else -> "follow_device"
+        }
+
+        val toolbarPosition = when (settings.toolbarPosition) {
+            ToolbarPosition.TOP -> "top"
+            ToolbarPosition.BOTTOM -> "bottom"
+        }
+
+        val engine =
+            components.core.store.state.search.selectedOrDefaultSearchEngine?.name ?: ""
+
+        maxBrowserApplication.setUserProperties(
+            this,
+            themeMode,
+            toolbarPosition,
+            settings.enabledAddonsCount,
+            engine,
+            browsersCache.all(applicationContext).isDefaultBrowser,
+        )
     }
 
     @Suppress("ComplexMethod")
@@ -880,6 +904,5 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
             components.useCases.wallpaperUseCases.initialize()
         }
     }
-
 
 }
