@@ -742,7 +742,11 @@ dependencies {
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:31.0.3')
+    implementation 'com.google.firebase:firebase-config-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+
+    // Okhttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:okhttp-urlconnection:4.10.0")
 }

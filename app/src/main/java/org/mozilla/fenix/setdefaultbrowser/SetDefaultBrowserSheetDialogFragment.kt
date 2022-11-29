@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import com.max.browser.core.RemoteConfigKey
+import com.max.browser.core.RemoteConfigManager
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
 import org.mozilla.fenix.android.FenixDialogFragment
@@ -20,11 +22,12 @@ import org.mozilla.fenix.databinding.FragmentSetDefaultBrowserDialogSheetBinding
 import org.mozilla.fenix.ext.getPreferenceKey
 import org.mozilla.fenix.ext.openSetDefaultBrowserOption
 import org.mozilla.fenix.ext.settings
+import java.util.concurrent.TimeUnit
 
 
 fun Context.setAfterUpdatingTheme() {
     val sp = PreferenceManager.getDefaultSharedPreferences(this)
-    val key = getPreferenceKey(R.string.pref_key_after_updating_theme)
+    val key = getPreferenceKey(R.string.pref_key_is_after_updating_theme)
     sp.edit().putBoolean(key, true).apply()
 }
 
@@ -34,29 +37,58 @@ fun Fragment.checkToShowSetDefaultBrowserSheetDialogFragment() {
     }
 
     val sp = PreferenceManager.getDefaultSharedPreferences(context)
-    var key = getPreferenceKey(R.string.pref_key_has_checked_setting_default_browser)
+    var key =
+        getPreferenceKey(R.string.pref_key_has_checked_setting_default_browser_after_cold_starting_app)
     val hasCheckedSettingsDefaultBrowser = sp.getBoolean(key, false)
+    // 每一次的冷啟動開始，只會 check 一次是否展示彈窗
     if (hasCheckedSettingsDefaultBrowser) {
         return
     } else {
         sp.edit().putBoolean(key, true).apply()
     }
 
-    key = getPreferenceKey(R.string.pref_key_after_updating_theme)
+    key = getPreferenceKey(R.string.pref_key_is_after_updating_theme)
     val isAfterUpdatingTheme = sp.getBoolean(key, false)
     if (isAfterUpdatingTheme) {
+        // 因為更新主題而造成判斷此方法，所以需要跳過
         sp.edit().putBoolean(key, false).apply()
         return
     }
 
-    key = getPreferenceKey(R.string.pref_key_first_time_to_set_default_browser)
-    val isFirstTimeToSetDefaultBrowser = sp.getBoolean(key, true)
-    if (isFirstTimeToSetDefaultBrowser) {
+    key = getPreferenceKey(R.string.pref_key_is_first_time_to_show_set_default_browser_dialog)
+    val isFirstTime = sp.getBoolean(key, true)
+    if (isFirstTime) {
+        // 首次不展示
         sp.edit().putBoolean(key, false).apply()
         return
     }
 
-    findNavController().navigate(NavGraphDirections.actionGlobalSetDefaultBrowserSheetDialogFragment())
+    key = getPreferenceKey(R.string.pref_key_first_time_of_showing_set_default_browser_dialog)
+    val firstTime = sp.getLong(key, 0)
+
+    key = getPreferenceKey(R.string.pref_key_count_of_showing_set_default_browser_dialog)
+
+    val time = System.currentTimeMillis()
+    if (time - firstTime > TimeUnit.DAYS.toSeconds(1)) {
+        // 超過一天，重置累計次數
+        sp.edit().putInt(key, 0).apply()
+    }
+
+    val count = sp.getInt(key, 0)
+    val maxCount = RemoteConfigManager.getInstance()
+        .getConfig<Int>(RemoteConfigKey.MAX_COUNT_OF_SHOWING_SET_DEFAULT_BROWSER_DIALOG)
+
+    if (count < maxCount) {
+        findNavController().navigate(NavGraphDirections.actionGlobalSetDefaultBrowserSheetDialogFragment())
+        sp.edit().putInt(key, count + 1).apply()
+
+        if (count == 0) {
+            key =
+                getPreferenceKey(R.string.pref_key_first_time_of_showing_set_default_browser_dialog)
+            sp.edit().putLong(key, time).apply()
+        }
+    }
+
 }
 
 class SetDefaultBrowserSheetDialogFragment : FenixDialogFragment() {

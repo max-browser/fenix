@@ -320,9 +320,11 @@
     <string name="pref_key_growth_first_week_days_of_use" translatable="false">pref_key_growth_first_week_days_of_use</string>
 
     <!-- Set Default Browser-->
-    <string name="pref_key_after_updating_theme" translatable="false">pref_key_after_updating_theme</string>
-    <string name="pref_key_has_checked_setting_default_browser" translatable="false">pref_key_has_checked_setting_default_browser</string>
-    <string name="pref_key_first_time_to_set_default_browser" translatable="false">pref_key_first_time_to_set_default_browser</string>
+    <string name="pref_key_is_after_updating_theme" translatable="false">pref_key_is_after_updating_theme</string>
+    <string name="pref_key_has_checked_setting_default_browser_after_cold_starting_app" translatable="false">pref_key_has_checked_setting_default_browser_after_cold_starting_app</string>
+    <string name="pref_key_is_first_time_to_show_set_default_browser_dialog" translatable="false">pref_key_is_first_time_to_show_set_default_browser_dialog</string>
+    <string name="pref_key_first_time_of_showing_set_default_browser_dialog" translatable="false">pref_key_first_time_of_showing_set_default_browser_dialog</string>
+    <string name="pref_key_count_of_showing_set_default_browser_dialog" translatable="false">pref_key_count_of_showing_set_default_browser_dialog</string>
 
     <!-- My Documents-->
     <string name="pref_key_directory_access_permission_uri" translatable="false">pref_key_directory_access_permission_uri</string>
