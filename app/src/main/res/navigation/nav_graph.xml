@@ -1076,7 +1076,7 @@
     <fragment
         android:id="@+id/myDocumentsFragment"
         android:name="org.mozilla.fenix.library.mydocuments.MyDocumentsFragment"
-        android:label="@string/my_documents"
+        android:label="@string/max_my_documents"
         tools:layout="@layout/fragment_my_documents" />
 
     <navigation

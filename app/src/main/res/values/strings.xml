@@ -1859,17 +1859,5 @@
     <!-- Action label for links that point to an article. Talkback will append this to say "Double tap to read the article". -->
     <string name="a11y_action_label_read_article">read the article</string>
 
-    <string name="next_step">Next Step</string>
-    <string name="cancel">Cancel</string>
-    <string name="set_default_browser_dialog_sheet_desc">Choose Max Browser on next screen</string>
-
-    <string name="allow_to_access_media_file">Allow to access Media File</string>
-    <string name="access">Access</string>
-    <string name="my_documents">My Documents</string>
-    <string name="no_document">No Document</string>
-    <string name="choose_other_documents">Choose Other Documents</string>
-    <string name="please_choose_pdf">Please choose the pdf</string>
-
-
 
 </resources>

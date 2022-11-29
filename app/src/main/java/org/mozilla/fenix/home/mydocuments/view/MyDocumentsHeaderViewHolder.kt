@@ -43,7 +43,7 @@ class MyDocumentsHeaderViewHolder(
             Spacer(modifier = Modifier.height(40.dp))
 
             HomeSectionHeader(
-                headerText = stringResource(id = R.string.my_documents),
+                headerText = stringResource(id = R.string.max_my_documents),
                 description = "my documents",
                 onShowAllClick = if (hasPermission) interactor::onMyDocumentsShowAllClicked else null,
             )

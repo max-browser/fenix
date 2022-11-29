@@ -199,7 +199,7 @@ private fun MyDocumentsGetPermissionView(
     ) {
 
         Text(
-            text = stringResource(R.string.allow_to_access_media_file),
+            text = stringResource(R.string.max_allow_to_access_media_file),
             color = when (isSystemInDarkTheme()) {
                 true -> FirefoxTheme.colors.textPrimary
                 false -> FirefoxTheme.colors.textSecondary
@@ -225,7 +225,7 @@ private fun MyDocumentsGetPermissionView(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = stringResource(R.string.access),
+                    text = stringResource(R.string.max_access),
                     color = Color.White,
                     fontSize = 16.sp,
                     modifier = Modifier,
