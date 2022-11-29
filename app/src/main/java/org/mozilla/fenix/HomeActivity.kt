@@ -88,6 +88,7 @@ import org.mozilla.fenix.library.recentlyclosed.RecentlyClosedFragmentDirections
 import org.mozilla.fenix.onboarding.DefaultBrowserNotificationWorker
 import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.perf.*
+import org.mozilla.fenix.onboarding.ReEngagementNotificationWorker
 import org.mozilla.fenix.search.SearchDialogFragmentDirections
 import org.mozilla.fenix.session.PrivateNotificationService
 import org.mozilla.fenix.settings.HttpsOnlyFragmentDirections
@@ -253,7 +254,11 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             val safeIntent = intent?.toSafeIntent()
             safeIntent
                 ?.let(::getIntentSource)
-                ?.also { Events.appOpened.record(Events.AppOpenedExtra(it)) }
+                ?.also {
+                    Events.appOpened.record(Events.AppOpenedExtra(it))
+                    // This will record an event in Nimbus' internal event store. Used for behavioral targeting
+                    components.analytics.experiments.recordEvent("app_opened")
+                }
         }
         supportActionBar?.hide()
 
@@ -360,6 +365,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             components.appStore.dispatch(AppAction.ResumedMetricsAction)
 
             DefaultBrowserNotificationWorker.setDefaultBrowserNotificationIfNeeded(applicationContext)
+            ReEngagementNotificationWorker.setReEngagementNotificationIfNeeded(applicationContext)
         }
     }
 
