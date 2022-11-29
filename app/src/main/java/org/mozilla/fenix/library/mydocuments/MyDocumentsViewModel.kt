@@ -2,6 +2,8 @@ package org.mozilla.fenix.library.mydocuments
 
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
+import com.max.browser.core.ReportManager
 import com.max.browser.core.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -52,7 +54,12 @@ class MyDocumentsViewModel(
 
             if (hasPermission) {
                 val result = myDocumentsUseCase.queryDocument(context, uriString)
-
+                ReportManager.getInstance().report(
+                    "queried_document_count",
+                    Bundle().apply {
+                        putString("count", result.size.toString())
+                    },
+                )
                 if (result.isEmpty()) {
                     _myDocumentsUiState.value = MyDocumentsUiState.Empty
 

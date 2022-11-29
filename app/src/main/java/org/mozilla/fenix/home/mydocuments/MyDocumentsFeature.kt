@@ -8,6 +8,8 @@ import android.Manifest
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.*
 import mozilla.components.support.base.feature.LifecycleAwareFeature
 import mozilla.components.support.base.feature.OnNeedToRequestPermissions
@@ -54,7 +56,15 @@ class MyDocumentsFeature(
             }
 
             val result = if (hasPermission) {
-                myDocumentsUseCase.queryDocument(context, uriString)
+                myDocumentsUseCase.queryDocument(context, uriString).also {
+                    ReportManager.getInstance().report(
+                        "queried_document_count",
+                        Bundle().apply {
+                            putString("count", it.size.toString())
+                        },
+                    )
+                }
+
             } else {
                 emptyList<MyDocumentsItem>()
             }

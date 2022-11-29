@@ -48,6 +48,7 @@ import mozilla.components.support.base.facts.register
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.ktx.android.content.isMainProcess
+import mozilla.components.support.ktx.android.content.isPermissionGranted
 import mozilla.components.support.ktx.android.content.runOnlyInMainProcess
 import mozilla.components.support.locale.LocaleAwareApplication
 import mozilla.components.support.rusterrors.initializeRustErrors
@@ -65,6 +66,7 @@ import org.mozilla.fenix.components.toolbar.ToolbarPosition
 import org.mozilla.fenix.di.fenixUseCaseModule
 import org.mozilla.fenix.di.fenixViewModelModule
 import org.mozilla.fenix.ext.*
+import org.mozilla.fenix.home.mydocuments.MyDocumentsFeature
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.perf.*
 import org.mozilla.fenix.push.PushFxaIntegration
@@ -760,6 +762,14 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         val engine =
             components.core.store.state.search.selectedOrDefaultSearchEngine?.name ?: ""
 
+        val hasAccessDocumentsPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val key = getPreferenceKey(R.string.pref_key_directory_access_permission_uri)
+            val uriString =     settings.preferences.getString(key, "") ?: ""
+            uriString != ""
+        } else {
+            isPermissionGranted(MyDocumentsFeature.PERMISSIONS_BEFORE_API_28.asIterable())
+        }
+
         maxBrowserApplication.setUserProperties(
             this,
             themeMode,
@@ -767,6 +777,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
             settings.enabledAddonsCount,
             engine,
             browsersCache.all(applicationContext).isDefaultBrowser,
+            hasAccessDocumentsPermission
         )
     }
 
