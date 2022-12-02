@@ -21,13 +21,7 @@ import mozilla.components.feature.sitepermissions.SitePermissionsRules
 import mozilla.components.feature.sitepermissions.SitePermissionsRules.Action
 import mozilla.components.feature.sitepermissions.SitePermissionsRules.AutoplayAction
 import mozilla.components.service.contile.ContileTopSitesProvider
-import mozilla.components.support.ktx.android.content.PreferencesHolder
-import mozilla.components.support.ktx.android.content.booleanPreference
-import mozilla.components.support.ktx.android.content.floatPreference
-import mozilla.components.support.ktx.android.content.intPreference
-import mozilla.components.support.ktx.android.content.longPreference
-import mozilla.components.support.ktx.android.content.stringPreference
-import mozilla.components.support.ktx.android.content.stringSetPreference
+import mozilla.components.support.ktx.android.content.*
 import mozilla.components.support.locale.LocaleManager
 import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.Config
@@ -54,7 +48,7 @@ import org.mozilla.fenix.settings.sitepermissions.AUTOPLAY_BLOCK_ALL
 import org.mozilla.fenix.settings.sitepermissions.AUTOPLAY_BLOCK_AUDIBLE
 import org.mozilla.fenix.wallpapers.Wallpaper
 import java.security.InvalidParameterException
-import java.util.UUID
+import java.util.*
 
 private const val AUTOPLAY_USER_SETTING = "AUTOPLAY_USER_SETTING"
 
@@ -292,20 +286,23 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         default = false,
     )
 
-    val isTelemetryEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_telemetry),
-        default = true,
-    )
+//    val isTelemetryEnabled by booleanPreference(
+//        appContext.getPreferenceKey(R.string.pref_key_telemetry),
+//        default = true,
+//    )
+    val isTelemetryEnabled = false
 
-    var isMarketingTelemetryEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_marketing_telemetry),
-        default = !Config.channel.isMozillaOnline,
-    )
+//    var isMarketingTelemetryEnabled by booleanPreference(
+//        appContext.getPreferenceKey(R.string.pref_key_marketing_telemetry),
+//        default = !Config.channel.isMozillaOnline,
+//    )
+    val isMarketingTelemetryEnabled = false
 
-    var isExperimentationEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_experimentation),
-        default = true,
-    )
+//    var isExperimentationEnabled by booleanPreference(
+//        appContext.getPreferenceKey(R.string.pref_key_experimentation),
+//        default = true,
+//    )
+    val isExperimentationEnabled = false
 
     var isOverrideTPPopupsForPerformanceTest = false
 

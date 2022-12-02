@@ -11,25 +11,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.pm.PackageInfoCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import mozilla.components.service.glean.private.NoExtras
-import org.mozilla.fenix.*
 import mozilla.components.support.utils.ext.getPackageInfoCompat
 import org.mozilla.fenix.BrowserDirection
 import org.mozilla.fenix.BuildConfig
+import org.mozilla.fenix.Config
 import org.mozilla.fenix.GleanMetrics.Events
+import org.mozilla.fenix.HomeActivity
+import org.mozilla.fenix.R
 import org.mozilla.fenix.crashes.CrashListActivity
 import org.mozilla.fenix.databinding.FragmentAboutBinding
 import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.ext.showToolbar
 import org.mozilla.fenix.settings.SupportUtils
-import org.mozilla.fenix.settings.about.AboutItemType.LICENSING_INFO
-import org.mozilla.fenix.settings.about.AboutItemType.PRIVACY_NOTICE
-import org.mozilla.fenix.settings.about.AboutItemType.RIGHTS
-import org.mozilla.fenix.settings.about.AboutItemType.SUPPORT
-import org.mozilla.fenix.settings.about.AboutItemType.WHATS_NEW
+import org.mozilla.fenix.settings.about.AboutItemType.*
 import org.mozilla.fenix.utils.Do
 import org.mozilla.fenix.whatsnew.WhatsNew
 import org.mozilla.geckoview.BuildConfig as GeckoViewBuildConfig
@@ -108,17 +107,23 @@ class AboutFragment : Fragment(), AboutPageListener {
             val appServicesAbbreviation = getString(R.string.app_services_abbreviation)
             val appServicesVersion = mozilla.components.Build.applicationServicesVersion
 
+//            String.format(
+//                "%s (Build #%s)%s\n%s: %s\n%s: %s\n%s: %s",
+//                packageInfo.versionName,
+//                versionCode,
+//                maybeFenixGitHash,
+//                componentsAbbreviation,
+//                componentsVersion,
+//                maybeGecko,
+//                geckoVersion,
+//                appServicesAbbreviation,
+//                appServicesVersion,
+//            )
             String.format(
-                "%s (Build #%s)%s\n%s: %s\n%s: %s\n%s: %s",
+                "%s (Build #%s)%s",
                 packageInfo.versionName,
                 versionCode,
                 maybeFenixGitHash,
-                componentsAbbreviation,
-                componentsVersion,
-                maybeGecko,
-                geckoVersion,
-                appServicesAbbreviation,
-                appServicesVersion,
             )
         } catch (e: PackageManager.NameNotFoundException) {
             ""
@@ -130,6 +135,9 @@ class AboutFragment : Fragment(), AboutPageListener {
         binding.aboutText.text = aboutText
         binding.aboutContent.text = content
         binding.buildDate.text = buildDate
+
+        binding.aboutContent.isVisible = false
+        binding.buildDate.isVisible = false
     }
 
     private fun populateAboutList(): List<AboutPageItem> {
@@ -137,10 +145,10 @@ class AboutFragment : Fragment(), AboutPageListener {
 
         return if (Config.channel.isMax) {
             listOf(
-                AboutPageItem(
-                    AboutItem.Crashes,
-                    getString(R.string.about_crashes),
-                ),
+//                AboutPageItem(
+//                    AboutItem.Crashes,
+//                    getString(R.string.about_crashes),
+//                ),
                 AboutPageItem(
                     AboutItem.ExternalLink(
                         PRIVACY_NOTICE,
@@ -159,10 +167,10 @@ class AboutFragment : Fragment(), AboutPageListener {
                     AboutItem.ExternalLink(LICENSING_INFO, ABOUT_LICENSE_URL),
                     getString(R.string.about_licensing_information),
                 ),
-                AboutPageItem(
-                    AboutItem.Libraries,
-                    getString(R.string.about_other_open_source_libraries),
-                ),
+//                AboutPageItem(
+//                    AboutItem.Libraries,
+//                    getString(R.string.about_other_open_source_libraries),
+//                ),
             )
         } else {
             listOf(
@@ -246,6 +254,6 @@ class AboutFragment : Fragment(), AboutPageListener {
     }
 
     companion object {
-        private const val ABOUT_LICENSE_URL = "about:license"
+        private const val ABOUT_LICENSE_URL = "https://maxbrowser.co/licenses/"
     }
 }

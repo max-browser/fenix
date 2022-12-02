@@ -153,7 +153,7 @@ android {
                     // fatal consequences. For example see:
                     //  - https://issuetracker.google.com/issues/36924841
                     //  - https://issuetracker.google.com/issues/36905922
-                    "sharedUserId": "org.mozilla.firefox.sharedID",
+                    "sharedUserId"  : "org.mozilla.firefox.sharedID",
                     "deepLinkScheme": deepLinkSchemeValue
             ]
         }
@@ -170,19 +170,35 @@ android {
                     // fatal consequences. For example see:
                     //  - https://issuetracker.google.com/issues/36924841
                     //  - https://issuetracker.google.com/issues/36905922
-                    "sharedUserId": "org.mozilla.firefox.sharedID",
+                    "sharedUserId"  : "org.mozilla.firefox.sharedID",
                     "deepLinkScheme": deepLinkSchemeValue
             ]
         }
 
-        maxDebug {
-            shrinkResources false
-            minifyEnabled false
+//        maxDebug {
+//            shrinkResources false
+//            minifyEnabled false
+//            applicationIdSuffix ".browser.debug"
+//            resValue "bool", "IS_DEBUG", "true"
+//            pseudoLocalesEnabled true
+//            signingConfig signingConfigs.debug
+//            debuggable true
+//        }
+        maxDebug releaseTemplate >> {
+            buildConfigField "boolean", "USE_RELEASE_VERSIONING", "true"
             applicationIdSuffix ".browser.debug"
+            def deepLinkSchemeValue = "max_browser"
+            buildConfigField "String", "DEEP_LINK_SCHEME", "\"$deepLinkSchemeValue\""
+            manifestPlaceholders = [
+                    "deepLinkScheme": deepLinkSchemeValue
+            ]
+
             resValue "bool", "IS_DEBUG", "true"
-            pseudoLocalesEnabled true
-            signingConfig signingConfigs.debug
-            debuggable true
+
+            versionNameSuffix ".debug"
+
+            def formattedDateTime = new Date().format('yyyyMMddHHmmss')
+            project.ext.set("archivesBaseName", "maxDebug_${android.defaultConfig.versionName}(${android.defaultConfig.versionCode})_${formattedDateTime}");
         }
 
         maxRelease releaseTemplate >> {
@@ -193,6 +209,9 @@ android {
             manifestPlaceholders = [
                     "deepLinkScheme": deepLinkSchemeValue
             ]
+
+            def formattedDateTime = new Date().format('yyyyMMddHHmmss')
+            project.ext.set("archivesBaseName", "maxRelease${android.defaultConfig.versionName}(${android.defaultConfig.versionCode})_${formattedDateTime}");
         }
     }
 
@@ -311,6 +330,18 @@ android.applicationVariants.all { variant ->
 
     if (variant.buildType.name == "maxRelease" || variant.buildType.name == "maxDebug" ){
         // Nothing
+        variant.outputs.all { output ->
+            def appName = "AppName_"
+            def buildType = variant.buildType.name
+            def architecture = output.getFilter(com.android.build.OutputFile.ABI)
+            def newName
+            if (buildType == 'maxDebug') {
+                newName = "${appName}debug_${android.defaultConfig.versionName}_${architecture}.apk"
+            } else {
+                newName = "${appName}release_${android.defaultConfig.versionName}_${architecture}.apk"
+            }
+            outputFileName = newName
+        }
 
     } else if (useReleaseVersioning) {
         // The Google Play Store does not allow multiple APKs for the same app that all have the
@@ -347,22 +378,24 @@ android.applicationVariants.all { variant ->
 // -------------------------------------------------------------------------------------------------
 
     buildConfigField 'String', 'SENTRY_TOKEN', 'null'
-    if (!isDebug) {
-        buildConfigField 'boolean', 'CRASH_REPORTING', 'true'
-        // Reading sentry token from local file (if it exists). In a release task on taskcluster it will be available.
-        try {
-            def token = new File("${rootDir}/.sentry_token").text.trim()
-            buildConfigField 'String', 'SENTRY_TOKEN', '"' + token + '"'
-        } catch (FileNotFoundException ignored) {}
-    } else {
-        buildConfigField 'boolean', 'CRASH_REPORTING', 'false'
-    }
+//    if (!isDebug) {
+//        buildConfigField 'boolean', 'CRASH_REPORTING', 'true'
+//        // Reading sentry token from local file (if it exists). In a release task on taskcluster it will be available.
+//        try {
+//            def token = new File("${rootDir}/.sentry_token").text.trim()
+//            buildConfigField 'String', 'SENTRY_TOKEN', '"' + token + '"'
+//        } catch (FileNotFoundException ignored) {}
+//    } else {
+//        buildConfigField 'boolean', 'CRASH_REPORTING', 'false'
+//    }
+    buildConfigField 'boolean', 'CRASH_REPORTING', 'false'
 
-    if (!isDebug) {
-        buildConfigField 'boolean', 'TELEMETRY', 'true'
-    } else {
-        buildConfigField 'boolean', 'TELEMETRY', 'false'
-    }
+//    if (!isDebug) {
+//        buildConfigField 'boolean', 'TELEMETRY', 'true'
+//    } else {
+//        buildConfigField 'boolean', 'TELEMETRY', 'false'
+//    }
+    buildConfigField 'boolean', 'TELEMETRY', 'false'
 
     def buildDate = Config.generateBuildDate()
     // Setting buildDate with every build changes the generated BuildConfig, which slows down the
@@ -643,7 +676,7 @@ dependencies {
     implementation Deps.mozilla_lib_state
     implementation Deps.mozilla_lib_dataprotect
     debugImplementation Deps.leakcanary
-    maxDebugImplementation Deps.leakcanary
+    // maxDebugImplementation Deps.leakcanary
 
     implementation Deps.androidx_annotation
     implementation Deps.androidx_compose_ui
@@ -815,9 +848,6 @@ if (project.hasProperty("coverage")) {
     android {
         buildTypes {
             debug {
-                testCoverageEnabled true
-            }
-            maxDebug {
                 testCoverageEnabled true
             }
         }

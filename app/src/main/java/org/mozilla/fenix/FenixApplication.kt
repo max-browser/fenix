@@ -93,7 +93,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         recordOnInit() // DO NOT MOVE ANYTHING ABOVE HERE: the timing of this measurement is critical.
     }
 
-    private val logger = Logger("fFenixApplication")
+    private val logger = Logger("FenixApplication")
 
     open val components by lazy { Components(this) }
 
@@ -197,7 +197,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
 
         run {
             // We need to always initialize Glean and do it early here.
-            initializeGlean()
+            // initializeGlean()
 
             // Attention: Do not invoke any code from a-s in this scope.
             val megazordSetup = finishSetupMegazord()

@@ -61,7 +61,7 @@ class StudiesView(
                 .setPositiveButton(
                     R.string.studies_restart_dialog_ok,
                 ) { dialog, _ ->
-                    settings.isExperimentationEnabled = isChecked
+                    // settings.isExperimentationEnabled = isChecked
                     val experimentsKey = context.getPreferenceKey(R.string.pref_key_experimentation)
                     // In this case, we are using commit() on purpose as we want to warranty
                     // that we are changing the setting before quitting the app.
