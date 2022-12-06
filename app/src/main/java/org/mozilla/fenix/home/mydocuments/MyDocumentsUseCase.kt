@@ -4,9 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.util.Log
 import com.max.browser.core.MaxBrowserConstant
-import com.max.browser.core.doc.QueryData
+import com.max.browser.core.doc.QueriedData
 import com.max.browser.core.domain.repository.PdfCacheRepository
 import com.max.browser.core.domain.repository.QueryDocRepository
 
@@ -41,8 +40,9 @@ class MyDocumentsUseCase(
         return queryDocRepository.queryDocumentFromDocumentTree(
             context,
             Uri.parse(uriString),
-            "application/pdf",
-        ).map {
+        ) {
+            return@queryDocumentFromDocumentTree it.mimeType == "application/pdf"
+        }.map {
             MyDocumentsItem(
                 it.sourceFileName,
                 it.sourceUri,
@@ -54,7 +54,7 @@ class MyDocumentsUseCase(
     }
 
     private fun queryDocumentFromPath(): Collection<MyDocumentsItem> {
-        val queryDataList = ArrayList<QueryData>()
+        val queryDataList = ArrayList<QueriedData>()
 
         val pathList = ArrayList<String>()
 
@@ -62,12 +62,16 @@ class MyDocumentsUseCase(
         pathList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath)
         pathList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).absolutePath)
 
-        MaxBrowserConstant.WHATSAPP_NAMES.forEach {
-            pathList.add("${Environment.getExternalStorageDirectory()}/$it/Media/$it Documents")
+        MaxBrowserConstant.WHATSAPP_INFO_LIST.forEach {
+            pathList.add("${Environment.getExternalStorageDirectory()}/${it.first}/Media/${it.first} Documents")
         }
 
         pathList.forEach {
-            queryDataList.addAll(queryDocRepository.queryDocumentFromPath(it))
+            queryDataList.addAll(
+                queryDocRepository.queryDocumentFromPath(it) {
+                    return@queryDocumentFromPath it.extension == "pdf"
+                },
+            )
         }
 
         return queryDataList.distinctBy {
