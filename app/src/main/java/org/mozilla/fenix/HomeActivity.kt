@@ -32,6 +32,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
 import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
+import com.max.browser.core.status.checkIntentToDo
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import mozilla.appservices.places.BookmarkRoot
@@ -313,6 +314,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         val key = getPreferenceKey(R.string.pref_key_has_checked_setting_default_browser_after_cold_starting_app)
         sp.edit().putBoolean(key, false).apply()
 
+        checkIntentToDo(intent)
+
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
     }
 
@@ -506,6 +509,10 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             handleNewIntent(it)
         }
         startupPathProvider.onIntentReceived(intent)
+
+        intent?.let {
+            checkIntentToDo(intent)
+        }
     }
 
     open fun handleNewIntent(intent: Intent) {

@@ -6,6 +6,7 @@ package org.mozilla.fenix.home.topsites
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.PopupWindow
@@ -32,11 +33,7 @@ import org.mozilla.fenix.GleanMetrics.TopSites
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.databinding.TopSiteItemBinding
-import org.mozilla.fenix.ext.bitmapForUrl
-import org.mozilla.fenix.ext.components
-import org.mozilla.fenix.ext.isSystemInDarkTheme
-import org.mozilla.fenix.ext.loadIntoView
-import org.mozilla.fenix.ext.name
+import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.home.sessioncontrol.TopSiteInteractor
 import org.mozilla.fenix.settings.SupportUtils
 import org.mozilla.fenix.utils.view.ViewHolder
@@ -53,6 +50,9 @@ class TopSiteItemViewHolder(
 
     init {
         itemView.setOnLongClickListener {
+            if (topSite.url == SupportUtils.MAX_STATUS_SAVER_URL) {
+                return@setOnLongClickListener true
+            }
             interactor.onTopSiteMenuOpened()
             TopSites.longPress.record(TopSites.LongPressExtra(topSite.name()))
 
@@ -84,10 +84,9 @@ class TopSiteItemViewHolder(
         }
 
         appStore.flowScoped(viewLifecycleOwner) { flow ->
-            flow.map { state -> state.wallpaperState }
-                .ifChanged()
-                .collect { currentState ->
-                    var backgroundColor = ContextCompat.getColor(view.context, R.color.fx_mobile_layer_color_2)
+            flow.map { state -> state.wallpaperState }.ifChanged().collect { currentState ->
+                    var backgroundColor =
+                        ContextCompat.getColor(view.context, R.color.fx_mobile_layer_color_2)
 
                     currentState.runIfWallpaperCardColorsAreAvailable { cardColorLight, cardColorDark ->
                         backgroundColor = if (view.context.isSystemInDarkTheme()) {
@@ -128,7 +127,12 @@ class TopSiteItemViewHolder(
 
         if (topSite is TopSite.Pinned || topSite is TopSite.Default) {
             val pinIndicator = getDrawable(itemView.context, R.drawable.ic_new_pin)
-            binding.topSiteTitle.setCompoundDrawablesWithIntrinsicBounds(pinIndicator, null, null, null)
+            binding.topSiteTitle.setCompoundDrawablesWithIntrinsicBounds(
+                pinIndicator,
+                null,
+                null,
+                null,
+            )
         } else {
             binding.topSiteTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         }
@@ -137,35 +141,77 @@ class TopSiteItemViewHolder(
             binding.topSiteSubtitle.isVisible = true
 
             viewLifecycleOwner.lifecycleScope.launch(IO) {
-                itemView.context.components.core.client.bitmapForUrl(topSite.imageUrl)?.let { bitmap ->
-                    withContext(Main) {
-                        binding.faviconImage.setImageBitmap(bitmap)
-                        submitTopSitesImpressionPing(topSite, position)
+                itemView.context.components.core.client.bitmapForUrl(topSite.imageUrl)
+                    ?.let { bitmap ->
+                        withContext(Main) {
+                            binding.faviconImage.setImageBitmap(bitmap)
+                            submitTopSitesImpressionPing(topSite, position)
+                        }
                     }
-                }
             }
         } else {
             when (topSite.url) {
                 SupportUtils.POCKET_TRENDING_URL -> {
-                    binding.faviconImage.setImageDrawable(getDrawable(itemView.context, R.drawable.ic_pocket))
+                    binding.faviconImage.setImageDrawable(
+                        getDrawable(
+                            itemView.context,
+                            R.drawable.ic_pocket,
+                        ),
+                    )
                 }
                 SupportUtils.BAIDU_URL -> {
-                    binding.faviconImage.setImageDrawable(getDrawable(itemView.context, R.drawable.ic_baidu))
+                    binding.faviconImage.setImageDrawable(
+                        getDrawable(
+                            itemView.context,
+                            R.drawable.ic_baidu,
+                        ),
+                    )
                 }
                 SupportUtils.JD_URL -> {
-                    binding.faviconImage.setImageDrawable(getDrawable(itemView.context, R.drawable.ic_jd))
+                    binding.faviconImage.setImageDrawable(
+                        getDrawable(
+                            itemView.context,
+                            R.drawable.ic_jd,
+                        ),
+                    )
                 }
                 SupportUtils.PDD_URL -> {
-                    binding.faviconImage.setImageDrawable(getDrawable(itemView.context, R.drawable.ic_pdd))
+                    binding.faviconImage.setImageDrawable(
+                        getDrawable(
+                            itemView.context,
+                            R.drawable.ic_pdd,
+                        ),
+                    )
                 }
                 SupportUtils.TC_URL -> {
-                    binding.faviconImage.setImageDrawable(getDrawable(itemView.context, R.drawable.ic_tc))
+                    binding.faviconImage.setImageDrawable(
+                        getDrawable(
+                            itemView.context,
+                            R.drawable.ic_tc,
+                        ),
+                    )
                 }
                 SupportUtils.MEITUAN_URL -> {
-                    binding.faviconImage.setImageDrawable(getDrawable(itemView.context, R.drawable.ic_meituan))
+                    binding.faviconImage.setImageDrawable(
+                        getDrawable(
+                            itemView.context,
+                            R.drawable.ic_meituan,
+                        ),
+                    )
+                }
+                SupportUtils.MAX_STATUS_SAVER_URL -> {
+                    binding.faviconImage.setImageDrawable(
+                        getDrawable(
+                            itemView.context,
+                            R.drawable.max_ic_top_site_status_saver,
+                        ),
+                    )
                 }
                 else -> {
-                    itemView.context.components.core.icons.loadIntoView(binding.faviconImage, topSite.url)
+                    itemView.context.components.core.icons.loadIntoView(
+                        binding.faviconImage,
+                        topSite.url,
+                    )
                 }
             }
         }

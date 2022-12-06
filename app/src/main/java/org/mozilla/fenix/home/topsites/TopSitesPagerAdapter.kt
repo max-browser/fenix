@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.home.topsites
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
@@ -15,6 +16,7 @@ import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.home.sessioncontrol.AdapterItem.TopSitePagerPayload
 import org.mozilla.fenix.home.sessioncontrol.TopSiteInteractor
 import org.mozilla.fenix.home.topsites.TopSitePagerViewHolder.Companion.TOP_SITES_PER_PAGE
+import org.mozilla.fenix.settings.SupportUtils
 
 class TopSitesPagerAdapter(
     private val appStore: AppStore,
@@ -45,6 +47,42 @@ class TopSitesPagerAdapter(
         }
     }
 
+    override fun submitList(list: List<List<TopSite>>?) {
+       val list = ArrayList<List<TopSite>>().apply {
+           list?.let {
+               addAll(list)
+           }
+       }
+        if (list.isNotEmpty()) {
+            var toNext: TopSite? = null
+            val newList = ArrayList<TopSite>()
+            newList.add(
+                // add status saver to head
+                TopSite.Default(
+                    id = 9999,
+                    title = "Status saver",
+                    url = SupportUtils.MAX_STATUS_SAVER_URL,
+                    createdAt = System.currentTimeMillis(),
+                ),
+            )
+            newList.addAll(list[0])
+            if (newList.size > 4) {
+                toNext = newList.removeLast<TopSite>()
+            }
+            list[0] = newList
+
+            toNext?.let {
+                val nextList = if (list.size > 1) {
+                    ArrayList<TopSite>().apply { addAll(list[1]) }
+                } else {
+                    ArrayList<TopSite>()
+                }
+                nextList.add(0, it)
+                list[1] = nextList
+            }
+        }
+        super.submitList(list)
+    }
     @VisibleForTesting
     internal fun update(
         payload: TopSitePagerPayload,

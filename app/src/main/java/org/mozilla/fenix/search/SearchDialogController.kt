@@ -14,6 +14,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
 import com.max.browser.core.ReportManager
+import com.max.browser.core.status.StatusActivity
 import mozilla.components.browser.state.search.SearchEngine
 import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import mozilla.components.browser.state.store.BrowserStore
@@ -98,6 +99,9 @@ class SearchDialogController(
                 SupportUtils.getMozillaPageUrl(SupportUtils.MozillaPage.MANIFESTO),
                 fromHomeScreen,
             )
+            SupportUtils.MAX_STATUS_SAVER_URL ->{
+                activity.startActivity(Intent(activity, StatusActivity::class.java))
+            }
             else ->
                 if (url.isNotBlank()) {
                     openSearchOrUrl(url, fromHomeScreen)

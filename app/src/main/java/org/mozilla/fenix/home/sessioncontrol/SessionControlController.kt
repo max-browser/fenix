@@ -5,12 +5,15 @@
 package org.mozilla.fenix.home.sessioncontrol
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
 import com.max.browser.core.ReportManager
+import com.max.browser.core.status.StatusActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -436,16 +439,24 @@ class DefaultSessionControlController(
             )
         }
 
-        val tabId = addTabUseCase.invoke(
-            url = appendSearchAttributionToUrlIfNeeded(topSite.url),
-            selectTab = true,
-            startLoading = true,
-        )
+        when(topSite.url){
+            SupportUtils.MAX_STATUS_SAVER_URL->{
+                activity.startActivity(Intent(activity, StatusActivity::class.java))
+            }
+            else->{
+                val tabId = addTabUseCase.invoke(
+                    url = appendSearchAttributionToUrlIfNeeded(topSite.url),
+                    selectTab = true,
+                    startLoading = true,
+                )
 
-        if (settings.openNextTabInDesktopMode) {
-            activity.handleRequestDesktopMode(tabId)
+                if (settings.openNextTabInDesktopMode) {
+                    activity.handleRequestDesktopMode(tabId)
+                }
+                activity.openToBrowser(BrowserDirection.FromHome)
+            }
         }
-        activity.openToBrowser(BrowserDirection.FromHome)
+
     }
 
     @VisibleForTesting
