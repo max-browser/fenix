@@ -4,6 +4,9 @@ import org.gradle.internal.logging.text.StyledTextOutput.Style
 import org.gradle.internal.logging.text.StyledTextOutputFactory
 import org.mozilla.fenix.gradle.tasks.ApkSizeTask
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 import static org.gradle.api.tasks.testing.TestResult.ResultType
 
 plugins {
@@ -332,14 +335,14 @@ android.applicationVariants.all { variant ->
     if (variant.buildType.name == "maxRelease" || variant.buildType.name == "maxDebug" ){
         // Nothing
         variant.outputs.all { output ->
-            def appName = "AppName_"
+            def appName = "MaxBrowser"
             def buildType = variant.buildType.name
             def architecture = output.getFilter(com.android.build.OutputFile.ABI)
             def newName
             if (buildType == 'maxDebug') {
-                newName = "${appName}debug_${android.defaultConfig.versionName}_${architecture}.apk"
+                newName = "${appName}_debug_${android.defaultConfig.versionName}_${architecture}_${getDateTime()}.apk"
             } else {
-                newName = "${appName}release_${android.defaultConfig.versionName}_${architecture}.apk"
+                newName = "${appName}_release_${android.defaultConfig.versionName}_${architecture}_${getDateTime()}.apk"
             }
             outputFileName = newName
         }
@@ -1017,3 +1020,8 @@ android.applicationVariants.all { variant ->
 
 // Enable expiration by major version.
 ext.gleanExpireByVersion = Config.majorVersion(project)
+
+def getDateTime() {
+    DateFormat df = new SimpleDateFormat("yyyyMMddHHmm");
+    return df.format(new Date());
+}
