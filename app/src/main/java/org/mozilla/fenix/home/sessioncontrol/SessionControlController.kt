@@ -6,13 +6,14 @@ package org.mozilla.fenix.home.sessioncontrol
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.util.Log
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
 import com.max.browser.core.ReportManager
+import com.max.browser.core.status.BundleKey
 import com.max.browser.core.status.StatusActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,14 +35,7 @@ import mozilla.components.support.ktx.android.view.showKeyboard
 import mozilla.components.support.ktx.kotlin.isUrl
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.BrowserDirection
-import org.mozilla.fenix.GleanMetrics.Collections
-import org.mozilla.fenix.GleanMetrics.Events
-import org.mozilla.fenix.GleanMetrics.HomeScreen
-import org.mozilla.fenix.GleanMetrics.Pings
-import org.mozilla.fenix.GleanMetrics.Pocket
-import org.mozilla.fenix.GleanMetrics.RecentBookmarks
-import org.mozilla.fenix.GleanMetrics.RecentTabs
-import org.mozilla.fenix.GleanMetrics.TopSites
+import org.mozilla.fenix.GleanMetrics.*
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.BrowserAnimator
@@ -440,8 +434,13 @@ class DefaultSessionControlController(
         }
 
         when(topSite.url){
-            SupportUtils.MAX_STATUS_SAVER_URL->{
-                activity.startActivity(Intent(activity, StatusActivity::class.java))
+            SupportUtils.MAX_STATUS_SAVER_URL -> {
+                activity.startActivity(
+                    Intent(activity, StatusActivity::class.java),
+                    Bundle().apply {
+                        putString(BundleKey.KEY_MOD_FROM, "click_top_site")
+                    },
+                )
             }
             else->{
                 val tabId = addTabUseCase.invoke(
