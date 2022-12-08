@@ -32,7 +32,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
 import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
-import com.max.browser.core.status.checkIntentToDo
+import com.max.browser.core.delegate.MaxBrowserActivityDelegate
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import mozilla.appservices.places.BookmarkRoot
@@ -88,8 +88,8 @@ import org.mozilla.fenix.library.historymetadata.HistoryMetadataGroupFragmentDir
 import org.mozilla.fenix.library.recentlyclosed.RecentlyClosedFragmentDirections
 import org.mozilla.fenix.onboarding.DefaultBrowserNotificationWorker
 import org.mozilla.fenix.onboarding.FenixOnboarding
-import org.mozilla.fenix.perf.*
 import org.mozilla.fenix.onboarding.ReEngagementNotificationWorker
+import org.mozilla.fenix.perf.*
 import org.mozilla.fenix.search.SearchDialogFragmentDirections
 import org.mozilla.fenix.session.PrivateNotificationService
 import org.mozilla.fenix.settings.HttpsOnlyFragmentDirections
@@ -176,6 +176,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
     private val startupPathProvider = StartupPathProvider()
     private lateinit var startupTypeTelemetry: StartupTypeTelemetry
+
+    private val maxBrowserActivityDelegate = MaxBrowserActivityDelegate()
 
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
@@ -314,7 +316,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         val key = getPreferenceKey(R.string.pref_key_has_checked_setting_default_browser_after_cold_starting_app)
         sp.edit().putBoolean(key, false).apply()
 
-        checkIntentToDo(intent)
+
+        maxBrowserActivityDelegate.onCreate(this)
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
     }
@@ -510,9 +513,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         }
         startupPathProvider.onIntentReceived(intent)
 
-        intent?.let {
-            checkIntentToDo(intent)
-        }
+        maxBrowserActivityDelegate.onNewIntent(this, intent)
     }
 
     open fun handleNewIntent(intent: Intent) {

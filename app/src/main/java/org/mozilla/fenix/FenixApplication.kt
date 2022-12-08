@@ -19,7 +19,7 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.work.Configuration.Builder
 import androidx.work.Configuration.Provider
-import com.max.browser.core.MaxBrowserApplicationDelegate
+import com.max.browser.core.delegate.MaxBrowserApplicationDelegate
 import kotlinx.coroutines.*
 import mozilla.appservices.Megazord
 import mozilla.components.browser.state.action.SystemAction
@@ -100,7 +100,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
     var visibilityLifecycleCallback: VisibilityLifecycleCallback? = null
         private set
 
-    private val  maxBrowserApplication = MaxBrowserApplicationDelegate()
+    private val maxBrowserApplication = MaxBrowserApplicationDelegate()
 
     override fun onCreate() {
         initMaxBrowserApplication()

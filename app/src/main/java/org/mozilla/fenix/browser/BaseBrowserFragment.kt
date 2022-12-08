@@ -485,6 +485,8 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         )
 
         downloadFeature.onDownloadStopped = { downloadState, _, downloadJobStatus ->
+            checkToReportDownloadContentType(downloadState)
+
             // If the download is just paused, don't show any in-app notification
             if (shouldShowCompletedDownloadDialog(downloadState, downloadJobStatus)) {
                 saveDownloadDialogState(
@@ -805,6 +807,17 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         )
 
         initializeEngineView(toolbarHeight)
+    }
+
+    private fun checkToReportDownloadContentType(downloadState: DownloadState) {
+        if(downloadState.status == DownloadState.Status.COMPLETED) {
+            ReportManager.getInstance().report(
+                "download_content_type",
+                Bundle().apply {
+                    putString("content_type", downloadState.contentType)
+                }
+            )
+        }
     }
 
     /**
