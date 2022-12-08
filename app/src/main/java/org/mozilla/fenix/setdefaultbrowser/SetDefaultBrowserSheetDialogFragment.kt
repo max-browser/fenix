@@ -69,7 +69,7 @@ fun Fragment.checkToShowSetDefaultBrowserSheetDialogFragment() {
     key = getPreferenceKey(R.string.pref_key_count_of_showing_set_default_browser_dialog)
 
     val time = System.currentTimeMillis()
-    if (time - firstTime > TimeUnit.DAYS.toSeconds(1)) {
+    if (time - firstTime > TimeUnit.DAYS.toMillis(1)) {
         // 超過一天，重置累計次數
         sp.edit().putInt(key, 0).apply()
     }
