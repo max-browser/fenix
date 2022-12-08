@@ -4,7 +4,6 @@
 
 package org.mozilla.fenix.home.topsites
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
@@ -25,8 +24,8 @@ class TopSitesPagerAdapter(
 ) : ListAdapter<List<TopSite>, TopSiteViewHolder>(TopSiteListDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopSiteViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(TopSiteViewHolder.LAYOUT_ID, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(TopSiteViewHolder.LAYOUT_ID, parent, false)
         return TopSiteViewHolder(view, appStore, viewLifecycleOwner, interactor)
     }
 
@@ -48,11 +47,11 @@ class TopSitesPagerAdapter(
     }
 
     override fun submitList(list: List<List<TopSite>>?) {
-       val list = ArrayList<List<TopSite>>().apply {
-           list?.let {
-               addAll(list)
-           }
-       }
+        val list = ArrayList<List<TopSite>>().apply {
+            list?.let {
+                addAll(list)
+            }
+        }
         if (list.isNotEmpty()) {
             var toNext: TopSite? = null
             val newList = ArrayList<TopSite>()
@@ -78,11 +77,17 @@ class TopSitesPagerAdapter(
                     ArrayList<TopSite>()
                 }
                 nextList.add(0, it)
-                list[1] = nextList
+
+                if (list.size > 1) {
+                    list[1] = nextList
+                } else {
+                    list.add(1, nextList)
+                }
             }
         }
         super.submitList(list)
     }
+
     @VisibleForTesting
     internal fun update(
         payload: TopSitePagerPayload,
