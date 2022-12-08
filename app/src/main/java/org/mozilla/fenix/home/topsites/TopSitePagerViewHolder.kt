@@ -64,9 +64,9 @@ class TopSitePagerViewHolder(
 
     fun bind(topSites: List<TopSite>) {
         val topSites = ArrayList<TopSite>().apply { addAll(topSites) }
-        if (topSites.isNotEmpty() && topSites[0].id != TOP_SITE_STATUS_SAVER.id) {
-            topSites.add(0, TOP_SITE_STATUS_SAVER)
-        }
+//        if (topSites.isNotEmpty() && topSites[0].id != TOP_SITE_STATUS_SAVER.id) {
+//            topSites.add(0, TOP_SITE_STATUS_SAVER)
+//        }
         val chunkedTopSites = topSites.chunked(TOP_SITES_PER_PAGE)
         topSitesPagerAdapter.submitList(chunkedTopSites)
 

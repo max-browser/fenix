@@ -5,6 +5,7 @@
 package org.mozilla.fenix.ext
 
 import mozilla.components.feature.top.sites.TopSite
+import org.mozilla.fenix.home.topsites.TopSitePagerViewHolder
 import org.mozilla.fenix.settings.SupportUtils
 
 /**
@@ -23,7 +24,8 @@ fun TopSite.name(): String = when (this) {
  */
 fun List<TopSite>.sort(): List<TopSite> {
     val defaultGoogleTopSiteIndex = this.indexOfFirst {
-        it is TopSite.Default && it.url == SupportUtils.GOOGLE_URL
+//        it is TopSite.Default && it.url == SupportUtils.GOOGLE_URL
+        it is TopSite.Default && it.url == SupportUtils.MAX_STATUS_SAVER_URL
     }
 
     return if (defaultGoogleTopSiteIndex == -1) {
@@ -34,4 +36,21 @@ fun List<TopSite>.sort(): List<TopSite> {
         result.add(0, this[defaultGoogleTopSiteIndex])
         result
     }
+}
+
+/**
+ * Returns a list of [TopSite] with the added Status Saver item if needed.
+ */
+fun List<TopSite>.checkToAddStatusSaverTopSite(): List<TopSite> {
+    val result = this.toMutableList()
+    var has = false
+    result.forEach {
+        if (it.url == SupportUtils.MAX_STATUS_SAVER_URL) {
+            has = true
+        }
+    }
+    if (!has) {
+        result.add(0, TopSitePagerViewHolder.TOP_SITE_STATUS_SAVER)
+    }
+    return result
 }

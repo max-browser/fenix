@@ -8,6 +8,7 @@ import mozilla.components.feature.top.sites.TopSite
 import mozilla.components.feature.top.sites.view.TopSitesView
 import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.components.appstate.AppAction
+import org.mozilla.fenix.ext.checkToAddStatusSaverTopSite
 import org.mozilla.fenix.ext.sort
 import org.mozilla.fenix.utils.Settings
 
@@ -22,7 +23,7 @@ class DefaultTopSitesView(
                 if (!settings.showContileFeature) {
                     topSites
                 } else {
-                    topSites.sort()
+                    topSites.checkToAddStatusSaverTopSite().sort()
                 },
             ),
         )

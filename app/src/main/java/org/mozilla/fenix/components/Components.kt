@@ -27,11 +27,7 @@ import org.mozilla.fenix.autofill.AutofillUnlockActivity
 import org.mozilla.fenix.components.appstate.AppState
 import org.mozilla.fenix.components.metrics.MetricsMiddleware
 import org.mozilla.fenix.datastore.pocketStoriesSelectedCategoriesDataStore
-import org.mozilla.fenix.ext.asRecentTabs
-import org.mozilla.fenix.ext.components
-import org.mozilla.fenix.ext.filterState
-import org.mozilla.fenix.ext.settings
-import org.mozilla.fenix.ext.sort
+import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.gleanplumb.state.MessagingMiddleware
 import org.mozilla.fenix.home.PocketUpdatesMiddleware
 import org.mozilla.fenix.home.blocklist.BlocklistHandler
@@ -188,7 +184,7 @@ class Components(private val context: Context) {
             initialState = AppState(
                 collections = core.tabCollectionStorage.cachedTabCollections,
                 expandedCollections = emptySet(),
-                topSites = core.topSitesStorage.cachedTopSites.sort(),
+                topSites = core.topSitesStorage.cachedTopSites.checkToAddStatusSaverTopSite().sort(),
                 recentBookmarks = emptyList(),
                 showCollectionPlaceholder = settings.showCollectionsPlaceholderOnHome,
                 // Provide an initial state for recent tabs to prevent re-rendering on the home screen.

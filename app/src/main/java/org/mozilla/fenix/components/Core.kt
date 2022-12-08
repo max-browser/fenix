@@ -74,11 +74,7 @@ import mozilla.components.service.sync.autofill.AutofillCreditCardsAddressesStor
 import mozilla.components.service.sync.logins.SyncableLoginsStorage
 import mozilla.components.support.base.worker.Frequency
 import mozilla.components.support.locale.LocaleManager
-import org.mozilla.fenix.AppRequestInterceptor
-import org.mozilla.fenix.BuildConfig
-import org.mozilla.fenix.Config
-import org.mozilla.fenix.IntentReceiverActivity
-import org.mozilla.fenix.R
+import org.mozilla.fenix.*
 import org.mozilla.fenix.components.search.SearchMigration
 import org.mozilla.fenix.downloads.DownloadService
 import org.mozilla.fenix.ext.components
@@ -96,7 +92,7 @@ import org.mozilla.fenix.share.SaveToPDFMiddleware
 import org.mozilla.fenix.telemetry.TelemetryMiddleware
 import org.mozilla.fenix.utils.getUndoDelay
 import org.mozilla.geckoview.GeckoRuntime
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -476,6 +472,13 @@ class Core(
                         ),
                     )
                 }
+
+                defaultTopSites.add(
+                    Pair(
+                        "Status saver",
+                        SupportUtils.MAX_STATUS_SAVER_URL,
+                    ),
+                )
 
                 context.settings().defaultTopSitesAdded = true
             }
