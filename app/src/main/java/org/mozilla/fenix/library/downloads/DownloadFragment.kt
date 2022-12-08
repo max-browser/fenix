@@ -5,17 +5,15 @@
 package org.mozilla.fenix.library.downloads
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
+import com.max.browser.core.pdf.openPdfReaderByFilePath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.MainScope
@@ -30,12 +28,7 @@ import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.components.StoreProvider
 import org.mozilla.fenix.databinding.FragmentDownloadsBinding
-import org.mozilla.fenix.ext.components
-import org.mozilla.fenix.ext.filterNotExistsOnDisk
-import org.mozilla.fenix.ext.getRootView
-import org.mozilla.fenix.ext.requireComponents
-import org.mozilla.fenix.ext.setTextColor
-import org.mozilla.fenix.ext.showToolbar
+import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.library.LibraryPageFragment
 import org.mozilla.fenix.utils.allowUndo
 
@@ -209,25 +202,31 @@ class DownloadFragment : LibraryPageFragment<DownloadItem>(), UserInteractionHan
     }
 
     private fun openItem(item: DownloadItem, mode: BrowsingMode? = null) {
-        mode?.let { (activity as HomeActivity).browsingModeManager.mode = it }
-        context?.let {
-            val contentLength = if (item.size.isNotEmpty()) {
-                item.size.toLong()
-            } else {
-                0L
+        if (item.contentType?.contains("pdf") == true) {
+            requireContext().openPdfReaderByFilePath(item.filePath )
+
+        } else {
+            mode?.let { (activity as HomeActivity).browsingModeManager.mode = it }
+            context?.let {
+                val contentLength = if (item.size.isNotEmpty()) {
+                    item.size.toLong()
+                } else {
+                    0L
+                }
+                AbstractFetchDownloadService.openFile(
+                    applicationContext = it.applicationContext,
+                    download = DownloadState(
+                        id = item.id,
+                        url = item.url,
+                        fileName = item.fileName,
+                        contentType = item.contentType,
+                        status = item.status,
+                        contentLength = contentLength,
+                    ),
+                )
             }
-            AbstractFetchDownloadService.openFile(
-                applicationContext = it.applicationContext,
-                download = DownloadState(
-                    id = item.id,
-                    url = item.url,
-                    fileName = item.fileName,
-                    contentType = item.contentType,
-                    status = item.status,
-                    contentLength = contentLength,
-                ),
-            )
         }
+
     }
 
     private fun getDeleteDownloadItemsOperation(

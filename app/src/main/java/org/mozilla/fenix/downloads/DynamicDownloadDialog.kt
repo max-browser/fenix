@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.max.browser.core.pdf.openPdfReaderByFilePath
 import mozilla.components.browser.state.state.content.DownloadState
 import mozilla.components.feature.downloads.AbstractFetchDownloadService
 import mozilla.components.feature.downloads.toMegabyteOrKilobyteString
@@ -93,13 +94,18 @@ class DynamicDownloadDialog(
                     mozilla.components.feature.downloads.R.string.mozac_feature_downloads_button_open,
                 )
                 setOnClickListener {
-                    val fileWasOpened = AbstractFetchDownloadService.openFile(
-                        applicationContext = context.applicationContext,
-                        download = downloadState,
-                    )
+                    if (downloadState.contentType?.contains("pdf") == true) {
+                        context.openPdfReaderByFilePath(downloadState.filePath)
 
-                    if (!fileWasOpened) {
-                        onCannotOpenFile(downloadState)
+                    } else {
+                        val fileWasOpened = AbstractFetchDownloadService.openFile(
+                            applicationContext = context.applicationContext,
+                            download = downloadState,
+                        )
+
+                        if (!fileWasOpened) {
+                            onCannotOpenFile(downloadState)
+                        }
                     }
 
                     dismiss()
