@@ -16,6 +16,7 @@ import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.databinding.ComponentTopSitesPagerBinding
 import org.mozilla.fenix.home.sessioncontrol.AdapterItem
 import org.mozilla.fenix.home.sessioncontrol.TopSiteInteractor
+import org.mozilla.fenix.settings.SupportUtils
 
 class TopSitePagerViewHolder(
     view: View,
@@ -62,6 +63,10 @@ class TopSitePagerViewHolder(
     }
 
     fun bind(topSites: List<TopSite>) {
+        val topSites = ArrayList<TopSite>().apply { addAll(topSites) }
+        if (topSites.isNotEmpty() && topSites[0].id != TOP_SITE_STATUS_SAVER.id) {
+            topSites.add(0, TOP_SITE_STATUS_SAVER)
+        }
         val chunkedTopSites = topSites.chunked(TOP_SITES_PER_PAGE)
         topSitesPagerAdapter.submitList(chunkedTopSites)
 
@@ -80,5 +85,12 @@ class TopSitePagerViewHolder(
         const val LAYOUT_ID = R.layout.component_top_sites_pager
         const val TOP_SITES_MAX_PAGE_SIZE = 2
         const val TOP_SITES_PER_PAGE = 8
+
+        val TOP_SITE_STATUS_SAVER  = TopSite.Default(
+        id = 9999,
+        title = "Status saver",
+        url = SupportUtils.MAX_STATUS_SAVER_URL,
+        createdAt = System.currentTimeMillis(),
+        )
     }
 }
