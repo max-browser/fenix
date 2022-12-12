@@ -104,7 +104,7 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
         val allowCache = args.installAddonId == null || installExternalAddonComplete
         lifecycleScope.launch(IO) {
             try {
-                val addons = requireContext().components.addonManager.getAddons(allowCache = allowCache)
+                val addons = requireContext().components.addonManager.getAddons(allowCache = allowCache).removeFirefoxString(requireContext())
                 // Add-ons that should be excluded in Mozilla Online builds
                 val excludedAddonIDs = if (Config.channel.isMozillaOnline &&
                     !BuildConfig.MOZILLA_ONLINE_ADDON_EXCLUSIONS.isNullOrEmpty()
@@ -113,6 +113,7 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
                 } else {
                     emptyList<String>()
                 }
+
                 lifecycleScope.launch(Dispatchers.Main) {
                     runIfFragmentIsAttached {
                         if (!shouldRefresh) {
@@ -372,5 +373,19 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
         private const val PERMISSIONS_DIALOG_FRAGMENT_TAG = "ADDONS_PERMISSIONS_DIALOG_FRAGMENT"
         private const val INSTALLATION_DIALOG_FRAGMENT_TAG = "ADDONS_INSTALLATION_DIALOG_FRAGMENT"
         private const val BUNDLE_KEY_INSTALL_EXTERNAL_ADDON_COMPLETE = "INSTALL_EXTERNAL_ADDON_COMPLETE"
+    }
+}
+
+private fun List<Addon>.removeFirefoxString(context: Context): ArrayList<Addon> {
+    val addons = this
+    return ArrayList<Addon>().apply {
+        addons.forEach { addon ->
+            val newMap = HashMap<String, String>()
+            addon.translatableSummary.forEach { entry ->
+                newMap[entry.key] =
+                    entry.value.replace("Firefox", context.getString(R.string.app_name))
+            }
+            add(addon.copy(translatableSummary = newMap))
+        }
     }
 }

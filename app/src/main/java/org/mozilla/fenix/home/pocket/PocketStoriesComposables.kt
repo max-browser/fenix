@@ -552,27 +552,27 @@ fun PoweredByPocketHeader(
                     style = FirefoxTheme.typography.caption,
                 )
 
-                Box(
-                    modifier = modifier.semantics {
-                        testTagsAsResourceId = true
-                        testTag = "pocket.header.subtitle"
-                    },
-                ) {
-                    ClickableSubstringLink(
-                        text = text,
-                        textColor = textColor,
-                        linkTextColor = linkTextColor,
-                        linkTextDecoration = TextDecoration.Underline,
-//                        clickableStartIndex = linkStartIndex,
-//                        clickableEndIndex = linkEndIndex,
-                        clickableStartIndex = 0,
-                        clickableEndIndex = 0,
-                    ) {
-//                        onLearnMoreClicked(
-//                            "https://www.mozilla.org/en-US/firefox/pocket/?$POCKET_FEATURE_UTM_KEY_VALUE",
-//                        )
-                    }
-                }
+//                Box(
+//                    modifier = modifier.semantics {
+//                        testTagsAsResourceId = true
+//                        testTag = "pocket.header.subtitle"
+//                    },
+//                ) {
+//                    ClickableSubstringLink(
+//                        text = text,
+//                        textColor = textColor,
+//                        linkTextColor = linkTextColor,
+//                        linkTextDecoration = TextDecoration.Underline,
+////                        clickableStartIndex = linkStartIndex,
+////                        clickableEndIndex = linkEndIndex,
+//                        clickableStartIndex = 0,
+//                        clickableEndIndex = 0,
+//                    ) {
+////                        onLearnMoreClicked(
+////                            "https://www.mozilla.org/en-US/firefox/pocket/?$POCKET_FEATURE_UTM_KEY_VALUE",
+////                        )
+//                    }
+//                }
             }
         }
     }
