@@ -5,15 +5,13 @@
 package org.mozilla.fenix.library.downloads
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
-import android.util.Log
 import android.view.*
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
-import com.max.browser.core.pdf.openPdfReaderByFilePath
+import com.max.browser.core.feature.pdf.openPdfReaderByFilePath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.MainScope

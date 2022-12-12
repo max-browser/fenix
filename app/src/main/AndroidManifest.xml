@@ -275,7 +275,7 @@
             android:theme="@style/DialogActivityTheme" />
 
         <activity
-            android:name="com.max.browser.core.pdf.PdfReaderActivity"
+            android:name="com.max.browser.core.feature.pdf.PdfReaderActivity"
             android:exported="true"
             android:label="Max Pdf Reader"
             android:theme="@style/Theme.AppCompat.NoActionBar">

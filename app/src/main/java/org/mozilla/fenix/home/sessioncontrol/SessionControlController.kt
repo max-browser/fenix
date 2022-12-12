@@ -13,8 +13,8 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
 import com.max.browser.core.ReportManager
-import com.max.browser.core.status.BundleKey
-import com.max.browser.core.status.StatusActivity
+import com.max.browser.core.feature.status.BundleKey
+import com.max.browser.core.feature.status.StatusActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

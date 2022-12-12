@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import com.max.browser.core.MaxBrowserConstant
-import com.max.browser.core.doc.QueriedData
+import com.max.browser.core.feature.doc.QueriedData
 import com.max.browser.core.domain.repository.PdfCacheRepository
 import com.max.browser.core.domain.repository.QueryDocRepository
 
