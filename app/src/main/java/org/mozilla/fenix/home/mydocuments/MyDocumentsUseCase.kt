@@ -6,12 +6,12 @@ import android.os.Build
 import android.os.Environment
 import com.max.browser.core.MaxBrowserConstant
 import com.max.browser.core.feature.doc.QueriedData
-import com.max.browser.core.domain.repository.PdfCacheRepository
+import com.max.browser.core.domain.repository.ReaderCacheRepository
 import com.max.browser.core.domain.repository.QueryDocRepository
 
 class MyDocumentsUseCase(
     private val queryDocRepository: QueryDocRepository,
-    private val pdfCacheRepository: PdfCacheRepository,
+    private val readerCacheRepository: ReaderCacheRepository,
 ) {
 
     suspend fun queryDocument(context: Context, uriString: String): List<MyDocumentsItem> {
@@ -92,7 +92,7 @@ class MyDocumentsUseCase(
         context: Context,
         items: ArrayList<MyDocumentsItem>,
     ): List<MyDocumentsItem> {
-        return pdfCacheRepository.getPdfCache().filter { pdfCache ->
+        return readerCacheRepository.getPdfCache().filter { pdfCache ->
             var hasFound = false
             for (item in items) {
                 if (pdfCache.sourceUri == item.uri.toString()) {
@@ -101,9 +101,9 @@ class MyDocumentsUseCase(
             }
             return@filter !hasFound
         }.filter {
-            return@filter pdfCacheRepository.getPdfCacheFile(context, it.md5).exists()
+            return@filter readerCacheRepository.getPdfCacheFile(context, it.md5).exists()
         }.map {
-            val cacheFile = pdfCacheRepository.getPdfCacheFile(context, it.md5)
+            val cacheFile = readerCacheRepository.getPdfCacheFile(context, it.md5)
 
             MyDocumentsItem(
                 it.sourceFileName,

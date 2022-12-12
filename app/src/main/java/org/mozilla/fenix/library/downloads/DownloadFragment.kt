@@ -12,6 +12,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.max.browser.core.feature.pdf.openPdfReaderByFilePath
+import com.max.browser.core.feature.reader.image.openImageReaderByFilePath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.MainScope
@@ -202,6 +203,9 @@ class DownloadFragment : LibraryPageFragment<DownloadItem>(), UserInteractionHan
     private fun openItem(item: DownloadItem, mode: BrowsingMode? = null) {
         if (item.contentType?.contains("pdf") == true) {
             requireContext().openPdfReaderByFilePath(item.filePath )
+
+        } else if (item.contentType?.startsWith("image/") == true) {
+            requireContext().openImageReaderByFilePath(item.filePath)
 
         } else {
             mode?.let { (activity as HomeActivity).browsingModeManager.mode = it }

@@ -46,7 +46,21 @@ fun Uri.createOpenPdfIntent(context: Context): Intent {
         setDataAndType(
             this@createOpenPdfIntent,
 //            contentResolver.getType(this@createOpenPdfIntent),
-            "pdf",
+            "application/pdf",
+        )
+    }
+}
+
+fun Uri.createOpenImageIntent(context: Context): Intent {
+    val contentResolver = context.contentResolver
+    return Intent(Intent.ACTION_VIEW).apply {
+        component = ComponentName(context, PdfReaderActivity::class.java)
+        addCategory(Intent.CATEGORY_LAUNCHER)
+        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        setDataAndType(
+            this@createOpenImageIntent,
+//            contentResolver.getType(this@createOpenPdfIntent),
+            "image/*",
         )
     }
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.max.browser.core.feature.pdf.openPdfReaderByFilePath
+import com.max.browser.core.feature.reader.image.openImageReaderByFilePath
 import mozilla.components.browser.state.state.content.DownloadState
 import mozilla.components.feature.downloads.AbstractFetchDownloadService
 import mozilla.components.feature.downloads.toMegabyteOrKilobyteString
@@ -96,6 +97,9 @@ class DynamicDownloadDialog(
                 setOnClickListener {
                     if (downloadState.contentType?.contains("pdf") == true) {
                         context.openPdfReaderByFilePath(downloadState.filePath)
+
+                    } else if (downloadState.contentType?.startsWith("image/") == true) {
+                        context.openImageReaderByFilePath(downloadState.filePath)
 
                     } else {
                         val fileWasOpened = AbstractFetchDownloadService.openFile(
