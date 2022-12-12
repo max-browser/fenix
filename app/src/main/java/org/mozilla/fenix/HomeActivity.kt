@@ -33,6 +33,9 @@ import androidx.preference.PreferenceManager
 import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.MaxBrowserActivityDelegate
+import com.max.browser.core.ext.beginTransaction
+import com.max.browser.core.feature.update.UpdateAppDialog
+import com.max.browser.core.feature.update.shouldUpdateAppDialogShow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import mozilla.appservices.places.BookmarkRoot
@@ -318,6 +321,10 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
 
         maxBrowserActivityDelegate.onCreate(this)
+
+        if (shouldUpdateAppDialogShow()) {
+            beginTransaction(supportFragmentManager, UpdateAppDialog.newInstance())
+        }
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
     }
