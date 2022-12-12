@@ -322,7 +322,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
         maxBrowserActivityDelegate.onCreate(this)
 
-        if (shouldUpdateAppDialogShow()) {
+        if (shouldUpdateAppDialogShow("home")) {
             beginTransaction(supportFragmentManager, UpdateAppDialog.newInstance())
         }
 
