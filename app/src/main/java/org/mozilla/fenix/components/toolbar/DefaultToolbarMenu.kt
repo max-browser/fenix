@@ -375,7 +375,7 @@ open class DefaultToolbarMenu(
 
     private val setDefaultBrowser = BrowserMenuImageText(
         label = context.getString(R.string.preferences_set_as_default_browser),
-        imageResource = R.drawable.max_ic_set_default_browser_menu,
+        imageResource = R.drawable.max_ic_default_browser_menu,
         iconTintColorResource = primaryTextColor(),
     ) {
         onItemTapped.invoke(ToolbarMenu.Item.SetDefaultBrowser)

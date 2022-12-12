@@ -128,7 +128,7 @@ import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.perf.MarkersFragmentLifecycleCallbacks
 import org.mozilla.fenix.perf.runBlockingIncrement
 import org.mozilla.fenix.search.toolbar.SearchSelectorMenu
-import org.mozilla.fenix.setdefaultbrowser.checkToShowSetDefaultBrowserSheetDialogFragment
+import org.mozilla.fenix.setdefaultbrowser.checkToShowDefaultBrowserSheetDialogFragment
 import org.mozilla.fenix.tabstray.TabsTrayAccessPoint
 import org.mozilla.fenix.utils.Settings.Companion.TOP_SITES_PROVIDER_MAX_THRESHOLD
 import org.mozilla.fenix.utils.ToolbarPopupWindow
@@ -481,7 +481,7 @@ class HomeFragment : Fragment() {
 
         FxNimbus.features.homescreen.recordExposure()
 
-        checkToShowSetDefaultBrowserSheetDialogFragment()
+        checkToShowDefaultBrowserSheetDialogFragment()
 
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(

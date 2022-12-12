@@ -15,10 +15,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.max.browser.core.RemoteConfigKey
 import com.max.browser.core.RemoteConfigManager
+import com.max.browser.core.ReportManager
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
 import org.mozilla.fenix.android.FenixDialogFragment
-import org.mozilla.fenix.databinding.FragmentSetDefaultBrowserDialogSheetBinding
+import org.mozilla.fenix.databinding.FragmentDefaultBrowserDialogSheetBinding
 import org.mozilla.fenix.ext.getPreferenceKey
 import org.mozilla.fenix.ext.openSetDefaultBrowserOption
 import org.mozilla.fenix.ext.settings
@@ -31,7 +32,7 @@ fun Context.setAfterUpdatingTheme() {
     sp.edit().putBoolean(key, true).apply()
 }
 
-fun Fragment.checkToShowSetDefaultBrowserSheetDialogFragment() {
+fun Fragment.checkToShowDefaultBrowserSheetDialogFragment() {
     if (requireContext().settings().isDefaultBrowserBlocking()) {
         return
     }
@@ -55,7 +56,7 @@ fun Fragment.checkToShowSetDefaultBrowserSheetDialogFragment() {
         return
     }
 
-    key = getPreferenceKey(R.string.pref_key_is_first_time_to_show_set_default_browser_dialog)
+    key = getPreferenceKey(R.string.pref_key_is_first_time_to_show_default_browser_dialog)
     val isFirstTime = sp.getBoolean(key, true)
     if (isFirstTime) {
         // 首次不展示
@@ -63,10 +64,10 @@ fun Fragment.checkToShowSetDefaultBrowserSheetDialogFragment() {
         return
     }
 
-    key = getPreferenceKey(R.string.pref_key_first_time_of_showing_set_default_browser_dialog)
+    key = getPreferenceKey(R.string.pref_key_first_time_of_showing_default_browser_dialog)
     val firstTime = sp.getLong(key, 0)
 
-    key = getPreferenceKey(R.string.pref_key_count_of_showing_set_default_browser_dialog)
+    key = getPreferenceKey(R.string.pref_key_count_of_showing_default_browser_dialog)
 
     val time = System.currentTimeMillis()
     if (time - firstTime > TimeUnit.DAYS.toMillis(1)) {
@@ -79,25 +80,25 @@ fun Fragment.checkToShowSetDefaultBrowserSheetDialogFragment() {
         .getConfig<Int>(RemoteConfigKey.MAX_COUNT_OF_SHOWING_SET_DEFAULT_BROWSER_DIALOG)
 
     if (count < maxCount) {
-        findNavController().navigate(NavGraphDirections.actionGlobalSetDefaultBrowserSheetDialogFragment())
+        findNavController().navigate(NavGraphDirections.actionGlobalDefaultBrowserSheetDialogFragment())
         sp.edit().putInt(key, count + 1).apply()
 
         if (count == 0) {
             key =
-                getPreferenceKey(R.string.pref_key_first_time_of_showing_set_default_browser_dialog)
+                getPreferenceKey(R.string.pref_key_first_time_of_showing_default_browser_dialog)
             sp.edit().putLong(key, time).apply()
         }
     }
 
 }
 
-class SetDefaultBrowserSheetDialogFragment : FenixDialogFragment() {
+class DefaultBrowserSheetDialogFragment : FenixDialogFragment() {
 
-    private var _binding: FragmentSetDefaultBrowserDialogSheetBinding? = null
+    private var _binding: FragmentDefaultBrowserDialogSheetBinding? = null
 
     private val binding get() = _binding!!
     override val gravity: Int get() = Gravity.BOTTOM
-    override val layoutId: Int = R.layout.fragment_set_default_browser_dialog_sheet
+    override val layoutId: Int = R.layout.fragment_default_browser_dialog_sheet
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -105,12 +106,14 @@ class SetDefaultBrowserSheetDialogFragment : FenixDialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
         val rootView = inflateRootView(container)
-        _binding = FragmentSetDefaultBrowserDialogSheetBinding.bind(rootView)
+        _binding = FragmentDefaultBrowserDialogSheetBinding.bind(rootView)
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ReportManager.getInstance().screenView("default_browser_dialog", javaClass.simpleName)
+        ReportManager.getInstance().report("show_default_browser_dialog")
         initUi()
         setListeners()
     }
@@ -128,10 +131,12 @@ class SetDefaultBrowserSheetDialogFragment : FenixDialogFragment() {
         binding.apply {
             bCancel.setOnClickListener {
                 dismissAllowingStateLoss()
+                ReportManager.getInstance().report("click_default_browser_dialog_cancel")
             }
             bNext.setOnClickListener {
                 dismissAllowingStateLoss()
                 activity?.openSetDefaultBrowserOption()
+                ReportManager.getInstance().report("click_default_browser_dialog_next")
             }
         }
     }

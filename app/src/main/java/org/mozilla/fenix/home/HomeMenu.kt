@@ -231,7 +231,7 @@ class HomeMenu(
 
         val setDefaultBrowserItem = BrowserMenuImageText(
             context.getString(R.string.preferences_set_as_default_browser),
-            R.drawable.max_ic_set_default_browser_menu,
+            R.drawable.max_ic_default_browser_menu,
             primaryTextColor,
         ) {
             onItemTapped.invoke(Item.SetDefaultBrowser)

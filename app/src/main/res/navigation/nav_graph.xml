@@ -154,8 +154,8 @@
         android:id="@+id/action_global_tabSettingsFragment"
         app:destination="@id/tabsSettingsFragment" />
     <action
-        android:id="@+id/action_global_setDefaultBrowserSheetDialogFragment"
-        app:destination="@id/setDefaultBrowserSheetDialogFragment" />
+        android:id="@+id/action_global_defaultBrowserSheetDialogFragment"
+        app:destination="@id/defaultBrowserSheetDialogFragment" />
     <action
         android:id="@+id/action_global_MyDocumentsFragment"
         app:destination="@id/myDocumentsFragment" />
@@ -1068,9 +1068,9 @@
     </dialog>
 
     <dialog
-        android:id="@+id/setDefaultBrowserSheetDialogFragment"
-        android:name="org.mozilla.fenix.setdefaultbrowser.SetDefaultBrowserSheetDialogFragment"
-        tools:layout="@layout/fragment_set_default_browser_dialog_sheet">
+        android:id="@+id/defaultBrowserSheetDialogFragment"
+        android:name="org.mozilla.fenix.setdefaultbrowser.DefaultBrowserSheetDialogFragment"
+        tools:layout="@layout/fragment_default_browser_dialog_sheet">
     </dialog>
 
     <fragment
