@@ -11,6 +11,7 @@ import android.webkit.MimeTypeMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.max.browser.core.feature.pdf.openPdfReaderByFilePath
 import com.max.browser.core.feature.reader.image.openImageReaderByFilePath
+import com.max.browser.core.feature.reader.video.openVideoReaderByFilePath
 import mozilla.components.browser.state.state.content.DownloadState
 import mozilla.components.feature.downloads.AbstractFetchDownloadService
 import mozilla.components.feature.downloads.toMegabyteOrKilobyteString
@@ -100,6 +101,9 @@ class DynamicDownloadDialog(
 
                     } else if (downloadState.contentType?.startsWith("image/") == true) {
                         context.openImageReaderByFilePath(downloadState.filePath)
+
+                    } else if (downloadState.contentType?.startsWith("video/") == true) {
+                        context.openVideoReaderByFilePath(downloadState.filePath)
 
                     } else {
                         val fileWasOpened = AbstractFetchDownloadService.openFile(
