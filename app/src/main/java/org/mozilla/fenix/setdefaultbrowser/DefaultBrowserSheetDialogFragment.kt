@@ -114,6 +114,12 @@ class DefaultBrowserSheetDialogFragment : FenixDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         ReportManager.getInstance().screenView("default_browser_dialog", javaClass.simpleName)
         ReportManager.getInstance().report("show_default_browser_dialog")
+        ReportManager.getInstance().report(
+            "default_browser_set",
+            Bundle().apply {
+                putString("action", "show")
+            },
+        )
         initUi()
         setListeners()
     }
@@ -137,6 +143,12 @@ class DefaultBrowserSheetDialogFragment : FenixDialogFragment() {
                 dismissAllowingStateLoss()
                 activity?.openSetDefaultBrowserOption()
                 ReportManager.getInstance().report("click_default_browser_dialog_next")
+                ReportManager.getInstance().report(
+                    "default_browser_set",
+                    Bundle().apply {
+                        putString("action", "next")
+                    },
+                )
             }
         }
     }
