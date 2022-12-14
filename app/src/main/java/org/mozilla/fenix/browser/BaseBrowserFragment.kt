@@ -31,6 +31,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
+import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
+import com.max.browser.core.ext.serializeToMap
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
@@ -42,6 +44,7 @@ import mozilla.appservices.places.BookmarkRoot
 import mozilla.appservices.places.uniffi.PlacesApiException
 import mozilla.components.browser.state.action.ContentAction
 import mozilla.components.browser.state.selector.*
+import mozilla.components.browser.state.state.ContentState
 import mozilla.components.browser.state.state.CustomTabSessionState
 import mozilla.components.browser.state.state.SessionState
 import mozilla.components.browser.state.state.TabSessionState
@@ -185,6 +188,10 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     @VisibleForTesting
     internal val onboarding by lazy { FenixOnboarding(requireContext()) }
 
+    private val maxBrowserFragmentDelegate: MaxBrowserFragmentDelegate by lazy{
+        MaxBrowserFragmentDelegate(this)
+    }
+
     @CallSuper
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -245,6 +252,8 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         if (!onboarding.userHasBeenOnboarded()) {
             observeTabSource(requireComponents.core.store)
         }
+
+        observeSelectedTabContent(requireComponents.core.store)
 
         requireContext().accessibilityManager.addAccessibilityStateChangeListener(this)
 
@@ -1073,6 +1082,26 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         } else {
             view?.let { view -> initializeUI(view) }
         }
+    }
+
+    private fun observeSelectedTabContent(store: BrowserStore) {
+        // 觀察 BrowserStore
+        consumeFlow(store) { flow ->
+            // 如果 url 有改變
+            flow.ifChanged {
+                it.selectedTab?.content?.url
+            }.mapNotNull {
+                it.selectedTab?.content
+            }.collect {
+                // 處理
+                handleSelectedTabContentChanged(it)
+            }
+        }
+    }
+
+    private fun handleSelectedTabContentChanged(content: ContentState) {
+        maxBrowserFragmentDelegate.handleSelectedTabContentChanged(content.serializeToMap())
+
     }
 
     @CallSuper
