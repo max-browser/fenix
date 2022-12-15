@@ -17,6 +17,7 @@ import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.onboarding.DefaultBrowserNotificationWorker.Companion.isDefaultBrowserNotificationIntent
 import org.mozilla.fenix.onboarding.ReEngagementNotificationWorker
 import org.mozilla.fenix.onboarding.ReEngagementNotificationWorker.Companion.isReEngagementNotificationIntent
+import org.mozilla.fenix.settings.SupportUtils
 
 /**
  * When the default browser notification is tapped we need to launch [openSetDefaultBrowserOption]
@@ -41,7 +42,8 @@ class DefaultBrowserIntentProcessor(
 
                 activity.browsingModeManager.mode = BrowsingMode.Private
                 activity.openToBrowserAndLoad(
-                    ReEngagementNotificationWorker.NOTIFICATION_TARGET_URL,
+//                    ReEngagementNotificationWorker.NOTIFICATION_TARGET_URL,
+                    SupportUtils.getMaxPageUrl(SupportUtils.MaxPage.HOME),
                     newTab = true,
                     from = BrowserDirection.FromGlobal,
                     flags = EngineSession.LoadUrlFlags.external(),
