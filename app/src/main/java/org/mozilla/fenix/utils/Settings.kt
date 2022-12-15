@@ -863,6 +863,11 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         default = false,
     )
 
+    var defaultInsAndYtTopSitesAdded by booleanPreference(
+        appContext.getPreferenceKey(R.string.default_ins_and_yt_top_sites_added),
+        default = false,
+    )
+
     var shouldShowSearchSuggestionsInPrivate by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_search_suggestions_in_private),
         default = false,

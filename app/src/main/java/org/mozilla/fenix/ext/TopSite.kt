@@ -23,18 +23,22 @@ fun TopSite.name(): String = when (this) {
  * as the first item.
  */
 fun List<TopSite>.sort(): List<TopSite> {
-    val defaultGoogleTopSiteIndex = this.indexOfFirst {
-//        it is TopSite.Default && it.url == SupportUtils.GOOGLE_URL
-        it is TopSite.Default && it.url == SupportUtils.MAX_STATUS_SAVER_URL
-    }
-
-    return if (defaultGoogleTopSiteIndex == -1) {
-        this
-    } else {
-        val result = this.toMutableList()
-        result.removeAt(defaultGoogleTopSiteIndex)
-        result.add(0, this[defaultGoogleTopSiteIndex])
-        result
+    return this.sortedBy {
+        when (it) {
+            is TopSite.Default -> {
+                when (it.url) {
+                    SupportUtils.MAX_STATUS_SAVER_URL -> 0L
+                    SupportUtils.GOOGLE_URL -> 1L
+                    SupportUtils.WIKIPEDIA_URL -> 2L
+                    SupportUtils.FACEBOOK_URL -> 3L
+                    SupportUtils.INSTAGRAM_URL -> 4L
+                    SupportUtils.TWITTER_URL -> 5L
+                    SupportUtils.YOUTUBE_URL -> 6L
+                    else -> 7L
+                }
+            }
+            else -> it.createdAt ?: Long.MAX_VALUE
+        }
     }
 }
 

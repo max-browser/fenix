@@ -37,6 +37,10 @@ object SupportUtils {
     const val GOOGLE_US_URL = "https://www.google.com/webhp?client=firefox-b-1-m&channel=ts"
     const val GOOGLE_XX_URL = "https://www.google.com/webhp?client=firefox-b-m&channel=ts"
     const val MAX_STATUS_SAVER_URL = "max:status-saver"
+    const val FACEBOOK_URL = "https://www.facebook.com/"
+    const val INSTAGRAM_URL = "https://www.instagram.com/"
+    const val TWITTER_URL = "https://twitter.com/"
+    const val YOUTUBE_URL = "https://www.youtube.com/"
 
     enum class SumoTopic(internal val topicStr: String) {
         HELP("faq-android"),

@@ -74,7 +74,6 @@ import mozilla.components.service.pocket.Profile
 import mozilla.components.service.sync.autofill.AutofillCreditCardsAddressesStorage
 import mozilla.components.service.sync.logins.SyncableLoginsStorage
 import mozilla.components.support.base.worker.Frequency
-import mozilla.components.support.locale.LocaleManager
 import org.mozilla.fenix.*
 import org.mozilla.fenix.components.search.SearchMigration
 import org.mozilla.fenix.downloads.DownloadService
@@ -88,7 +87,6 @@ import org.mozilla.fenix.media.MediaSessionService
 import org.mozilla.fenix.perf.StrictModeManager
 import org.mozilla.fenix.perf.lazyMonitored
 import org.mozilla.fenix.settings.SupportUtils
-import org.mozilla.fenix.settings.advanced.getSelectedLocale
 import org.mozilla.fenix.share.SaveToPDFMiddleware
 import org.mozilla.fenix.telemetry.TelemetryMiddleware
 import org.mozilla.fenix.utils.getUndoDelay
@@ -113,7 +111,7 @@ class Core(
         val defaultSettings = DefaultSettings(
             requestInterceptor = requestInterceptor,
             remoteDebuggingEnabled = context.settings().isRemoteDebuggingEnabled &&
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M,
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M,
             testingModeEnabled = false,
             trackingProtectionPolicy = trackingProtectionPolicyFactory.createTrackingProtectionPolicy(),
             historyTrackingDelegate = HistoryDelegate(lazyHistoryStorage),
@@ -416,65 +414,65 @@ class Core(
 
         strictMode.resetAfter(StrictMode.allowThreadDiskReads()) {
             if (!context.settings().defaultTopSitesAdded) {
-                if (Config.channel.isMozillaOnline) {
-                    defaultTopSites.add(
-                        Pair(
-                            context.getString(R.string.default_top_site_baidu),
-                            SupportUtils.BAIDU_URL,
-                        ),
-                    )
+//                if (Config.channel.isMozillaOnline) {
+//                    defaultTopSites.add(
+//                        Pair(
+//                            context.getString(R.string.default_top_site_baidu),
+//                            SupportUtils.BAIDU_URL,
+//                        ),
+//                    )
+//
+//                    defaultTopSites.add(
+//                        Pair(
+//                            context.getString(R.string.default_top_site_jd),
+//                            SupportUtils.JD_URL,
+//                        ),
+//                    )
+//
+//                    defaultTopSites.add(
+//                        Pair(
+//                            context.getString(R.string.default_top_site_pdd),
+//                            SupportUtils.PDD_URL,
+//                        ),
+//                    )
+//
+//                    defaultTopSites.add(
+//                        Pair(
+//                            context.getString(R.string.default_top_site_tc),
+//                            SupportUtils.TC_URL,
+//                        ),
+//                    )
+//
+//                    defaultTopSites.add(
+//                        Pair(
+//                            context.getString(R.string.default_top_site_meituan),
+//                            SupportUtils.MEITUAN_URL,
+//                        ),
+//                    )
+//                } else {
+                defaultTopSites.add(
+                    Pair(
+                        context.getString(R.string.default_top_site_google),
+                        SupportUtils.GOOGLE_URL,
+                    ),
+                )
 
-                    defaultTopSites.add(
-                        Pair(
-                            context.getString(R.string.default_top_site_jd),
-                            SupportUtils.JD_URL,
-                        ),
-                    )
+//                    if (LocaleManager.getSelectedLocale(context).language == "en") {
+//                        defaultTopSites.add(
+//                            Pair(
+//                                context.getString(R.string.pocket_pinned_top_articles),
+//                                SupportUtils.POCKET_TRENDING_URL,
+//                            ),
+//                        )
+//                    }
 
-                    defaultTopSites.add(
-                        Pair(
-                            context.getString(R.string.default_top_site_pdd),
-                            SupportUtils.PDD_URL,
-                        ),
-                    )
-
-                    defaultTopSites.add(
-                        Pair(
-                            context.getString(R.string.default_top_site_tc),
-                            SupportUtils.TC_URL,
-                        ),
-                    )
-
-                    defaultTopSites.add(
-                        Pair(
-                            context.getString(R.string.default_top_site_meituan),
-                            SupportUtils.MEITUAN_URL,
-                        ),
-                    )
-                } else {
-                    defaultTopSites.add(
-                        Pair(
-                            context.getString(R.string.default_top_site_google),
-                            SupportUtils.GOOGLE_URL,
-                        ),
-                    )
-
-                    if (LocaleManager.getSelectedLocale(context).language == "en") {
-                        defaultTopSites.add(
-                            Pair(
-                                context.getString(R.string.pocket_pinned_top_articles),
-                                SupportUtils.POCKET_TRENDING_URL,
-                            ),
-                        )
-                    }
-
-                    defaultTopSites.add(
-                        Pair(
-                            context.getString(R.string.default_top_site_wikipedia),
-                            SupportUtils.WIKIPEDIA_URL,
-                        ),
-                    )
-                }
+                defaultTopSites.add(
+                    Pair(
+                        context.getString(R.string.default_top_site_wikipedia),
+                        SupportUtils.WIKIPEDIA_URL,
+                    ),
+                )
+//                }
 
                 defaultTopSites.add(
                     Pair(
@@ -482,15 +480,56 @@ class Core(
                         SupportUtils.MAX_STATUS_SAVER_URL,
                     ),
                 )
+                defaultTopSites.add(
+                    Pair(
+                        "Facebook",
+                        SupportUtils.FACEBOOK_URL,
+                    ),
+                )
+                defaultTopSites.add(
+                    Pair(
+                        "Instagram",
+                        SupportUtils.INSTAGRAM_URL,
+                    ),
+                )
+                defaultTopSites.add(
+                    Pair(
+                        "Twitter",
+                        SupportUtils.TWITTER_URL,
+                    ),
+                )
+                defaultTopSites.add(
+                    Pair(
+                        "Youtube",
+                        SupportUtils.FACEBOOK_URL,
+                    ),
+                )
 
                 context.settings().defaultTopSitesAdded = true
+                context.settings().defaultInsAndYtTopSitesAdded = true
+
+            } else if (!context.settings().defaultInsAndYtTopSitesAdded) {
+                defaultTopSites.add(
+                    Pair(
+                        "Instagram",
+                        SupportUtils.INSTAGRAM_URL,
+                    ),
+                )
+                defaultTopSites.add(
+                    Pair(
+                        "Youtube",
+                        SupportUtils.FACEBOOK_URL,
+                    ),
+                )
+                context.settings().defaultInsAndYtTopSitesAdded = true
             }
         }
 
         DefaultTopSitesStorage(
             pinnedSitesStorage = pinnedSiteStorage,
             historyStorage = historyStorage,
-            topSitesProvider = contileTopSitesProvider,
+//            topSitesProvider = contileTopSitesProvider,
+            topSitesProvider = null,
             defaultTopSites = defaultTopSites,
         )
     }
@@ -525,7 +564,7 @@ class Core(
     fun getPreferredColorScheme(): PreferredColorScheme {
         val inDark =
             (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
-                Configuration.UI_MODE_NIGHT_YES
+                    Configuration.UI_MODE_NIGHT_YES
         return when {
             context.settings().shouldUseDarkTheme -> PreferredColorScheme.Dark
             context.settings().shouldUseLightTheme -> PreferredColorScheme.Light

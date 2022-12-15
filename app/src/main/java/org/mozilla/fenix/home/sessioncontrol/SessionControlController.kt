@@ -389,13 +389,50 @@ class DefaultSessionControlController(
     override fun handleSelectTopSite(topSite: TopSite, position: Int) {
         TopSites.openInNewTab.record(NoExtras())
 
+        val topSiteType: String
         when (topSite) {
-            is TopSite.Default -> TopSites.openDefault.record(NoExtras())
-            is TopSite.Frecent -> TopSites.openFrecency.record(NoExtras())
-            is TopSite.Pinned -> TopSites.openPinned.record(NoExtras())
-            is TopSite.Provided -> TopSites.openContileTopSite.record(NoExtras()).also {
-                submitTopSitesImpressionPing(topSite, position)
+            is TopSite.Default -> {
+                topSiteType = "default"
+                TopSites.openDefault.record(NoExtras())
             }
+            is TopSite.Frecent -> {
+                topSiteType = "frecent"
+                TopSites.openFrecency.record(NoExtras())
+            }
+            is TopSite.Pinned -> {
+                topSiteType = "pinned"
+                TopSites.openPinned.record(NoExtras())
+            }
+            is TopSite.Provided -> {
+                topSiteType = "provided"
+                TopSites.openContileTopSite.record(NoExtras()).also {
+                    submitTopSitesImpressionPing(topSite, position)
+                }
+            }
+        }
+
+        ReportManager.getInstance().report(
+            "click_top_site",
+            Bundle().apply {
+                putString("type", topSiteType)
+                putString("url", topSite.url)
+            },
+        )
+
+        val topSiteUrlType = when (topSite.url) {
+            SupportUtils.FACEBOOK_URL -> "ins"
+            SupportUtils.INSTAGRAM_URL -> "youtube"
+            SupportUtils.TWITTER_URL -> "facebook"
+            SupportUtils.YOUTUBE_URL -> "twitter"
+            else -> ""
+        }
+        if (topSiteUrlType != "" && topSite is TopSite.Default) {
+            ReportManager.getInstance().report(
+                "home_shortcut_click",
+                Bundle().apply {
+                    putString("class", topSiteUrlType)
+                },
+            )
         }
 
         when (topSite.url) {
