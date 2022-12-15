@@ -72,7 +72,7 @@ class ReEngagementNotificationWorker(
         with(applicationContext) {
             val appName = getString(R.string.app_name)
             return NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.max_ic_nitification)
+                .setSmallIcon(R.drawable.max_ic_notification)
                 .setContentTitle(
                     applicationContext.getString(R.string.notification_re_engagement_title),
                 )
