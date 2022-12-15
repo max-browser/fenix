@@ -380,12 +380,22 @@ private fun List<Addon>.removeFirefoxString(context: Context): ArrayList<Addon> 
     val addons = this
     return ArrayList<Addon>().apply {
         addons.forEach { addon ->
-            val newMap = HashMap<String, String>()
+            val newTranslatableSummary = HashMap<String, String>()
             addon.translatableSummary.forEach { entry ->
-                newMap[entry.key] =
+                newTranslatableSummary[entry.key] =
                     entry.value.replace("Firefox", context.getString(R.string.app_name))
             }
-            add(addon.copy(translatableSummary = newMap))
+            val newTranslatableDescription = HashMap<String, String>()
+            addon.translatableDescription.forEach { entry ->
+                newTranslatableDescription[entry.key] =
+                    entry.value.replace("Firefox", context.getString(R.string.app_name))
+            }
+            add(
+                addon.copy(
+                    translatableSummary = newTranslatableSummary,
+                    translatableDescription = newTranslatableDescription,
+                ),
+            )
         }
     }
 }
