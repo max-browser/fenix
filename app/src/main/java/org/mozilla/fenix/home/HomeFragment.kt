@@ -7,6 +7,7 @@ package org.mozilla.fenix.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
@@ -51,6 +52,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
+import com.max.browser.core.ext.openApplicationDetailsSettings
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.MainScope
@@ -209,6 +211,8 @@ class HomeFragment : Fragment() {
     internal var getMenuButton: () -> MenuButton? = { binding.menuButton }
 
     private val myDocumentsUseCase: MyDocumentsUseCase by inject()
+
+    private var hasRejectedMyDocumentsPermission = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT ADD ANYTHING ABOVE THIS getProfilerTime CALL!
@@ -450,19 +454,26 @@ class HomeFragment : Fragment() {
                 appStore = components.appStore,
                 scope = viewLifecycleOwner.lifecycleScope,
                 store = components.core.store,
-                 onGetMyDocumentsPermission = {
-                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                         requestMediaDirectoryAccessPermission()
+                onGetMyDocumentsPermission = {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        requestMediaDirectoryAccessPermission()
 
-                     } else {
-                         requestPermissions(MyDocumentsFeature.PERMISSIONS_BEFORE_API_28,
-                             REQUEST_CODE_MY_DOCUMENTS_PERMISSIONS)
-                     }
+                    } else {
+                        if (hasRejectedMyDocumentsPermission) {
+                            requireContext().openApplicationDetailsSettings()
+
+                        } else {
+                            requestPermissions(
+                                MyDocumentsFeature.PERMISSIONS_BEFORE_API_28,
+                                REQUEST_CODE_MY_DOCUMENTS_PERMISSIONS,
+                            )
+                        }
+                    }
 
                 },
                 onOpenPdf = {
                     openPdf(it)
-                }
+                },
             ),
         )
 
@@ -1145,7 +1156,8 @@ class HomeFragment : Fragment() {
             if (file.exists()) {
                 startDir = "Android%2Fmedia"
             }
-            val sm: StorageManager = requireContext().getSystemService(Context.STORAGE_SERVICE) as StorageManager
+            val sm: StorageManager =
+                requireContext().getSystemService(Context.STORAGE_SERVICE) as StorageManager
             val intent: Intent = sm.primaryStorageVolume.createOpenDocumentTreeIntent()
             var uri: Uri? = intent.getParcelableExtra("android.provider.extra.INITIAL_URI")
             var scheme: String = uri.toString()
@@ -1155,7 +1167,7 @@ class HomeFragment : Fragment() {
             intent.putExtra("android.provider.extra.INITIAL_URI", uri)
             try {
                 startActivityForResult(
-                    intent, REQUEST_CODE_MEDIA_DIRECTORY_ACCESS_PERMISSIONS
+                    intent, REQUEST_CODE_MEDIA_DIRECTORY_ACCESS_PERMISSIONS,
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "requestMediaDirectoryAccessPermission error: $e")
@@ -1176,7 +1188,7 @@ class HomeFragment : Fragment() {
 
     @SuppressLint("WrongConstant")
     private fun onGetMediaDirectoryAccessPermissionResult(data: Intent) {
-        data.data?.let { directoryUri->
+        data.data?.let { directoryUri ->
             val takeFlags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION)
             requireContext().contentResolver.takePersistableUriPermission(directoryUri, takeFlags)
             Log.e(TAG, "onGetMediaDirectoryAccessPermissionResult: $directoryUri")
@@ -1197,7 +1209,14 @@ class HomeFragment : Fragment() {
         grantResults: IntArray,
     ) {
         val feature: PermissionsFeature? = when (requestCode) {
-            REQUEST_CODE_MY_DOCUMENTS_PERMISSIONS -> myDocumentsFeature.get()
+            REQUEST_CODE_MY_DOCUMENTS_PERMISSIONS -> {
+                grantResults.forEach {
+                    if (it != PackageManager.PERMISSION_GRANTED) {
+                        hasRejectedMyDocumentsPermission = true
+                    }
+                }
+                myDocumentsFeature.get()
+            }
             else -> null
         }
         feature?.onPermissionsResult(permissions, grantResults)
