@@ -596,7 +596,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      * Check if we should show the re-engagement notification.
      */
     fun shouldShowReEngagementNotification(): Boolean {
-        return !reEngagementNotificationShown && reEngagementNotificationEnabled && !isDefaultBrowserBlocking()
+        return !reEngagementNotificationShown && !isDefaultBrowserBlocking()
     }
 
     /**
@@ -652,7 +652,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     )
 
     val enabledTotalCookieProtection: Boolean
-        get() = mr2022Sections[Mr2022Section.TCP_FEATURE] == true
+        get() = Config.channel.isNightlyOrDebug || mr2022Sections[Mr2022Section.TCP_FEATURE] == true
 
     /**
      * Indicates if the total cookie protection CRF should be shown.
@@ -661,6 +661,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         appContext.getPreferenceKey(R.string.pref_key_should_show_total_cookie_protection_popup),
         featureFlag = true,
         default = { false },
+//        default = { Config.channel.isNightlyOrDebug || mr2022Sections[Mr2022Section.TCP_CFR] == true },
     )
 
     val blockCookiesSelectionInCustomTrackingProtection by stringPreference(

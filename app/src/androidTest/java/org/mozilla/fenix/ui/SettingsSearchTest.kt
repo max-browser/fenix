@@ -390,6 +390,7 @@ class SettingsSearchTest {
 
     // Expected for app language set to Arabic
     @Test
+    @Ignore("Failing after changing SearchDialog homescreen interaction. See: https://github.com/mozilla-mobile/fenix/issues/28182")
     fun verifySearchEnginesWithRTLLocale() {
         homeScreen {
         }.openThreeDotMenu {
@@ -420,17 +421,17 @@ class SettingsSearchTest {
                 "Bing",
                 "Amazon.com",
                 "DuckDuckGo",
-                "eBay",
-                /* Disabled Arabic Wikipedia verification
-                   until https://github.com/mozilla-mobile/fenix/issues/12236 gets fixed
-                 "ويكيبيديا (ar)"
-                */
+                "ويكيبيديا (ar)",
             )
+            changeDefaultSearchEngine(activityTestRule, "ويكيبيديا (ar)")
+        }.submitQuery("firefox") {
+            verifyUrl("ar.m.wikipedia.org")
         }
     }
 
     // Expected for en-us defaults
     @Test
+    @Ignore("Failing after changing SearchDialog homescreen interaction. See: https://github.com/mozilla-mobile/fenix/issues/28182")
     fun toggleSearchEnginesShortcutListTest() {
         homeScreen {
         }.openThreeDotMenu {

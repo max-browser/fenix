@@ -39,7 +39,6 @@ import org.mozilla.fenix.GleanMetrics.*
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.BrowserAnimator
-import org.mozilla.fenix.browser.BrowserFragmentDirections
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.collections.SaveCollectionStep
 import org.mozilla.fenix.components.AppStore
@@ -177,11 +176,6 @@ interface SessionControlController {
     fun handleRemoveCollectionsPlaceholder()
 
     /**
-     * @see [CollectionInteractor.onCollectionMenuOpened] and [TopSiteInteractor.onTopSiteMenuOpened]
-     */
-    fun handleMenuOpened()
-
-    /**
      * @see [MessageCardInteractor.onMessageClicked]
      */
     fun handleMessageClicked(message: Message)
@@ -246,13 +240,7 @@ class DefaultSessionControlController(
         )
     }
 
-    override fun handleMenuOpened() {
-        dismissSearchDialogIfDisplayed()
-    }
-
     override fun handleCollectionOpenTabClicked(tab: ComponentTab) {
-        dismissSearchDialogIfDisplayed()
-
         restoreUseCase.invoke(
             activity,
             engine,
@@ -305,7 +293,6 @@ class DefaultSessionControlController(
     }
 
     override fun handleCollectionShareTabsClicked(collection: TabCollection) {
-        dismissSearchDialogIfDisplayed()
         showShareFragment(
             collection.title,
             collection.tabs.map { ShareData(url = it.url, title = it.title) },
@@ -335,7 +322,6 @@ class DefaultSessionControlController(
     }
 
     override fun handlePrivateBrowsingLearnMoreClicked() {
-        dismissSearchDialogIfDisplayed()
         activity.openToBrowserAndLoad(
             searchTermOrURL = SupportUtils.getGenericSumoURLForTopic(PRIVATE_BROWSING_MYTHS),
             newTab = true,
@@ -401,8 +387,6 @@ class DefaultSessionControlController(
     }
 
     override fun handleSelectTopSite(topSite: TopSite, position: Int) {
-        dismissSearchDialogIfDisplayed()
-
         TopSites.openInNewTab.record(NoExtras())
 
         when (topSite) {
@@ -510,12 +494,6 @@ class DefaultSessionControlController(
         }
 
         return url
-    }
-
-    private fun dismissSearchDialogIfDisplayed() {
-        if (navController.currentDestination?.id == R.id.searchDialogFragment) {
-            navController.navigateUp()
-        }
     }
 
     override fun handleStartBrowsingClicked() {
@@ -660,14 +638,6 @@ class DefaultSessionControlController(
             appStore.dispatch(
                 AppAction.ModeChange(Mode.fromBrowsingMode(newMode)),
             )
-
-            if (navController.currentDestination?.id == R.id.searchDialogFragment) {
-                navController.navigate(
-                    BrowserFragmentDirections.actionGlobalSearchDialog(
-                        sessionId = null,
-                    ),
-                )
-            }
         }
     }
 

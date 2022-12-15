@@ -65,17 +65,19 @@ buildscript {
     }
 
     dependencies {
-        classpath Deps.tools_androidgradle
-        classpath Deps.tools_kotlingradle
-        classpath Deps.tools_benchmarkgradle
-        classpath Deps.androidx_safeargs
-        classpath Deps.osslicenses_plugin
+        classpath FenixDependencies.tools_androidgradle
+        classpath FenixDependencies.tools_kotlingradle
+        classpath FenixDependencies.tools_benchmarkgradle
+        classpath FenixDependencies.androidx_safeargs
+        classpath FenixDependencies.osslicenses_plugin
 
-        classpath "org.mozilla.components:tooling-glean-gradle:${Versions.mozilla_android_components}"
-        classpath "org.mozilla.components:tooling-nimbus-gradle:${Versions.mozilla_android_components}"
         classpath 'com.google.gms:google-services:4.3.14'
         classpath "com.github.qq549631030:android-junk-code:1.1.6"
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
+
+        classpath "org.mozilla.components:tooling-glean-gradle:${FenixVersions.mozilla_android_components}"
+        classpath "org.mozilla.components:tooling-nimbus-gradle:${FenixVersions.mozilla_android_components}"
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -209,7 +211,7 @@ dependencies {
     }
 
     detekt project(":mozilla-detekt-rules")
-    detekt "io.gitlab.arturbosch.detekt:detekt-cli:${Versions.detekt}"
+    detekt "io.gitlab.arturbosch.detekt:detekt-cli:${FenixVersions.detekt}"
 }
 
 tasks.register('ktlint', JavaExec) {

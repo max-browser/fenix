@@ -537,3 +537,5 @@ private val awesomeBar =
     mDevice.findObject(UiSelector().resourceId("$packageName:id/mozac_browser_toolbar_edit_url_view"))
 
 private val voiceSearchButton = mDevice.findObject(UiSelector().description("Voice search"))
+
+private fun goBackButton() = onView(allOf(withContentDescription("Navigate up")))

@@ -64,10 +64,14 @@
 
     <!-- Private mode shortcut "contextual feature recommendation" (CFR) -->
     <!-- Text for the main message -->
-    <string name="cfr_message">Дадайце цэтлік, каб адкрываць прыватныя карткі з хатняга экрана.</string>
+    <string moz:removedIn="109" name="cfr_message" tools:ignore="UnusedResources">Дадайце цэтлік, каб адкрываць прыватныя карткі з хатняга экрана.</string>
+    <!-- Text for the Private mode shortcut CFR message for adding a private mode shortcut to open private tabs from the Home screen -->
+    <string name="private_mode_cfr_message">Запусціце наступную прыватную картку адным націскам.</string>
     <!-- Text for the positive button -->
-    <string name="cfr_pos_button_text">Дадаць цэтлік</string>
-    <!-- Text for the negative button -->
+    <string moz:removedIn="109" name="cfr_pos_button_text" tools:ignore="UnusedResources">Дадаць цэтлік</string>
+    <!-- Text for the positive button to accept adding a Private Browsing shortcut to the Home screen -->
+    <string name="private_mode_cfr_pos_button_text">Дадаць на хатні экран</string>
+    <!-- Text for the negative button to decline adding a Private Browsing shortcut to the Home screen -->
     <string name="cfr_neg_button_text">Не, дзякуй</string>
 
     <!-- Open in App "contextual feature recommendation" (CFR) -->
@@ -338,6 +342,16 @@
     <string name="reduce_cookie_banner_option">Памяншаць колькасць банераў кукі</string>
     <!-- Summary for the preference for rejecting all cookies whenever possible. -->
     <string name="reduce_cookie_banner_summary">Firefox аўтаматычна спрабуе адхіліць запыты кукаў на банерах файлаў cookie. Калі выбар адхілення недаступны, Firefox можа прыняць усе кукі, каб закрыць банер.</string>
+
+    <!-- Text for indicating cookie banner handling is off this site, this is shown as part of the protections panel with the tracking protection toggle -->
+    <string name="reduce_cookie_banner_off_for_site">Выключана для гэтага сайта</string>
+    <!-- Text for indicating cookie banner handling is on this site, this is shown as part of the protections panel with the tracking protection toggle -->
+    <string name="reduce_cookie_banner_on_for_site">Уключана для гэтага сайта</string>
+
+    <!-- Title text for a detail explanation indicating cookie banner handling is on this site, this is shown as part of the cookie banner panel in the toolbar. The first parameter is a shortened URL of the current site-->
+    <string name="reduce_cookie_banner_details_panel_title_on_for_site">Уключыць памяншэнне колькасці банераў кукі для %1$s?</string>
+    <!-- Title text for a detail explanation indicating cookie banner handling is off this site, this is shown as part of the cookie banner panel in the toolbar. The first parameter is a shortened URL of the current site-->
+    <string name="reduce_cookie_banner_details_panel_title_off_for_site">Выключыць памяншэнне колькасці банераў кукі для %1$s?</string>
 
     <!-- Description of the preference to enable "HTTPS-Only" mode. -->
     <string name="preferences_https_only_summary">Аўтаматычна спрабуе падключацца да сайтаў з выкарыстаннем пратаколу шыфравання HTTPS для павышэння бяспекі.</string>
@@ -1073,8 +1087,6 @@
     <string name="share_copy_link_to_clipboard">Капіяваць у буфер абмену</string>
     <!-- Toast shown after copying link to clipboard -->
     <string name="toast_copy_link_to_clipboard">Скапіявана ў буфер абмену</string>
-    <!-- An option from the three dot menu to into sync -->
-    <string moz:removedIn="107" name="sync_menu_sign_in" tools:ignore="UnusedResources">Увайсці ў сінхранізацыю</string>
     <!-- An option from the share dialog to sign into sync -->
     <string name="sync_sign_in">Увайсці ў сінхранізацыю</string>
      <!-- An option from the three dot menu to sync and save data -->
@@ -1116,6 +1128,13 @@
     <!-- Text shown in the notification that pops up to remind the user to set fenix as default browser.
     %1$s is a placeholder that will be replaced by the app name (Fenix). -->
     <string name="notification_default_browser_text">Зрабіце %1$s сваім прадвызначаным браўзерам</string>
+
+    <!-- Title shown in the notification that pops up to re-engage the user -->
+    <string name="notification_re_engagement_title">Паспрабуйце Прыватнае агляданне</string>
+
+    <!-- Text shown in the notification that pops up to re-engage the user.
+    %1$s is a placeholder that will be replaced by the app name. -->
+    <string name="notification_re_engagement_text">Праглядайце без захаваных файлаў кукі або гісторыі ў %1$s</string>
 
     <!-- Snackbar -->
     <!-- Text shown in snackbar when user deletes a collection -->

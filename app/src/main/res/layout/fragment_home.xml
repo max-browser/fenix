@@ -6,7 +6,7 @@
 <!-- using an AppBarLayout to replace MotionLayout was done in order to improve Fenix
      start up performance. The use of a MotionLayout was worsening our layout measures, especially
       with the recycler view -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<org.mozilla.fenix.home.HomeFragmentLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -89,7 +89,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sessionControlRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingVertical="16dp"
@@ -202,4 +202,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</org.mozilla.fenix.home.HomeFragmentLayout>

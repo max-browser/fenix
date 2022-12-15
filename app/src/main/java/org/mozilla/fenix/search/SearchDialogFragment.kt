@@ -162,6 +162,7 @@ class SearchDialogFragment : AppCompatDialogFragment(), UserInteractionHandler {
     }
 
     @SuppressWarnings("LongMethod")
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -266,7 +267,6 @@ class SearchDialogFragment : AppCompatDialogFragment(), UserInteractionHandler {
                 binding.searchWrapper.background = ColorDrawable(Color.TRANSPARENT)
                 dialog?.window?.decorView?.setOnTouchListener { _, event ->
                     requireActivity().dispatchTouchEvent(event)
-                    // toolbarView.view.displayMode()
                     false
                 }
             }
@@ -390,6 +390,7 @@ class SearchDialogFragment : AppCompatDialogFragment(), UserInteractionHandler {
                         from = BrowserDirection.FromSearchDialog,
                     )
             }
+            requireContext().components.clipboardHandler.text = null
         }
 
         val stubListener = ViewStub.OnInflateListener { _, inflated ->
@@ -452,7 +453,7 @@ class SearchDialogFragment : AppCompatDialogFragment(), UserInteractionHandler {
                 updateQrButton(it)
             }
 
-            updateVoiceSearchButton(it)
+            updateVoiceSearchButton()
         }
     }
 
@@ -765,15 +766,8 @@ class SearchDialogFragment : AppCompatDialogFragment(), UserInteractionHandler {
         searchSelectorAlreadyAdded = true
     }
 
-    private fun updateVoiceSearchButton(searchFragmentState: SearchFragmentState) {
-        val searchEngine = searchFragmentState.searchEngineSource.searchEngine
-
-        val isVisible =
-            searchEngine?.id?.contains("google") == true &&
-                isSpeechAvailable() &&
-                requireContext().settings().shouldShowVoiceSearch
-
-        when (isVisible) {
+    private fun updateVoiceSearchButton() {
+        when (isSpeechAvailable() && requireContext().settings().shouldShowVoiceSearch) {
             true -> {
                 if (voiceSearchButtonAction == null) {
                     voiceSearchButtonAction = IncreasedTapAreaActionDecorator(

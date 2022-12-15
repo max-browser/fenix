@@ -1407,6 +1407,11 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         binding.swipeRefresh.isEnabled = shouldPullToRefreshBeEnabled(inFullScreen)
     }
 
+    @CallSuper
+    internal open fun onUpdateToolbarForConfigurationChange(toolbar: BrowserToolbarView) {
+        toolbar.dismissMenu()
+    }
+
     /*
      * Dereference these views when the fragment view is destroyed to prevent memory leaks
      */
@@ -1479,7 +1484,9 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        _browserToolbarView?.dismissMenu()
+        _browserToolbarView?.let {
+            onUpdateToolbarForConfigurationChange(it)
+        }
     }
 
     // This method is called in response to native web extension messages from

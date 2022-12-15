@@ -66,10 +66,12 @@
 
     <!-- Private mode shortcut "contextual feature recommendation" (CFR) -->
     <!-- Text for the main message -->
-    <string name="cfr_message">Ajoutez un raccourci pour ouvrir des onglets privés depuis votre écran d’accueil.</string>
+    <string moz:removedIn="109" name="cfr_message" tools:ignore="UnusedResources">Ajoutez un raccourci pour ouvrir des onglets privés depuis votre écran d’accueil.</string>
     <!-- Text for the positive button -->
-    <string name="cfr_pos_button_text">Ajouter un raccourci</string>
-    <!-- Text for the negative button -->
+    <string moz:removedIn="109" name="cfr_pos_button_text" tools:ignore="UnusedResources">Ajouter un raccourci</string>
+    <!-- Text for the positive button to accept adding a Private Browsing shortcut to the Home screen -->
+    <string name="private_mode_cfr_pos_button_text">Ajouter à l’écran d’accueil</string>
+    <!-- Text for the negative button to decline adding a Private Browsing shortcut to the Home screen -->
     <string name="cfr_neg_button_text">Non merci</string>
 
     <!-- Open in App "contextual feature recommendation" (CFR) -->
@@ -259,7 +261,10 @@
     <string name="search_settings_menu_item">Paramètres de recherche</string>
 
     <!-- Header text for the search selector menu -->
-    <string name="search_header_menu_item">Pour cette recherche :</string>
+    <string moz:RemovedIn="109" name="search_header_menu_item" tools:ignore="UnusedResources">Pour cette recherche :</string>
+
+    <!-- Header text for the search selector menu -->
+    <string name="search_header_menu_item_2">Pour cette recherche :</string>
 
     <!-- Home onboarding -->
     <!-- Onboarding home screen popup dialog, shown on top of the Jump back in section. -->
@@ -335,6 +340,27 @@
     <string name="preferences_add_private_browsing_shortcut">Ajouter un raccourci pour la navigation privée</string>
     <!-- Preference for enabling "HTTPS-Only" mode -->
     <string name="preferences_https_only_title">Mode HTTPS uniquement</string>
+
+    <!-- Preference for removing cookie/consent banners from sites automatically. See reduce_cookie_banner_summary for additional context. -->
+    <string name="preferences_cookie_banner_reduction">Réduction des bannières de cookies</string>
+    <!-- Preference for rejecting or removing as many cookie/consent banners as possible on sites. See reduce_cookie_banner_summary for additional context. -->
+    <string name="reduce_cookie_banner_option">Réduire les bannières de cookies</string>
+    <!-- Summary for the preference for rejecting all cookies whenever possible. -->
+    <string name="reduce_cookie_banner_summary">Firefox essaie automatiquement de refuser les demandes de dépôt de cookies quand une bannière de cookies s’affiche. Si aucune option de rejet n’est disponible, Firefox peut accepter tous les cookies pour fermer la bannière.</string>
+
+    <!-- Text for indicating cookie banner handling is off this site, this is shown as part of the protections panel with the tracking protection toggle -->
+    <string name="reduce_cookie_banner_off_for_site">Désactivée pour ce site</string>
+    <!-- Text for indicating cookie banner handling is on this site, this is shown as part of the protections panel with the tracking protection toggle -->
+    <string name="reduce_cookie_banner_on_for_site">Activée pour ce site</string>
+    <!-- Title text for a detail explanation indicating cookie banner handling is on this site, this is shown as part of the cookie banner panel in the toolbar. The first parameter is a shortened URL of the current site-->
+    <string name="reduce_cookie_banner_details_panel_title_on_for_site">Activer la réduction des bannières de cookies pour %1$s ?</string>
+    <!-- Title text for a detail explanation indicating cookie banner handling is off this site, this is shown as part of the cookie banner panel in the toolbar. The first parameter is a shortened URL of the current site-->
+    <string name="reduce_cookie_banner_details_panel_title_off_for_site">Désactiver la réduction des bannières de cookies pour %1$s ?</string>
+    <!-- Long text for a detail explanation indicating what will happen if cookie banner handling is off for a site, this is shown as part of the cookie banner panel in the toolbar. The first parameter is the application name -->
+    <string name="reduce_cookie_banner_details_panel_description_off_for_site">%1$s effacera les cookies de ce site et actualisera la page. La suppression de tous les cookies peut vous déconnecter ou vider les paniers d’achats.</string>
+    <!-- Long text for a detail explanation indicating what will happen if cookie banner handling is on for a site, this is shown as part of the cookie banner panel in the toolbar. The first and second parameter are the application name -->
+    <string name="reduce_cookie_banner_details_panel_description_on_for_site">%1$s peut essayer automatiquement de refuser les demandes de dépôt de cookies. Si aucune option de rejet n’est disponible, %2$s peut accepter tous les cookies pour fermer la bannière.</string>
+
     <!-- Description of the preference to enable "HTTPS-Only" mode. -->
     <string name="preferences_https_only_summary">Essayer de se connecter automatiquement aux sites en utilisant le protocole de chiffrement HTTPS pour une sécurité accrue.</string>
     <!-- Summary of tracking protection preference if tracking protection is set to on -->
@@ -1082,8 +1108,6 @@
     <string name="share_copy_link_to_clipboard">Copier dans le presse-papiers</string>
     <!-- Toast shown after copying link to clipboard -->
     <string name="toast_copy_link_to_clipboard">Copié dans le presse-papiers</string>
-    <!-- An option from the three dot menu to into sync -->
-    <string moz:removedIn="107" name="sync_menu_sign_in" tools:ignore="UnusedResources">Se connecter pour synchroniser</string>
     <!-- An option from the share dialog to sign into sync -->
     <string name="sync_sign_in">Se connecter à Sync</string>
      <!-- An option from the three dot menu to sync and save data -->
@@ -1124,6 +1148,12 @@
     <!-- Text shown in the notification that pops up to remind the user to set fenix as default browser.
     %1$s is a placeholder that will be replaced by the app name (Fenix). -->
     <string name="notification_default_browser_text">Faites de %1$s votre navigateur par défaut</string>
+
+    <!-- Title shown in the notification that pops up to re-engage the user -->
+    <string name="notification_re_engagement_title">Essayez la navigation privée</string>
+    <!-- Text shown in the notification that pops up to re-engage the user.
+    %1$s is a placeholder that will be replaced by the app name. -->
+    <string name="notification_re_engagement_text">Naviguez sans enregistrer ni cookies ni historique dans %1$s</string>
 
     <!-- Snackbar -->
     <!-- Text shown in snackbar when user deletes a collection -->
@@ -1325,7 +1355,7 @@
     <!-- Text shown for settings option for sign with pairing -->
     <string name="sign_in_with_camera">Connectez-vous avec votre appareil photo</string>
     <!-- Text shown for settings option for sign with email -->
-    <string name="sign_in_with_email">Utiliser plutôt une adresse électronique</string>
+    <string name="sign_in_with_email">Utiliser plutôt une adresse e-mail</string>
     <!-- Text shown for settings option for create new account text.'Firefox' intentionally hardcoded here.-->
     <string name="sign_in_create_account_text"><![CDATA[Vous n’avez pas de compte ? <u>Créez-en un</u> pour synchroniser Firefox entre vos appareils.]]></string>
     <!-- Text shown in confirmation dialog to sign out of account. The first parameter is the name of the app (e.g. Firefox Preview) -->
@@ -1606,7 +1636,7 @@
     <!-- Preference for saving and autofilling addresses -->
     <string name="preferences_addresses_save_and_autofill_addresses">Enregistrer et remplir automatiquement les adresses</string>
     <!-- Preference summary for saving and autofilling address data -->
-    <string name="preferences_addresses_save_and_autofill_addresses_summary">Cela comprend des informations telles que des numéros, des adresses électroniques et des adresses d’expédition</string>
+    <string name="preferences_addresses_save_and_autofill_addresses_summary">Cela comprend des informations telles que des numéros, des adresses e-mail et des adresses d’expédition</string>
 
     <!-- Title of the "Add card" screen -->
     <string name="credit_cards_add_card">Ajouter une carte</string>
@@ -1687,7 +1717,7 @@
     <!-- The header for the phone number of an address -->
     <string name="addresses_phone">Téléphone</string>
     <!-- The header for the email of an address -->
-    <string name="addresses_email">Adresse électronique</string>
+    <string name="addresses_email">Adresse e-mail</string>
     <!-- The text for the "Save" button for saving an address -->
     <string name="addresses_save_button">Enregistrer</string>
     <!-- The text for the "Cancel" button for cancelling adding, updating or deleting an address -->
@@ -1897,7 +1927,7 @@
     <string name="inactive_tabs_auto_close_message_snackbar">Fermeture automatique activée</string>
 
     <!-- Default browser experiment -->
-    <string name="default_browser_experiment_card_text">Faites en sorte que les liens des sites web, des courriels et des messages s’ouvrent automatiquement dans Max Browser.</string>
+    <string name="default_browser_experiment_card_text">Faites en sorte que les liens des sites web, des e-mails et des messages s’ouvrent automatiquement dans Max Browser.</string>
 
     <!-- Content description for close button in collection placeholder. -->
     <string name="remove_home_collection_placeholder_content_description">Supprimer</string>

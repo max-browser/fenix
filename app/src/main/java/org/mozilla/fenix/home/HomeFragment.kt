@@ -447,7 +447,6 @@ class HomeFragment : Fragment() {
             pocketStoriesController = DefaultPocketStoriesController(
                 homeActivity = activity,
                 appStore = components.appStore,
-                navController = findNavController(),
             ),
             myDocumentsController = DefaultMyDocumentsController(
                 navController = findNavController(),
@@ -958,6 +957,8 @@ class HomeFragment : Fragment() {
                 true,
             )
             layout.findViewById<Button>(R.id.cfr_pos_button).apply {
+                this.increaseTapArea(CFR_TAP_INCREASE_DPS)
+
                 setOnClickListener {
                     PrivateShortcutCreateManager.createPrivateShortcut(context)
                     privateBrowsingRecommend.dismiss()
@@ -1233,6 +1234,8 @@ class HomeFragment : Fragment() {
 
         private const val CFR_WIDTH_DIVIDER = 1.7
         private const val CFR_Y_OFFSET = -20
+
+        private const val CFR_TAP_INCREASE_DPS = 6
 
         // Sponsored top sites titles and search engine names used for filtering
         const val AMAZON_SPONSORED_TITLE = "Amazon"

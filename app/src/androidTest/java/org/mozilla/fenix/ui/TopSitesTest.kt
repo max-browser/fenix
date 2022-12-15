@@ -20,6 +20,7 @@ import org.mozilla.fenix.helpers.RetryTestRule
 import org.mozilla.fenix.helpers.TestAssetHelper.getGenericAsset
 import org.mozilla.fenix.helpers.TestHelper.generateRandomString
 import org.mozilla.fenix.helpers.TestHelper.getStringResource
+import org.mozilla.fenix.helpers.TestHelper.waitUntilSnackbarGone
 import org.mozilla.fenix.ui.robots.browserScreen
 import org.mozilla.fenix.ui.robots.homeScreen
 import org.mozilla.fenix.ui.robots.navigationToolbar
@@ -66,7 +67,7 @@ class TopSitesTest {
         }.enterURLAndEnterToBrowser(defaultWebPage.url) {
         }.openThreeDotMenu {
             expandMenu()
-            verifyAddToTopSitesButton()
+            verifyAddToShortcutsButton()
         }.addToFirefoxHome {
             verifySnackBarText(getStringResource(R.string.snackbar_added_to_shortcuts))
         }.goToHomescreen {
@@ -83,7 +84,7 @@ class TopSitesTest {
         }.enterURLAndEnterToBrowser(defaultWebPage.url) {
         }.openThreeDotMenu {
             expandMenu()
-            verifyAddToTopSitesButton()
+            verifyAddToShortcutsButton()
         }.addToFirefoxHome {
             verifySnackBarText(getStringResource(R.string.snackbar_added_to_shortcuts))
         }.goToHomescreen {
@@ -110,7 +111,7 @@ class TopSitesTest {
         }.enterURLAndEnterToBrowser(defaultWebPage.url) {
         }.openThreeDotMenu {
             expandMenu()
-            verifyAddToTopSitesButton()
+            verifyAddToShortcutsButton()
         }.addToFirefoxHome {
             verifySnackBarText(getStringResource(R.string.snackbar_added_to_shortcuts))
         }.goToHomescreen {
@@ -133,7 +134,7 @@ class TopSitesTest {
             waitForPageToLoad()
         }.openThreeDotMenu {
             expandMenu()
-            verifyAddToTopSitesButton()
+            verifyAddToShortcutsButton()
         }.addToFirefoxHome {
             verifySnackBarText(getStringResource(R.string.snackbar_added_to_shortcuts))
         }.goToHomescreen {
@@ -155,7 +156,7 @@ class TopSitesTest {
         }.enterURLAndEnterToBrowser(defaultWebPage.url) {
         }.openThreeDotMenu {
             expandMenu()
-            verifyAddToTopSitesButton()
+            verifyAddToShortcutsButton()
         }.addToFirefoxHome {
             verifySnackBarText(getStringResource(R.string.snackbar_added_to_shortcuts))
         }.goToHomescreen {
@@ -169,6 +170,28 @@ class TopSitesTest {
     }
 
     @Test
+    fun verifyUndoRemoveTopSite() {
+        val defaultWebPage = getGenericAsset(mockWebServer, 1)
+
+        navigationToolbar {
+        }.enterURLAndEnterToBrowser(defaultWebPage.url) {
+        }.openThreeDotMenu {
+            expandMenu()
+            verifyAddToShortcutsButton()
+        }.addToFirefoxHome {
+            verifySnackBarText(getStringResource(R.string.snackbar_added_to_shortcuts))
+        }.goToHomescreen {
+            verifyExistingTopSitesList()
+            verifyExistingTopSitesTabs(defaultWebPage.title)
+        }.openContextMenuOnTopSitesWithTitle(defaultWebPage.title) {
+            verifyTopSiteContextMenuItems()
+        }.removeTopSite {
+            clickUndoSnackBarButton()
+            verifyExistingTopSitesTabs(defaultWebPage.title)
+        }
+    }
+
+    @Test
     fun verifyRemoveTopSiteFromMainMenu() {
         val defaultWebPage = getGenericAsset(mockWebServer, 1)
 
@@ -176,7 +199,7 @@ class TopSitesTest {
         }.enterURLAndEnterToBrowser(defaultWebPage.url) {
         }.openThreeDotMenu {
             expandMenu()
-            verifyAddToTopSitesButton()
+            verifyAddToShortcutsButton()
         }.addToFirefoxHome {
             verifySnackBarText(getStringResource(R.string.snackbar_added_to_shortcuts))
         }.goToHomescreen {
@@ -228,6 +251,8 @@ class TopSitesTest {
             verifyExistingTopSitesTabs(defaultWebPage.title)
         }.openContextMenuOnTopSitesWithTitle(defaultWebPage.title) {
         }.deleteTopSiteFromHistory {
+            verifySnackBarText(getStringResource(R.string.snackbar_top_site_removed))
+            waitUntilSnackbarGone()
         }.openThreeDotMenu {
         }.openHistory {
             verifyEmptyHistoryView()

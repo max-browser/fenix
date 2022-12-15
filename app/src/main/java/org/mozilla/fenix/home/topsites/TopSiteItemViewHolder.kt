@@ -32,6 +32,7 @@ import org.mozilla.fenix.GleanMetrics.Pings
 import org.mozilla.fenix.GleanMetrics.TopSites
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.AppStore
+import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.databinding.TopSiteItemBinding
 import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.home.sessioncontrol.TopSiteInteractor
@@ -53,7 +54,6 @@ class TopSiteItemViewHolder(
             if (topSite.url == SupportUtils.MAX_STATUS_SAVER_URL) {
                 return@setOnLongClickListener true
             }
-            interactor.onTopSiteMenuOpened()
             TopSites.longPress.record(TopSites.LongPressExtra(topSite.name()))
 
             val topSiteMenu = TopSiteItemMenu(
@@ -67,9 +67,22 @@ class TopSiteItemViewHolder(
                     is TopSiteItemMenu.Item.RenameTopSite -> interactor.onRenameTopSiteClicked(
                         topSite,
                     )
-                    is TopSiteItemMenu.Item.RemoveTopSite -> interactor.onRemoveTopSiteClicked(
-                        topSite,
-                    )
+                    is TopSiteItemMenu.Item.RemoveTopSite -> {
+                        interactor.onRemoveTopSiteClicked(topSite)
+                        FenixSnackbar.make(
+                            view = it,
+                            duration = FenixSnackbar.LENGTH_LONG,
+                            isDisplayedWithBrowserToolbar = false,
+                        )
+                            .setText(it.context.getString(R.string.snackbar_top_site_removed))
+                            .setAction(it.context.getString(R.string.snackbar_deleted_undo)) {
+                                it.context.components.useCases.topSitesUseCase.addPinnedSites(
+                                    topSite.title.toString(),
+                                    topSite.url,
+                                )
+                            }
+                            .show()
+                    }
                     is TopSiteItemMenu.Item.Settings -> interactor.onSettingsClicked()
                     is TopSiteItemMenu.Item.SponsorPrivacy -> interactor.onSponsorPrivacyClicked()
                 }
