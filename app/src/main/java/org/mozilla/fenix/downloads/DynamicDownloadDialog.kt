@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.max.browser.core.feature.pdf.openPdfReaderByFilePath
+import com.max.browser.core.pdf.openPdfReaderByFilePath
 import com.max.browser.core.feature.reader.image.openImageReaderByFilePath
 import com.max.browser.core.feature.reader.video.openVideoReaderByFilePath
 import mozilla.components.browser.state.state.content.DownloadState

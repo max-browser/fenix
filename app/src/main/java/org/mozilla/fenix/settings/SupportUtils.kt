@@ -63,6 +63,7 @@ object SupportUtils {
     }
 
     enum class MaxPage(internal val path: String) {
+        HOME(""),
         PRIVATE_NOTICE("privacy-policy/"),
         TERMS_OF_SERVICE("terms-of-service/"),
     }

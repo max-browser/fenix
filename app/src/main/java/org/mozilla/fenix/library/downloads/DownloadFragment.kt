@@ -11,7 +11,7 @@ import android.view.*
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
-import com.max.browser.core.feature.pdf.openPdfReaderByFilePath
+import com.max.browser.core.pdf.openPdfReaderByFilePath
 import com.max.browser.core.feature.reader.image.openImageReaderByFilePath
 import com.max.browser.core.feature.reader.video.openVideoReaderByFilePath
 import kotlinx.coroutines.CoroutineScope

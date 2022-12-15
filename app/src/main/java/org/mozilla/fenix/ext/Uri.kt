@@ -8,7 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.max.browser.core.feature.pdf.PdfReaderActivity
+import com.max.browser.core.pdf.PdfReaderActivity
 
 /**
  * Returns true if the url contains any query parameters specified by the [searchParameters].
