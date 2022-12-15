@@ -281,7 +281,7 @@ class Core(
                 context,
                 engine,
                 icons,
-                R.drawable.ic_status_logo,
+                R.drawable.max_ic_nitification,
                 permissionStorage.permissionsStorage,
                 IntentReceiverActivity::class.java,
             )

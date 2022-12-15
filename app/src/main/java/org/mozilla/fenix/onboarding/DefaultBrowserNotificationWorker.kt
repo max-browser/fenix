@@ -66,7 +66,7 @@ class DefaultBrowserNotificationWorker(
         with(applicationContext) {
             val appName = getString(R.string.app_name)
             return NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.ic_status_logo)
+                .setSmallIcon(R.drawable.max_ic_nitification)
                 .setContentTitle(
                     applicationContext.getString(R.string.notification_default_browser_title, appName),
                 )
