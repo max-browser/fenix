@@ -32,6 +32,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
 import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
+import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import com.max.browser.core.delegate.MaxBrowserActivityDelegate
 import com.max.browser.core.ext.beginTransaction
 import com.max.browser.core.feature.update.UpdateAppDialog

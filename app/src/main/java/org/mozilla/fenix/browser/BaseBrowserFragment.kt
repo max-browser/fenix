@@ -11,7 +11,9 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +34,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
+import com.max.browser.core.ext.getFileNameFromUrl
 import com.max.browser.core.ext.serializeToMap
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -189,7 +192,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     internal val onboarding by lazy { FenixOnboarding(requireContext()) }
 
     private val maxBrowserFragmentDelegate: MaxBrowserFragmentDelegate by lazy{
-        MaxBrowserFragmentDelegate(this)
+        MaxBrowserFragmentDelegate(fragment = this)
     }
 
     @CallSuper
@@ -224,6 +227,8 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         }
 
         checkToShowDefaultBrowserSheetDialogFragment()
+
+        maxBrowserFragmentDelegate.onCreateView()
 
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(

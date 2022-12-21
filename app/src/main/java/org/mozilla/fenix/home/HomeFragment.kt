@@ -52,6 +52,8 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
+import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
+import com.max.browser.core.delegate.MaxHomeFragmentDelegate
 import com.max.browser.core.ext.openApplicationDetailsSettings
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -213,6 +215,10 @@ class HomeFragment : Fragment() {
     private val myDocumentsUseCase: MyDocumentsUseCase by inject()
 
     private var hasRejectedMyDocumentsPermission = false
+
+    private val maxHomeFragmentDelegate: MaxHomeFragmentDelegate by lazy{
+        MaxHomeFragmentDelegate(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT ADD ANYTHING ABOVE THIS getProfilerTime CALL!
@@ -492,6 +498,8 @@ class HomeFragment : Fragment() {
         FxNimbus.features.homescreen.recordExposure()
 
         checkToShowDefaultBrowserSheetDialogFragment()
+
+        maxHomeFragmentDelegate.onCreateView()
 
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(
