@@ -103,6 +103,7 @@ import org.mozilla.fenix.browser.readermode.DefaultReaderModeController
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.FindInPageIntegration
 import org.mozilla.fenix.components.StoreProvider
+import org.mozilla.fenix.components.fullscreen.MaxFullscreenFeature
 import org.mozilla.fenix.components.toolbar.*
 import org.mozilla.fenix.components.toolbar.interactor.BrowserToolbarInteractor
 import org.mozilla.fenix.components.toolbar.interactor.DefaultBrowserToolbarInteractor
@@ -163,14 +164,12 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     private val findInPageIntegration = ViewBoundFeatureWrapper<FindInPageIntegration>()
     private val toolbarIntegration = ViewBoundFeatureWrapper<ToolbarIntegration>()
     private val sitePermissionsFeature = ViewBoundFeatureWrapper<SitePermissionsFeature>()
-    private val fullScreenFeature = ViewBoundFeatureWrapper<FullScreenFeature>()
+    private val maxFullScreenFeature = ViewBoundFeatureWrapper<MaxFullscreenFeature>()
     private val swipeRefreshFeature = ViewBoundFeatureWrapper<SwipeRefreshFeature>()
     private val webchannelIntegration = ViewBoundFeatureWrapper<FxaWebChannelFeature>()
     private val sitePermissionWifiIntegration =
         ViewBoundFeatureWrapper<SitePermissionsWifiIntegration>()
     private val secureWindowFeature = ViewBoundFeatureWrapper<SecureWindowFeature>()
-    private var fullScreenMediaSessionFeature =
-        ViewBoundFeatureWrapper<MediaSessionFullscreenFeature>()
     private val searchFeature = ViewBoundFeatureWrapper<SearchFeature>()
     private val webAuthnFeature = ViewBoundFeatureWrapper<WebAuthnFeature>()
     private val screenOrientationFeature = ViewBoundFeatureWrapper<ScreenOrientationFeature>()
@@ -446,11 +445,14 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
             view = view,
         )
 
-        fullScreenMediaSessionFeature.set(
-            feature = MediaSessionFullscreenFeature(
+        maxFullScreenFeature.set(
+            feature = MaxFullscreenFeature(
                 requireActivity(),
                 context.components.core.store,
+                requireComponents.useCases.sessionUseCases,
                 customTabSessionId,
+                ::viewportFitChange,
+                ::fullScreenChanged,
             ),
             owner = this,
             view = view,
@@ -769,18 +771,6 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
             }
         }
         assignSitePermissionsRules()
-
-        fullScreenFeature.set(
-            feature = FullScreenFeature(
-                requireComponents.core.store,
-                requireComponents.useCases.sessionUseCases,
-                customTabSessionId,
-                ::viewportFitChange,
-                ::fullScreenChanged,
-            ),
-            owner = this,
-            view = view,
-        )
 
         closeFindInPageBarOnNavigation(store)
 
@@ -1138,7 +1128,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         requireComponents.core.store.state.findTabOrCustomTabOrSelectedTab(customTabSessionId)
             ?.let { session ->
                 // If we didn't enter PiP, exit full screen on stop
-                if (!session.content.pictureInPictureEnabled && fullScreenFeature.onBackPressed()) {
+                if (!session.content.pictureInPictureEnabled && maxFullScreenFeature.onBackPressed()) {
                     fullScreenChanged(false)
                 }
             }
@@ -1146,7 +1136,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
 
     @CallSuper
     override fun onBackPressed(): Boolean {
-        return findInPageIntegration.onBackPressed() || fullScreenFeature.onBackPressed() || promptsFeature.onBackPressed() || sessionFeature.onBackPressed() || removeSessionIfNeeded()
+        return findInPageIntegration.onBackPressed() || maxFullScreenFeature.onBackPressed() || promptsFeature.onBackPressed() || sessionFeature.onBackPressed() || removeSessionIfNeeded()
     }
 
     override fun onBackLongPressed(): Boolean {
