@@ -25,4 +25,15 @@
             android:targetPackage="com.max.browser"
             android:targetClass="org.mozilla.fenix.IntentReceiverActivity" />
     </shortcut>
+    <shortcut
+        android:shortcutId="open_qrcode_scanner"
+        android:enabled="true"
+        android:icon="@drawable/max_ic_qrcode_scanner"
+        android:shortcutShortLabel="@string/max_qrcode_scanner"
+        android:shortcutLongLabel="@string/max_qrcode_scanner">
+        <intent
+            android:action="com.max.browser.core.OPEN_QRCODE_SCANNER"
+            android:targetPackage="com.max.browser"
+            android:targetClass="com.max.browser.core.feature.qrcode.QrcodeActivity" />
+    </shortcut>
 </shortcuts>

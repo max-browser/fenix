@@ -6,6 +6,9 @@ include ':mozilla-lint-rules'
 include ":max-browser-core"
 project(":max-browser-core").projectDir = file("../max-browser-core/max-browser-core")
 
+include ':zxing'
+project(":zxing").projectDir = file("../max-browser-core/zxing")
+
 def log(message) {
     logger.lifecycle("[settings] ${message}")
 }
