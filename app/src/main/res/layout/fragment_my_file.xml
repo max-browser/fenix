@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alabaster">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/vd_dp14"
+        android:layout_marginHorizontal="@dimen/vd_dp20"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_all_files"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="@dimen/vd_dp12"
+            android:background="@drawable/bg_my_file_item"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintEnd_toStartOf="@+id/layout_media_file"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/all_files_image_cover"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_centerInParent="true"
+                android:scaleType="centerCrop"
+                android:layout_marginStart="@dimen/vd_dp16"
+                android:src="@drawable/ic_my_files_download_26_black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/tint_black_white" />
+
+            <TextView
+                android:id="@+id/all_files_text_title"
+                style="@style/word_bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/vd_dp18"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/title_all_file"
+                android:textSize="@dimen/vd_dp16"
+                app:layout_constraintBottom_toTopOf="@+id/all_files_text_count"
+                app:layout_constraintStart_toEndOf="@+id/all_files_image_cover"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/all_files_text_count"
+                style="@style/word_normal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/vd_dp5"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/bombay"
+                android:text="@string/title_file_count"
+                android:textSize="@dimen/vd_dp12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/all_files_text_title"
+                app:layout_constraintTop_toBottomOf="@+id/all_files_text_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_media_file"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_my_file_item"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/layout_all_files"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/media_files_image_cover"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_centerInParent="true"
+                android:scaleType="centerCrop"
+                android:layout_marginStart="@dimen/vd_dp16"
+                android:src="@drawable/ic_my_files_download_26_black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/tint_black_white" />
+
+            <TextView
+                android:id="@+id/media_files_text_title"
+                style="@style/word_bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="14dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="@dimen/vd_dp16"
+                android:text="@string/title_media_file"
+                app:layout_constraintBottom_toTopOf="@+id/media_files_text_count"
+                app:layout_constraintStart_toEndOf="@+id/media_files_image_cover"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/media_files_text_count"
+                style="@style/word_normal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_marginTop="@dimen/vd_dp5"
+                android:textColor="@color/bombay"
+                android:text="@string/title_file_count"
+                android:textSize="@dimen/vd_dp12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/media_files_text_title"
+                app:layout_constraintTop_toBottomOf="@+id/media_files_text_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,6 +32,7 @@ import mozilla.components.feature.tabs.WindowFeature
 import mozilla.components.service.glean.private.NoExtras
 import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
+import mozilla.components.support.base.log.logger.Logger
 import org.mozilla.fenix.GleanMetrics.ReaderMode
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R

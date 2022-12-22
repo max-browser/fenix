@@ -20,6 +20,9 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.work.Configuration.Builder
 import androidx.work.Configuration.Provider
 import com.max.browser.core.delegate.MaxBrowserApplicationDelegate
+import com.max.browser.downloader.DownloaderApplicationDelegate
+import com.max.browser.downloader.util.LineNumberDebugTree
+import com.max.browser.downloader.util.ReleaseTree
 import kotlinx.coroutines.*
 import mozilla.appservices.Megazord
 import mozilla.components.browser.state.action.SystemAction
@@ -80,6 +83,7 @@ import org.mozilla.fenix.utils.BrowsersCache
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.Settings.Companion.TOP_SITES_PROVIDER_MAX_THRESHOLD
 import org.mozilla.fenix.wallpapers.Wallpaper
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -102,13 +106,11 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         private set
 
     private val maxBrowserApplication = MaxBrowserApplicationDelegate()
+    private val downloaderApplicationDelegate = DownloaderApplicationDelegate()
 
     override fun onCreate() {
-        initMaxBrowserApplication()
-
         // We measure ourselves to avoid a call into Glean before its loaded.
         val start = SystemClock.elapsedRealtimeNanos()
-
         super.onCreate()
 
         setupInAllProcesses()
@@ -120,7 +122,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
             // situation where we create a GeckoRuntime from the Gecko child process.
             return
         }
-
+        initMaxBrowserApplication()
         // DO NOT ADD ANYTHING ABOVE HERE.
         setupInMainProcessOnly()
         // DO NOT ADD ANYTHING UNDER HERE.
@@ -139,6 +141,12 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
 
     private fun initMaxBrowserApplication() {
         maxBrowserApplication.onCreate(this@FenixApplication, fenixViewModelModule, fenixUseCaseModule)
+        downloaderApplicationDelegate.onCreate(application = this@FenixApplication)
+        if (BuildConfig.DEBUG) {
+            Timber.plant(LineNumberDebugTree())
+        } else {
+            Timber.plant(ReleaseTree())
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage

@@ -37,6 +37,8 @@ import com.max.browser.core.delegate.MaxBrowserActivityDelegate
 import com.max.browser.core.ext.beginTransaction
 import com.max.browser.core.feature.update.UpdateAppDialog
 import com.max.browser.core.feature.update.shouldUpdateAppDialogShow
+import com.max.browser.downloader.DownloaderActivityDelegate
+import com.max.browser.downloader.worker.ARG_NOTIFICATION_FILE_PATH
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import mozilla.appservices.places.BookmarkRoot
@@ -183,6 +185,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
     private lateinit var startupTypeTelemetry: StartupTypeTelemetry
 
     private val maxBrowserActivityDelegate = MaxBrowserActivityDelegate()
+    private val downloaderActivityDelegate = DownloaderActivityDelegate()
 
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
@@ -235,6 +238,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         // Unless the activity is recreated, navigate to home first (without rendering it)
         // to add it to the back stack.
         if (savedInstanceState == null) {
+            initDownloaderLibrary()
             navigateToHome()
         }
 
@@ -247,7 +251,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         if (settings().showHomeOnboardingDialog && onboarding.userHasBeenOnboarded()) {
             navHost.navController.navigate(NavGraphDirections.actionGlobalHomeOnboardingDialog())
         }
-
+        handleIntentFromNotification(intent)
         Performance.processIntentIfPerformanceTest(intent, this)
 
         if (settings().isTelemetryEnabled) {
@@ -524,6 +528,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         super.onNewIntent(intent)
         intent?.let {
             handleNewIntent(it)
+            handleIntentFromNotification(it)
         }
         startupPathProvider.onIntentReceived(intent)
 
@@ -1115,6 +1120,19 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
     private fun shouldNavigateToBrowserOnColdStart(savedInstanceState: Bundle?): Boolean {
         return isActivityColdStarted(intent, savedInstanceState) &&
             !processIntent(intent)
+    }
+
+    private fun initDownloaderLibrary() {
+        Logger.info("initDlpLibrary")
+        downloaderActivityDelegate.init(this@HomeActivity, lifecycleScope)
+    }
+
+    private fun handleIntentFromNotification(intent: Intent?) {
+        val filePath = intent?.getStringExtra(ARG_NOTIFICATION_FILE_PATH)
+        Logger.info("VD filePath:$filePath")
+        filePath?.let {
+            navHost.navController.navigate(NavGraphDirections.actionGlobalMyFileFragment(true))
+        }
     }
 
     companion object {

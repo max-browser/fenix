@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.browser
 
+import android.Manifest
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.DialogInterface
@@ -17,10 +18,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -29,16 +33,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import cl.jesualex.stooltip.Position
+import cl.jesualex.stooltip.Tooltip
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
+import com.max.browser.downloader.repository.SharedPreferencesRepository
+import com.max.browser.downloader.ui.home.BrowsingUiState
+import com.max.browser.downloader.ui.home.FabStatus
+import com.max.browser.downloader.ui.home.WebViewViewModel
+import com.max.browser.downloader.util.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import mozilla.appservices.places.BookmarkRoot
 import mozilla.appservices.places.uniffi.PlacesApiException
 import mozilla.components.browser.state.action.ContentAction
@@ -83,12 +92,15 @@ import mozilla.components.support.base.feature.ActivityResultHandler
 import mozilla.components.support.base.feature.PermissionsFeature
 import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
+import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.ktx.android.view.enterToImmersiveMode
 import mozilla.components.support.ktx.android.view.exitImmersiveMode
 import mozilla.components.support.ktx.android.view.hideKeyboard
 import mozilla.components.support.ktx.kotlin.getOrigin
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifAnyChanged
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifChanged
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.mozilla.fenix.*
 import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.GleanMetrics.MediaState
@@ -117,6 +129,7 @@ import org.mozilla.fenix.settings.biometric.BiometricPromptFeature
 import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wifi.SitePermissionsWifiIntegration
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import mozilla.components.feature.session.behavior.ToolbarPosition as MozacToolbarPosition
 
@@ -173,7 +186,6 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     private var pipFeature: PictureInPictureFeature? = null
 
     var customTabSessionId: String? = null
-
     @VisibleForTesting
     internal var browserInitialized: Boolean = false
     private var initUIJob: Job? = null
@@ -189,6 +201,23 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         MaxBrowserFragmentDelegate(fragment = this)
     }
 
+    private val vdDownloaderPref: SharedPreferencesRepository by inject()
+    private var tooltip: Tooltip? = null
+    private var prefetchVideoUrl: String = ""
+    private var prefetchVideoJob: Job? = null
+    private var parseVideoJob: Job? = null
+    private var checkDownloadingJob: Job? = null
+    private val viewModel: WebViewViewModel by viewModel()
+    private var hasStartRepeatCheck = false
+    private var currentWebUrl = ""
+    private val requestWritePermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (viewModel.canAddFile.not()) {
+            showRequestPermissionDialog(requireContext())
+        }
+    }
+
     @CallSuper
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -197,7 +226,6 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     ): View {
         // DO NOT ADD ANYTHING ABOVE THIS getProfilerTime CALL!
         val profilerStartTime = requireComponents.core.engine.profiler?.getProfilerTime()
-
         customTabSessionId = requireArguments().getString(EXTRA_SESSION_ID)
 
         // Diagnostic breadcrumb for "Display already aquired" crash:
@@ -236,7 +264,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // DO NOT ADD ANYTHING ABOVE THIS getProfilerTime CALL!
         val profilerStartTime = requireComponents.core.engine.profiler?.getProfilerTime()
-
+        Logger.info("onViewCreated")
         initializeUI(view)
 
         if (customTabSessionId == null) {
@@ -262,6 +290,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
             profilerStartTime,
             "BaseBrowserFragment.onViewCreated",
         )
+        subscribeToObserver()
     }
 
     private fun initializeUI(view: View) {
@@ -278,6 +307,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     // https://github.com/mozilla-mobile/fenix/issues/19920
     @CallSuper
     internal open fun initializeUI(view: View, tab: SessionState) {
+        Logger.info("initializeUI")
         val context = requireContext()
         val store = context.components.core.store
         val activity = requireActivity() as HomeActivity
@@ -805,6 +835,56 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
             view = view,
         )
 
+        with(binding.fabDownload) {
+            clickWithDebounce {
+                Logger.info("click fabDownload btn")
+                tooltip?.closeNow()
+                context.checkLibraryIsInitialized(
+                    {
+                        // 低於android 11手機需請求write storage permission.
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                            if (hasWritePermission(requireContext()).not()) {
+                                val writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                requestWritePermissionLauncher.launch(writePermission)
+                                return@checkLibraryIsInitialized
+                            }
+                        }
+
+                        when (viewModel.fabState) {
+                            FabStatus.CONVERTING -> {
+                                toast(R.string.toast_is_converting_please_wait)
+                            }
+                            FabStatus.DOWNLOADING -> {
+                            }
+                            FabStatus.NORMAL -> {
+                                getCurrentTab()?.content?.url?.let { url ->
+                                    Logger.info("get url: $url")
+                                    prefetchVideoJob?.invokeOnCompletion {
+                                        if (isAdded) {
+                                            parseVideoJob =
+                                                viewModel.getVideoInfo(
+                                                    url,
+                                                    requireActivity().createCacheInfo(url)
+                                                )
+                                        }
+                                    } ?: run {
+                                        parseVideoJob =
+                                            viewModel.getVideoInfo(
+                                                url,
+                                                requireActivity().createCacheInfo(url)
+                                            )
+                                    }
+                                    setFabState(FabStatus.CONVERTING)
+                                }
+                            }
+                        }
+                    }, {
+                        findNavController().safeNavigate(NavGraphDirections.actionGlobalInitializingDialog())
+                    }
+                )
+            }
+        }
+
         initializeEngineView(toolbarHeight)
     }
 
@@ -1092,11 +1172,16 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     private fun handleSelectedTabContentChanged(content: ContentState) {
         maxBrowserFragmentDelegate.handleSelectedTabContentChanged(content.url)
 
+        content.url.let {
+            viewModel.setUrl(it)
+        }
+        monitorButtonState(content.url)
     }
 
     @CallSuper
     override fun onResume() {
         super.onResume()
+        Logger.info("onResume")
         val components = requireComponents
 
         val preferredColorScheme = components.core.getPreferredColorScheme()
@@ -1105,21 +1190,31 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
             components.useCases.sessionUseCases.reload()
         }
         hideToolbar()
+        monitorButtonState(currentWebUrl)
     }
 
     @CallSuper
     override fun onPause() {
         super.onPause()
+        Logger.info("onPause")
         if (findNavController().currentDestination?.id != R.id.searchDialogFragment) {
             view?.hideKeyboard()
+        }
+        hasStartRepeatCheck = false
+        checkDownloadingJob?.isActive?.let {
+            if (it) {
+                checkDownloadingJob?.cancel()
+            }
         }
     }
 
     @CallSuper
     override fun onStop() {
         super.onStop()
+        Logger.info("onStop")
         initUIJob?.cancel()
-
+        hasStartRepeatCheck = false
+        checkDownloadingJob?.cancel()
         requireComponents.core.store.state.findTabOrCustomTabOrSelectedTab(customTabSessionId)
             ?.let { session ->
                 // If we didn't enter PiP, exit full screen on stop
@@ -1359,6 +1454,9 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     @VisibleForTesting
     internal fun fullScreenChanged(inFullScreen: Boolean) {
         if (inFullScreen) {
+            if (currentWebUrl.isDownloadableWebsite()) {
+                binding.fabDownload.isVisible = false
+            }
             // Close find in page bar if opened
             findInPageIntegration.onBackPressed()
             FenixSnackbar.make(
@@ -1392,6 +1490,9 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                 initializeEngineView(toolbarHeight)
                 browserToolbarView.expand()
             }
+            if (currentWebUrl.isDownloadableWebsite()) {
+                binding.fabDownload.isVisible = true
+            }
         }
 
         binding.swipeRefresh.isEnabled = shouldPullToRefreshBeEnabled(inFullScreen)
@@ -1407,13 +1508,13 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
      */
     override fun onDestroyView() {
         super.onDestroyView()
-
+        Logger.info("onDestroyView")
         // Diagnostic breadcrumb for "Display already aquired" crash:
         // https://github.com/mozilla-mobile/android-components/issues/7960
         breadcrumb(
             message = "onDestroyView()",
         )
-
+        tooltip?.closeNow()
         requireContext().accessibilityManager.removeAccessibilityStateChangeListener(this)
         _browserToolbarView = null
         _browserToolbarInteractor = null
@@ -1515,4 +1616,162 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
 
         return isValidStatus && isSameTab
     }
+
+    private fun checkUrlDownloadable(url: String) {
+        Logger.info("checkUrlDownloadable url:$url")
+        currentWebUrl = url
+        if (url.isDownloadableWebsite()) {
+            binding.fabDownload.isVisible = true
+            showDownloadTip(requireContext())
+            if (prefetchVideoUrl != url) {
+                prefetchVideoUrl = url
+                prefetchVideoJob = viewModel.getVideoInfo(
+                    url,
+                    requireActivity().createCacheInfo(url),
+                    needNotify = false
+                )
+            }
+        } else {
+            binding.fabDownload.isVisible = false
+        }
+    }
+
+    private fun subscribeToObserver() {
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+            state.getContentIfNotHandled()?.let {
+                when (it) {
+                    is BrowsingUiState.LoadingUrl -> {
+                        val url = it.url
+                        Logger.info("prefetchVideoUrl:$prefetchVideoUrl, url:$url")
+                        if (prefetchVideoUrl != url) {
+                            viewModel.killPreviousJob()
+                            prefetchVideoJob?.cancel()
+                            parseVideoJob?.cancel()
+                            setFabState()
+                        }
+                        checkUrlDownloadable(url)
+                    }
+                    is BrowsingUiState.GetVideoInfoOk -> {
+                        Logger.info("GetVideoInfoOk")
+                        setFabState()
+                        Logger.info("it.url:${it.url}, currentWebUrl:$currentWebUrl")
+                        if (it.url == currentWebUrl) {
+                            findNavController().safeNavigate(
+                                NavGraphDirections.actionGlobalOpenBottomsheetVideoformat(
+                                    it.videoInfo
+                                ),
+                            )
+                        }
+                        Logger.info("getVideoInfo!: ${it.videoInfo}")
+                    }
+                    is BrowsingUiState.GetVideoInfoError -> {
+                        Logger.info("GetVideoInfoError")
+                        setFabState()
+                        Toast.makeText(
+                            requireActivity(),
+                            com.max.browser.videodownloader.R.string.toast_no_video_to_download,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    BrowsingUiState.GetVideoOk -> {
+                        Logger.info("GetVideoOk")
+                    }
+                    BrowsingUiState.GetVideoError -> {
+                        Logger.info("GetVideoError")
+                        Toast.makeText(requireActivity(), com.max.browser.videodownloader.R.string.toast_error, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    BrowsingUiState.Downloading -> {
+                        setFabState(FabStatus.DOWNLOADING)
+                    }
+                    BrowsingUiState.Converting -> {
+                        setFabState(FabStatus.CONVERTING)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setFabState(status: FabStatus = FabStatus.NORMAL) {
+        Logger.info("setFabState status:$status")
+        if (isAdded) {
+            if (currentWebUrl.isDownloadableWebsite()) {
+                viewModel.updateFabState(state = status)
+                when (status) {
+                    FabStatus.CONVERTING -> {
+                        binding.fabDownload.isVisible = false
+                        binding.btnConvert.isVisible = true
+                        binding.btnConvert.setText(R.string.converting)
+                    }
+                    FabStatus.DOWNLOADING -> {
+                        binding.fabDownload.isVisible = false
+                        binding.btnConvert.isVisible = true
+                        binding.btnConvert.setText(R.string.downloading)
+                    }
+                    FabStatus.NORMAL -> {
+                        binding.fabDownload.isVisible = true
+                        binding.btnConvert.isVisible = false
+                        binding.btnConvert.setText(R.string.converting)
+                    }
+                }
+            } else {
+                binding.fabDownload.isVisible = false
+                binding.btnConvert.isVisible = false
+            }
+        }
+    }
+
+    private fun startRepeatingCheckJob(): Job {
+        return lifecycleScope.launch(IO) {
+            while (isActive && isAdded) {
+                val result = viewModel.checkUrlDownloading(currentWebUrl)
+                withContext(Main) {
+                    if (viewModel.fabState != FabStatus.CONVERTING) {
+                        if (result > 0) {
+                            setFabState(FabStatus.DOWNLOADING)
+                        } else {
+                            setFabState(FabStatus.NORMAL)
+                        }
+                    }
+                }
+                delay(1000)
+            }
+        }
+    }
+
+    private fun monitorButtonState(url:String) {
+        Timber.d("monitorButtonState url:$url")
+        if (hasStartRepeatCheck.not() && url.isDownloadableWebsite()) {
+            hasStartRepeatCheck = true
+            checkDownloadingJob = startRepeatingCheckJob()
+        }
+    }
+
+    private fun showDownloadTip(context: Context) {
+        if (vdDownloaderPref.isDownloadBtnToolTipShown) {
+            return
+        }
+        lifecycleScope.launch(IO) {
+            delay(2000)
+            withContext(Main) {
+                val text = resources.getString(R.string.tooltip_tap_to_download)
+                try {
+                    tooltip = Tooltip.on(binding.fabDownload)
+                        .text(text)
+                        .textColor(ContextCompat.getColor(context, R.color.turquoise))
+                        .padding(dp2px(12), dp2px(20), dp2px(12), dp2px(20))
+                        .color(ContextCompat.getColor(context, R.color.alabaster))
+                        .clickToHide(true)
+                        .corner(dp2px(10))
+                        .arrowSize(dp2px(10), dp2px(10))
+                        .position(Position.START)
+                        .show(5000)
+                    vdDownloaderPref.isDownloadBtnToolTipShown = true
+                } catch (e: Exception) {
+                    Logger.error(e.toString())
+                }
+            }
+        }
+    }
+
 }

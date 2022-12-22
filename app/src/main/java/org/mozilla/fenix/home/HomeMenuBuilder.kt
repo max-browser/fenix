@@ -158,7 +158,7 @@ class HomeMenuBuilder(
             HomeMenu.Item.Downloads -> {
                 navController.nav(
                     R.id.homeFragment,
-                    HomeFragmentDirections.actionGlobalDownloadsFragment(),
+                    HomeFragmentDirections.actionGlobalMyFileFragment(),
                 )
             }
             HomeMenu.Item.Help -> {

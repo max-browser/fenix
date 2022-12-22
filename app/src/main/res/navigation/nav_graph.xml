@@ -93,6 +93,15 @@
     <action
         android:id="@+id/action_global_downloadsFragment"
         app:destination="@id/downloadsFragment" />
+
+    <action
+        android:id="@+id/action_global_myFileFragment"
+        app:destination="@id/myFilesFragment" />
+
+    <action
+        android:id="@+id/action_global_dlpMediaFragment"
+        app:destination="@id/dlpMediaFragment" />
+
     <action
         android:id="@+id/action_global_accountProblemFragment"
         app:destination="@id/accountProblemFragment" />
@@ -162,6 +171,13 @@
     <action
         android:id="@+id/action_global_MyDocumentsFragment"
         app:destination="@id/myDocumentsFragment" />
+    <action
+        android:id="@+id/action_global_initializing_dialog"
+        app:destination="@+id/nav_dialog_initializing" />
+    <action
+        android:id="@+id/action_global_open_bottomsheet_videoformat"
+        app:destination="@+id/nav_bottomsheet_videoformat" />
+
     <dialog
         android:id="@+id/tabsTrayFragment"
         android:name="org.mozilla.fenix.tabstray.TabsTrayFragment">
@@ -264,6 +280,9 @@
         <action
             android:id="@+id/action_browserFragment_to_quickSettingsSheetDialogFragment"
             app:destination="@id/quickSettingsSheetDialogFragment" />
+        <action
+            android:id="@+id/action_global_open_bottomsheet_videoformat"
+            app:destination="@+id/nav_bottomsheet_videoformat" />
     </fragment>
 
     <fragment
@@ -313,8 +332,29 @@
     <fragment
         android:id="@+id/downloadsFragment"
         android:name="org.mozilla.fenix.library.downloads.DownloadFragment"
-        android:label="Downloads"
+        android:label="@string/title_all_file"
         tools:layout="@layout/fragment_downloads" />
+
+    <fragment
+        android:id="@+id/myFilesFragment"
+        android:name="org.mozilla.fenix.videodownloader.MyFileFragment"
+        android:label="@string/title_my_files"
+        tools:layout="@layout/fragment_my_file" >
+        <argument
+            android:name="argNav2MediaFilePage"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dlpMediaFragment"
+        android:name="org.mozilla.fenix.videodownloader.DlpMediaFragment"
+        android:label="@string/title_media_file"
+        tools:layout="@layout/fragment_dlp_media" >
+        <deepLink
+            android:id="@+id/dlp_deepLink"
+            app:uri="app://com.max.browser/dlpMedia" />
+    </fragment>
 
     <fragment
         android:id="@+id/bookmarkFragment"
@@ -1114,6 +1154,22 @@
         android:name="org.mozilla.fenix.library.mydocuments.MyDocumentsFragment"
         android:label="@string/max_my_documents"
         tools:layout="@layout/fragment_my_documents" />
+
+    <dialog
+        android:id="@+id/nav_dialog_initializing"
+        android:name="com.max.browser.downloader.ui.dialog.InitializingDialogFragment"
+        android:label="Initializing"
+        tools:layout="@layout/dialog_initializing" />
+
+    <dialog
+        android:id="@+id/nav_bottomsheet_videoformat"
+        android:name="org.mozilla.fenix.videodownloader.BottomSheetDownloadFragment"
+        android:label="Video Format List"
+        tools:layout="@layout/fragment_dlp_format_chooser">
+        <argument
+            android:name="argVideoInfo"
+            app:argType="com.max.browser.downloader.vo.VideoInfo"/>
+    </dialog>
 
     <navigation
         android:id="@+id/site_permissions_exceptions_graph"

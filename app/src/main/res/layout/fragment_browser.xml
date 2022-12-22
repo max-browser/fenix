@@ -91,6 +91,56 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/creditCardSelectBar" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="70dp"
+            android:layout_marginEnd="@dimen/vd_dp20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <RelativeLayout
+                android:id="@+id/fab_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_web_download_btn_oval"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+                <ImageView
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:scaleType="center"
+                    android:src="@drawable/icon_web_download_24_green"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/btn_convert"
+                style="@style/word_normal_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/converting"
+                android:textAllCaps="false"
+                android:textColor="@color/turquoise"
+                android:background="@drawable/bg_web_download_btn_rectangle"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:textSize="14dp"
+                android:visibility="gone"
+                android:paddingHorizontal="@dimen/vd_dp14"
+                android:paddingVertical="@dimen/vd_dp17"
+                app:icon="@drawable/ic_fab_download_24_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <org.mozilla.fenix.browser.TabPreview

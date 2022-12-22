@@ -396,7 +396,7 @@ class DefaultBrowserToolbarMenuController(
                 ReportManager.getInstance().report("browser_menu_downloads")
                 navController.nav(
                     R.id.browserFragment,
-                    BrowserFragmentDirections.actionGlobalDownloadsFragment(),
+                    BrowserFragmentDirections.actionGlobalMyFileFragment(),
                 )
             }
             is ToolbarMenu.Item.NewTab -> {

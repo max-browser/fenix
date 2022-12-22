@@ -9,6 +9,12 @@ project(":max-browser-core").projectDir = file("../max-browser-core/max-browser-
 include ':zxing'
 project(":zxing").projectDir = file("../max-browser-core/zxing")
 
+include ":dlp_library"
+project(":dlp_library").projectDir = file("../max-browser-core/dlp_library")
+
+include ":video-downloader-library"
+project(":video-downloader-library").projectDir = file("../max-browser-core/video-downloader-library")
+
 def log(message) {
     logger.lifecycle("[settings] ${message}")
 }
