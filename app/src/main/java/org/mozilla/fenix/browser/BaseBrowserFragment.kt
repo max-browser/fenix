@@ -11,9 +11,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -34,8 +32,6 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
-import com.max.browser.core.ext.getFileNameFromUrl
-import com.max.browser.core.ext.serializeToMap
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
@@ -65,7 +61,6 @@ import mozilla.components.feature.downloads.DownloadsFeature
 import mozilla.components.feature.downloads.manager.FetchDownloadManager
 import mozilla.components.feature.downloads.share.ShareDownloadFeature
 import mozilla.components.feature.intent.ext.EXTRA_SESSION_ID
-import mozilla.components.feature.media.fullscreen.MediaSessionFullscreenFeature
 import mozilla.components.feature.privatemode.feature.SecureWindowFeature
 import mozilla.components.feature.prompts.PromptFeature
 import mozilla.components.feature.prompts.PromptFeature.Companion.PIN_REQUEST
@@ -1095,7 +1090,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     }
 
     private fun handleSelectedTabContentChanged(content: ContentState) {
-        maxBrowserFragmentDelegate.handleSelectedTabContentChanged(content.serializeToMap())
+        maxBrowserFragmentDelegate.handleSelectedTabContentChanged(content.url)
 
     }
 
