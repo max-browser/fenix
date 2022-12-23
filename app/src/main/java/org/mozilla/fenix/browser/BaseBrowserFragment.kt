@@ -33,8 +33,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
-import cl.jesualex.stooltip.Position
-import cl.jesualex.stooltip.Tooltip
+//import cl.jesualex.stooltip.Position
+//import cl.jesualex.stooltip.Tooltip
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
@@ -205,7 +205,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     }
 
     private val vdDownloaderPref: SharedPreferencesRepository by inject()
-    private var tooltip: Tooltip? = null
+    //private var tooltip: Tooltip? = null
     private var prefetchVideoUrl: String = ""
     private var prefetchVideoJob: Job? = null
     private var parseVideoJob: Job? = null
@@ -841,7 +841,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         with(binding.fabDownload) {
             clickWithDebounce {
                 Logger.info("click fabDownload btn")
-                tooltip?.closeNow()
+                //tooltip?.closeNow()
                 context.checkLibraryIsInitialized(
                     {
                         // 低於android 11手機需請求write storage permission.
@@ -1518,7 +1518,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         breadcrumb(
             message = "onDestroyView()",
         )
-        tooltip?.closeNow()
+        //tooltip?.closeNow()
         requireContext().accessibilityManager.removeAccessibilityStateChangeListener(this)
         _browserToolbarView = null
         _browserToolbarInteractor = null
@@ -1626,7 +1626,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         if (url.isDownloadableWebsite()) {
             Timber.d("checkUrlDownloadable prefetchVideoUrl:$prefetchVideoUrl, url:$url")
             binding.fabDownload.isVisible = true
-            showDownloadTip(requireContext())
+            //showDownloadTip(requireContext())
             if (prefetchVideoUrl != url) {
                 prefetchVideoUrl = url
                 prefetchVideoJob = viewModel.getVideoInfo(
@@ -1752,7 +1752,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         }
     }
 
-    private fun showDownloadTip(context: Context) {
+    /*private fun showDownloadTip(context: Context) {
         if (vdDownloaderPref.isDownloadBtnToolTipShown) {
             return
         }
@@ -1777,6 +1777,6 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                 }
             }
         }
-    }
+    }*/
 
 }
