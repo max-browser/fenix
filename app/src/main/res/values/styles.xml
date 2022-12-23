@@ -128,6 +128,11 @@
         <item name="privateBrowsingButtonAccent">@color/fx_mobile_text_color_primary</item>
 
         <item name="tabCounterTintColor">?attr/textPrimary</item>
+
+        <!-- Word Mark Layout  -->
+        <item name="wordMarkTextHeight">@dimen/wordmark_text_height</item>
+        <item name="wordMarkTextMarginTop">@dimen/wordmark_text_margin_top</item>
+
     </style>
 
     <!-- A theme derived from the normal activity theme, but to look and behave like a dialog -->
@@ -307,14 +312,14 @@
         <item name="awesomeBarIndicatorColor">@color/photonGreen60</item>
         <item name="awesomeBarIndicatorBookmarkColor">@color/photonBlue40</item>
         <item name="selectPromptHeaderTextColor">@color/accent_high_contrast_private_theme</item>
-        <item name="preferenceSectionHeader">@color/photonViolet40</item>
+        <item name="preferenceSectionHeader">@color/fx_mobile_private_text_color_setting_header</item>
         <item name="menuItemButtonTintColor">@color/accent_high_contrast_private_theme</item>
 
         <!-- Shared widget colors -->
         <item name="mozac_primary_text_color">@color/fx_mobile_private_text_color_primary</item>
         <item name="mozac_caption_text_color">@color/fx_mobile_private_text_color_secondary</item>
-        <item name="mozac_widget_favicon_background_color">@color/photonInk50</item>
-        <item name="mozac_widget_favicon_border_color">@color/photonInk50</item>
+        <item name="mozac_widget_favicon_background_color">@color/fx_mobile_private_text_color_setting_header</item>
+        <item name="mozac_widget_favicon_border_color">@color/fx_mobile_private_text_color_setting_header</item>
 
         <!-- Drawables -->
         <item name="fenixLogo">@drawable/ic_logo_wordmark_private</item>
@@ -324,6 +329,10 @@
         <item name="bottomBarBackgroundTop">@drawable/private_home_bottom_bar_background_gradient_top</item>
         <item name="privateBrowsingButtonBackground">@color/fx_mobile_private_text_color_primary</item>
         <item name="privateBrowsingButtonAccent">@color/fx_mobile_private_layer_color_1</item>
+
+        <!-- Word Mark Layout  -->
+        <item name="wordMarkTextHeight">40dp</item>
+        <item name="wordMarkTextMarginTop">0dp</item>
     </style>
 
     <style name="Mozac.Browser.Menu" parent="" tools:ignore="UnusedResources">
@@ -334,6 +343,30 @@
     </style>
 
     <style name="PrivateTheme" parent="PrivateThemeBase" />
+
+    <style name="PrivateTopTheme" parent="PrivateThemeBase" >
+        <!-- Card background, Menu background, Dialog, Banner -->
+        <item name="layer2">@color/fx_mobile_private_layer_color_2_top_toolbar</item>
+        <!-- Search -->
+        <item name="layer3">@color/fx_mobile_private_layer_color_3_top_toolbar</item>
+        <!-- Toolbar background in browsing page -->
+        <item name="toolbarStartGradient">@color/fx_mobile_private_layer_color_4_top_toolbar_start</item>
+        <item name="toolbarEndGradient">@color/fx_mobile_private_layer_color_4_top_toolbar_end</item>
+
+        <item name="fenixWordmarkLogo">@drawable/ic_wordmark_logo_private</item>
+    </style>
+
+    <style name="PrivateBottomTheme" parent="PrivateThemeBase" >
+        <!-- Card background, Menu background, Dialog, Banner -->
+        <item name="layer2">@color/fx_mobile_private_layer_color_2_bottom_toolbar</item>
+        <!-- Search -->
+        <item name="layer3">@color/fx_mobile_private_layer_color_3_bottom_toolbar</item>
+        <!-- Toolbar background in browsing page -->
+        <item name="toolbarStartGradient">@color/fx_mobile_private_layer_color_4_bottom_toolbar_start</item>
+        <item name="toolbarEndGradient">@color/fx_mobile_private_layer_color_4_bottom_toolbar_end</item>
+
+        <item name="fenixWordmarkLogo">@drawable/ic_wordmark_logo_private</item>
+    </style>
 
     <!-- Fade animation for theme switching -->
     <style name="WindowAnimationTransition">

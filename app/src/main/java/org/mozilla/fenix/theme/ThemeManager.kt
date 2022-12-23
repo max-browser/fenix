@@ -24,9 +24,13 @@ import org.mozilla.fenix.Config
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
+import org.mozilla.fenix.components.toolbar.ToolbarPosition
 import org.mozilla.fenix.customtabs.ExternalAppBrowserActivity
+import org.mozilla.fenix.ext.settings
 
-abstract class ThemeManager {
+abstract class ThemeManager(
+    private val context: Context
+) {
 
     abstract var currentTheme: BrowsingMode
 
@@ -36,7 +40,16 @@ abstract class ThemeManager {
     @get:StyleRes
     val currentThemeResource get() = when (currentTheme) {
         BrowsingMode.Normal -> R.style.NormalTheme
-        BrowsingMode.Private -> R.style.PrivateTheme
+        BrowsingMode.Private -> {
+            if (Config.channel.isMax) {
+                when (context.settings().toolbarPosition) {
+                    ToolbarPosition.TOP -> R.style.PrivateTopTheme
+                    ToolbarPosition.BOTTOM -> R.style.PrivateBottomTheme
+                }
+            } else {
+                R.style.PrivateTheme
+            }
+        }
     }
 
     /**
@@ -129,7 +142,7 @@ abstract class ThemeManager {
 class DefaultThemeManager(
     currentTheme: BrowsingMode,
     private val activity: Activity,
-) : ThemeManager() {
+) : ThemeManager(activity) {
     override var currentTheme: BrowsingMode = currentTheme
         set(value) {
             if (currentTheme != value) {

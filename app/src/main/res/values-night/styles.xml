@@ -6,7 +6,7 @@
     <style name="DialogStyleNormal" parent="DialogStyleDark"/>
 
     <style name="NormalTheme" parent="NormalThemeBase" >
-        <item name="fenixWordmarkText">@drawable/ic_wordmark_text_private</item>
+        <item name="fenixWordmarkText">@drawable/ic_wordmark_text_night</item>
     </style>
 
 </resources>

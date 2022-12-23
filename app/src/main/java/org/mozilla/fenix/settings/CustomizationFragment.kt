@@ -11,9 +11,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+import org.mozilla.fenix.Config
 import org.mozilla.fenix.FeatureFlags
 import org.mozilla.fenix.GleanMetrics.AppTheme
 import org.mozilla.fenix.GleanMetrics.ToolbarSettings
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
 import org.mozilla.fenix.ext.requireComponents
@@ -120,6 +122,7 @@ class CustomizationFragment : PreferenceFragmentCompat() {
                     Position.TOP.name,
                 ),
             )
+            updateAppTheme()
         }
 
         val bottomPreference = requirePreference<RadioButtonPreference>(R.string.pref_key_toolbar_bottom)
@@ -129,6 +132,7 @@ class CustomizationFragment : PreferenceFragmentCompat() {
                     Position.BOTTOM.name,
                 ),
             )
+            updateAppTheme()
         }
 
         val toolbarPosition = requireContext().settings().toolbarPosition
@@ -151,6 +155,12 @@ class CustomizationFragment : PreferenceFragmentCompat() {
         requirePreference<SwitchPreference>(R.string.pref_key_swipe_toolbar_switch_tabs).apply {
             isChecked = context.settings().isSwipeToolbarToSwitchTabsEnabled
             onPreferenceChangeListener = SharedPreferenceUpdater()
+        }
+    }
+
+    private fun updateAppTheme(){
+        if (Config.channel.isMax && activity is HomeActivity) {
+            (activity as HomeActivity).themeManager.setActivityTheme(activity as HomeActivity)
         }
     }
 

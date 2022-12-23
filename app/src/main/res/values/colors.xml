@@ -209,6 +209,8 @@
     <color name="fx_mobile_private_text_color_action_tertiary" tools:ignore="UnusedResources">@color/photonLightGrey05</color>
     <!-- Action Tertiary Active text -->
     <color name="fx_mobile_private_text_color_action_tertiary_active" tools:ignore="UnusedResources">@color/photonLightGrey05</color>
+    <!-- Setting header text -->
+    <color name="fx_mobile_private_text_color_setting_header">@color/photonViolet40</color>
 
     <!-- Icon -->
     <!-- Primary icon -->

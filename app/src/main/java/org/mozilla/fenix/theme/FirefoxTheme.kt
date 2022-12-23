@@ -223,6 +223,7 @@ private val privateColorPalette = darkColorPalette.copy(
     layer1 = PhotonColors.Ink50,
     layer2 = PhotonColors.Ink50,
     layer3 = PhotonColors.Ink50,
+    borderAccent = Color(0xFF5BCDD3),
 )
 
 /**

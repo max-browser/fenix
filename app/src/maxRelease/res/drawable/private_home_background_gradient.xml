@@ -3,6 +3,13 @@
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="?iconActive" android:state_selected="true" />
-    <item android:color="@color/fx_mobile_icon_color_primary_inactive" />
+    <item>
+        <shape>
+            <gradient
+                    android:angle="90"
+                    android:startColor="#0085b7"
+                    android:endColor="#006730"
+                    android:type="linear" />
+        </shape>
+    </item>
 </selector>
