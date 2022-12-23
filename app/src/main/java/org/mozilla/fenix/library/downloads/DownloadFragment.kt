@@ -14,6 +14,10 @@ import androidx.lifecycle.Lifecycle
 import com.max.browser.core.pdf.openPdfReaderByFilePath
 import com.max.browser.core.feature.reader.image.openImageReaderByFilePath
 import com.max.browser.core.feature.reader.video.openVideoReaderByFilePath
+import com.max.browser.downloader.report.Action
+import com.max.browser.downloader.report.AppEventReporter
+import com.max.browser.downloader.report.ClickType
+import com.max.browser.downloader.report.PageType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.MainScope
@@ -47,7 +51,7 @@ class DownloadFragment : LibraryPageFragment<DownloadItem>(), UserInteractionHan
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentDownloadsBinding.inflate(inflater, container, false)
-
+        AppEventReporter.reportDownloadFilePage(type = Action.SHOW, page = PageType.ALL_FILE)
         val items = provideDownloads(requireComponents.core.store.state)
 
         downloadStore = StoreProvider.get(this) {
@@ -202,6 +206,7 @@ class DownloadFragment : LibraryPageFragment<DownloadItem>(), UserInteractionHan
     }
 
     private fun openItem(item: DownloadItem, mode: BrowsingMode? = null) {
+        AppEventReporter.reportDownloadFilePage(type = Action.CLICK, page = PageType.ALL_FILE, action = ClickType.PLAY)
         if (item.contentType?.contains("pdf") == true) {
             requireContext().openPdfReaderByFilePath(item.filePath )
 
@@ -254,6 +259,7 @@ class DownloadFragment : LibraryPageFragment<DownloadItem>(), UserInteractionHan
     private fun updatePendingDownloadToDelete(items: Set<DownloadItem>) {
         val ids = items.map { item -> item.id }.toSet()
         downloadStore.dispatch(DownloadFragmentAction.AddPendingDeletionSet(ids))
+        AppEventReporter.reportDownloadFilePage(type = Action.CLICK, page = PageType.ALL_FILE, action = ClickType.REMOVE_FILE)
     }
 
     private fun undoPendingDeletion(items: Set<DownloadItem>) {

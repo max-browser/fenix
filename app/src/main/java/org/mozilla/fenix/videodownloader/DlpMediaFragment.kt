@@ -1,22 +1,21 @@
 package org.mozilla.fenix.videodownloader
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.WorkManager
 import com.max.browser.core.feature.reader.video.openVideoReaderByFilePath
+import com.max.browser.downloader.report.Action
 import com.max.browser.downloader.report.AppEventReporter
 import com.max.browser.downloader.report.ClickType
+import com.max.browser.downloader.report.PageType
 import com.max.browser.downloader.ui.dialog.DeleteDownloadDialogFragment
 import com.max.browser.downloader.ui.dialog.DeleteTaskDialogFragment
 import com.max.browser.downloader.util.getFileFromRecord
-import com.max.browser.downloader.util.isAudio
 import com.max.browser.downloader.util.toast
 import com.max.browser.downloader.vo.DownloadRecord
 import com.max.browser.downloader.vo.DownloadStatus
@@ -57,6 +56,7 @@ class DlpMediaFragment : BaseDownloadFragment(),
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDlpMediaBinding.inflate(inflater, container, false)
+        AppEventReporter.reportDownloadFilePage(type = Action.SHOW, page = PageType.MEDIA_FILE)
         return binding.root
     }
 
@@ -135,10 +135,6 @@ class DlpMediaFragment : BaseDownloadFragment(),
     }
 
     private fun initView(savedInstanceState: Bundle?) {
-        (activity as? AppCompatActivity)?.supportActionBar?.apply {
-            setDisplayShowTitleEnabled(true)
-            setTitle(R.string.download)
-        }
         with(binding.list) {
             adapter = this@DlpMediaFragment.adapter
             setHasFixedSize(true)
@@ -182,6 +178,7 @@ class DlpMediaFragment : BaseDownloadFragment(),
 
     private fun clickFile(file: File) {
         Logger.info("clickFile file path:${file.absolutePath}")
+        AppEventReporter.reportDownloadFilePage(type = Action.CLICK, page = PageType.MEDIA_FILE, action = ClickType.PLAY)
         requireContext().openVideoReaderByFilePath(file.absolutePath)
     }
 
@@ -190,11 +187,12 @@ class DlpMediaFragment : BaseDownloadFragment(),
             val data = this.record ?: return
             when (data.status) {
                 DownloadStatus.DOWNLOADING.value -> {
-                    AppEventReporter.reportItemClick(ClickType.DOWNLOAD_PAUSE)
+                    AppEventReporter.reportDownloadFilePage(type = Action.CLICK, page = PageType.MEDIA_FILE, action = ClickType.PAUSE)
                     downloadViewModel.pauseDownload(data)
                 }
                 DownloadStatus.PAUSE.value -> {
                     activity?.let {
+                        AppEventReporter.reportDownloadFilePage(type = Action.CLICK, page = PageType.MEDIA_FILE, action = ClickType.CONTINUE_DOWNLOAD)
                         downloadViewModel.resumeDownload(WorkManager.getInstance(it), data)
                     } ?: throw IllegalStateException("Activity cannot be null")
                 }
@@ -203,6 +201,7 @@ class DlpMediaFragment : BaseDownloadFragment(),
                         listener = object : DeleteDownloadDialogFragment.DeleteDownloadListener {
                             override fun onConfirmDeleteDownload(url: String) {
                                 this@DlpMediaFragment.data.find { data.url == url }?.let {
+                                    AppEventReporter.reportDownloadFilePage(type = Action.CLICK, page = PageType.MEDIA_FILE, action = ClickType.REMOVE_FILE)
                                     downloadViewModel.deleteDownload(data)
                                 }
                             }
@@ -224,6 +223,7 @@ class DlpMediaFragment : BaseDownloadFragment(),
                 listener = object : DeleteTaskDialogFragment.DeleteTaskListener {
                     override fun onConfirmDeleteTask(processId: String) {
                         this@DlpMediaFragment.data.find { data.processId == processId }?.let {
+                            AppEventReporter.reportDownloadFilePage(type = Action.CLICK, page = PageType.MEDIA_FILE, action = ClickType.REMOVE_TASK)
                             downloadViewModel.cancelDownload(data)
                         }
                     }

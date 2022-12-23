@@ -38,6 +38,9 @@ import cl.jesualex.stooltip.Tooltip
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
+import com.max.browser.downloader.report.Action
+import com.max.browser.downloader.report.AppEventReporter
+import com.max.browser.downloader.report.PageType
 import com.max.browser.downloader.repository.SharedPreferencesRepository
 import com.max.browser.downloader.ui.home.BrowsingUiState
 import com.max.browser.downloader.ui.home.FabStatus
@@ -857,6 +860,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                             FabStatus.DOWNLOADING -> {
                             }
                             FabStatus.NORMAL -> {
+                                AppEventReporter.reportDownloadFlow(classStr = Action.CLICK, page = PageType.DOWNLOAD)
                                 getCurrentTab()?.content?.url?.let { url ->
                                     Logger.info("get url: $url")
                                     prefetchVideoJob?.invokeOnCompletion {
@@ -1618,9 +1622,9 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     }
 
     private fun checkUrlDownloadable(url: String) {
-        Logger.info("checkUrlDownloadable url:$url")
         currentWebUrl = url
         if (url.isDownloadableWebsite()) {
+            Timber.d("checkUrlDownloadable prefetchVideoUrl:$prefetchVideoUrl, url:$url")
             binding.fabDownload.isVisible = true
             showDownloadTip(requireContext())
             if (prefetchVideoUrl != url) {
@@ -1633,6 +1637,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
             }
         } else {
             binding.fabDownload.isVisible = false
+            binding.btnConvert.isVisible = false
         }
     }
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.constraintlayout.helper.widget.Flow
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
@@ -17,6 +18,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.work.WorkManager
 import com.bumptech.glide.Glide
+import com.max.browser.downloader.report.Action
+import com.max.browser.downloader.report.AppEventReporter
+import com.max.browser.downloader.report.DownloadReportItem
+import com.max.browser.downloader.report.PageType
 import com.max.browser.downloader.ui.dialog.DlpFormatChooserViewModel
 import com.max.browser.downloader.util.*
 import com.max.browser.downloader.vo.VideoFormat
@@ -25,6 +30,7 @@ import com.max.browser.videodownloader.R
 import com.max.browser.videodownloader.databinding.FragmentDlpFormatChooserBinding
 import com.max.browser.videodownloader.databinding.ItemBottomsheetVideoformatsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 
 class BottomSheetDownloadFragment : DialogFragment() {
@@ -37,6 +43,7 @@ class BottomSheetDownloadFragment : DialogFragment() {
     private lateinit var videoInfo:VideoInfo
     private var currentVideoFormat: VideoFormat? = null
     private var layoutList = mutableListOf<View>()
+    private var downloadReportItem: DownloadReportItem?= null
 
     override fun onStart() {
         super.onStart()
@@ -45,7 +52,7 @@ class BottomSheetDownloadFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = FragmentDlpFormatChooserBinding.inflate(LayoutInflater.from(context))
-
+        AppEventReporter.reportDownloadFlow(classStr = Action.SHOW, page = PageType.DOWNLOAD_DETAIL)
         val navController = findNavController()
         videoInfo = args.argVideoInfo
 
@@ -53,14 +60,6 @@ class BottomSheetDownloadFragment : DialogFragment() {
             event.getContentIfNotHandled()?.let {
                 if (it) {
                     navController.navigateUp()
-                    /*if (args.argNav2DownloadPage) {
-                        val request = NavDeepLinkRequest.Builder
-                            .fromUri("vd://downloader.cc/download?argFileType=$fileType".toUri())
-                            .build()
-                        navController.navigate(request)
-                    } else {
-                        navController.safeNavigate(WebViewFragmentDirections.actionWebviewToDownload())
-                    }*/
                 }
             }
         }
@@ -130,7 +129,19 @@ class BottomSheetDownloadFragment : DialogFragment() {
                                 return@setOnClickListener
                             }
                             currentVideoFormat = tag as VideoFormat
-                            Log.i("VD", "VD videoFormat id:${currentVideoFormat?.formatId}")
+                            Timber.d("VD videoFormat id:${currentVideoFormat?.formatId}")
+
+                            val mediaFormat = textFormatTitle.text.toString()
+                            val isMusic = if (isAudio(videoFormat.ext)) "true" else "false"
+                            val domain = videoInfo.originUrl.getUrlDomain()
+                            downloadReportItem = DownloadReportItem(
+                                source = "url",
+                                selectedType = mediaFormat,
+                                isMusic = isMusic,
+                                domain = domain,
+                                url = videoInfo.originUrl
+                            )
+
                             clearAllView()
                             this.isSelected = !this.isSelected
                             if (this.isSelected) {
@@ -176,15 +187,16 @@ class BottomSheetDownloadFragment : DialogFragment() {
 
 
     private fun startDownload() {
-        /*val downloadReportItem = DownloadReportItem(
-            source = args.argDownloadSource,
-            selectedType = mediaFormat,
-            isMusic = isMusic,
-            domain = domain,
-            url = videoInfo.originUrl
-        )
         Timber.d("start download reportItem: $downloadReportItem")
-        AppEventReporter.reportDownloadStart(downloadReportItem)*/
+        downloadReportItem?.let {
+            AppEventReporter.reportDownloadStart(it)
+            AppEventReporter.reportDownloadFlow(classStr = Action.SHOW, page = PageType.DOWNLOAD_DETAIL, action = it.selectedType)
+        }
+        Toast.makeText(
+            requireActivity(),
+            R.string.toast_video_is_downloading,
+            Toast.LENGTH_SHORT
+        ).show()
         currentVideoFormat?.let {
             viewModel.getVideo(
                 WorkManager.getInstance(requireActivity()),
