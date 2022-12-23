@@ -60,6 +60,10 @@ object FenixVersions {
     const val google_play_review_version = "2.0.0"
 
     const val protobuf = "3.21.10" // keep in sync with the version used in AS.
+
+    const val zxing = "3.5.0"
+
+    const val camerax = "1.2.0"
 }
 
 @Suppress("unused")
