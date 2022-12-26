@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.WorkManager
+import com.max.browser.core.feature.reader.video.openVideoPlayerByDlp
 import com.max.browser.core.feature.reader.video.openVideoReaderByFilePath
 import com.max.browser.downloader.report.Action
 import com.max.browser.downloader.report.AppEventReporter
@@ -179,7 +180,7 @@ class DlpMediaFragment : BaseDownloadFragment(),
     private fun clickFile(file: File) {
         Logger.info("clickFile file path:${file.absolutePath}")
         AppEventReporter.reportDownloadFilePage(type = Action.CLICK, page = PageType.MEDIA_FILE, action = ClickType.PLAY)
-        requireContext().openVideoReaderByFilePath(file.absolutePath)
+        requireContext().openVideoPlayerByDlp(file.absolutePath)
     }
 
     override fun onPauseResumeDelClick(position: Int) {
