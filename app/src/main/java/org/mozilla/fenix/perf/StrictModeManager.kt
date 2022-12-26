@@ -41,7 +41,7 @@ open class StrictModeManager(
     private val components: Components,
 ) {
 
-    private val isEnabledByBuildConfig = config.channel.isDebug
+    private val isEnabledByBuildConfig = false//config.channel.isDebug
 
     /**
      * The number of times StrictMode has been suppressed. StrictMode can be used to prevent main
