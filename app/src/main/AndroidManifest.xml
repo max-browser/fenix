@@ -153,6 +153,7 @@
 
         <activity
             android:name=".IntentReceiverActivity"
+            android:label="Browser"
             android:theme="@style/Theme.Transparent"
             android:relinquishTaskIdentity="true"
             android:taskAffinity=""
