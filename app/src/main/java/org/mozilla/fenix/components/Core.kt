@@ -501,7 +501,7 @@ class Core(
                 defaultTopSites.add(
                     Pair(
                         "Youtube",
-                        SupportUtils.FACEBOOK_URL,
+                        SupportUtils.YOUTUBE_URL,
                     ),
                 )
 
