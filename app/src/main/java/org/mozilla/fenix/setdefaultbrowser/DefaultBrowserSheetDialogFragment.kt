@@ -56,13 +56,14 @@ fun Fragment.checkToShowDefaultBrowserSheetDialogFragment() {
         return
     }
 
-    key = getPreferenceKey(R.string.pref_key_is_first_time_to_show_default_browser_dialog)
-    val isFirstTime = sp.getBoolean(key, true)
-    if (isFirstTime) {
-        // 首次不展示
-        sp.edit().putBoolean(key, false).apply()
-        return
-    }
+    // Remove after v1.0.7
+//    key = getPreferenceKey(R.string.pref_key_is_first_time_to_show_default_browser_dialog)
+//    val isFirstTime = sp.getBoolean(key, true)
+//    if (isFirstTime) {
+//        // 首次不展示
+//        sp.edit().putBoolean(key, false).apply()
+//        return
+//    }
 
     key = getPreferenceKey(R.string.pref_key_first_time_of_showing_default_browser_dialog)
     val firstTime = sp.getLong(key, 0)
