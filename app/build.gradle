@@ -778,6 +778,7 @@ dependencies {
     implementation project(":max-browser-core")
     implementation project(":video-downloader-library")
     implementation project(":dlp_library")
+    implementation project(":stooltip")
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:31.0.3')

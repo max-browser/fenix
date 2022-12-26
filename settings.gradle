@@ -15,6 +15,9 @@ project(":dlp_library").projectDir = file("../max-browser-core/dlp_library")
 include ":video-downloader-library"
 project(":video-downloader-library").projectDir = file("../max-browser-core/video-downloader-library")
 
+include ':stooltip'
+project(":stooltip").projectDir = file("../max-browser-core/stooltip")
+
 def log(message) {
     logger.lifecycle("[settings] ${message}")
 }
