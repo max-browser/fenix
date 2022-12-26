@@ -32,7 +32,6 @@ import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
 import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
-import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import com.max.browser.core.delegate.MaxBrowserActivityDelegate
 import com.max.browser.core.ext.beginTransaction
 import com.max.browser.core.feature.update.UpdateAppDialog
@@ -97,6 +96,8 @@ import org.mozilla.fenix.onboarding.DefaultBrowserNotificationWorker
 import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.onboarding.ReEngagementNotificationWorker
 import org.mozilla.fenix.perf.*
+import org.mozilla.fenix.qrcode.OpenQrcodeScannerIntentProcessor
+import org.mozilla.fenix.qrcode.QrcodeIntentProcessor
 import org.mozilla.fenix.search.SearchDialogFragmentDirections
 import org.mozilla.fenix.session.PrivateNotificationService
 import org.mozilla.fenix.settings.HttpsOnlyFragmentDirections
@@ -164,6 +165,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
     private val externalSourceIntentProcessors by lazy {
         listOf(
+            OpenQrcodeScannerIntentProcessor(this),
             HomeDeepLinkIntentProcessor(this),
             SpeechProcessingIntentProcessor(this, components.core.store),
             StartSearchIntentProcessor(),
@@ -1147,5 +1149,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         // PWA must have been used within last 30 days to be considered "recently used" for the
         // telemetry purposes.
         const val PWA_RECENTLY_USED_THRESHOLD = DateUtils.DAY_IN_MILLIS * 30L
+
+        const val OPEN_TO_QRCODE_SCANNER = "open_to_qrcode_scanner"
     }
 }
