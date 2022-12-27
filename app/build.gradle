@@ -187,8 +187,10 @@ android {
 //            signingConfig signingConfigs.debug
 //            debuggable true
 //        }
-        maxDebug releaseTemplate >> {
-            buildConfigField "boolean", "USE_RELEASE_VERSIONING", "true"
+        maxDebug  {
+            debuggable true
+            shrinkResources false
+            minifyEnabled false
             applicationIdSuffix ".browser.debug"
             def deepLinkSchemeValue = "max_browser"
             buildConfigField "String", "DEEP_LINK_SCHEME", "\"$deepLinkSchemeValue\""
