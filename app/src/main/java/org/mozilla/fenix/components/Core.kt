@@ -147,6 +147,9 @@ class Core(
             if (Config.channel.isNightlyOrDebug || Config.channel.isBeta) {
                 WebCompatReporterFeature.install(it, "fenix")
             }
+
+            it.settings.userAgentString =
+                it.settings.userAgentString?.replace("Firefox", "MaxBrowser")
         }
     }
 
