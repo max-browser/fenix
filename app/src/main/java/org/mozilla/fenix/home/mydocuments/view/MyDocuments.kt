@@ -21,8 +21,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.max.browser.core.ext.toFileSizeString
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.Divider
@@ -184,54 +187,75 @@ private fun MyDocumentsItemSubText(text: String, modifier: Modifier) {
 }
 
 
-@Suppress("LongParameterList")
+@Preview(locale = "es")
 @Composable
 private fun MyDocumentsGetPermissionView(
     onGetPermissionClick: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 24.dp)
-            .height(70.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-    ) {
+    FirefoxTheme {
 
-        Text(
-            text = stringResource(R.string.max_allow_to_access_media_file),
-            color = when (isSystemInDarkTheme()) {
-                true -> FirefoxTheme.colors.textPrimary
-                false -> FirefoxTheme.colors.textSecondary
-            },
-            fontSize = 16.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-        )
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.CenterEnd,
+        ConstraintLayout(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .height(70.dp)
+                .fillMaxWidth(),
         ) {
+            // Create references for the composables to constrain
+            val (button, text) = createRefs()
+
+            // 按鈕
             Box(
                 modifier = Modifier
-                    .size(97.dp, 36.dp)
                     .background(
                         color = "#5bcdd3".toComposeColor(),
                         shape = RoundedCornerShape(6.dp),
                     )
                     .clickable {
                         onGetPermissionClick()
+                    }
+                    .constrainAs(button) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.end)
                     },
-                contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    text = stringResource(R.string.max_access),
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    modifier = Modifier,
-                )
+                Box(
+                    modifier = Modifier
+                        // .size(97.dp, 36.dp)
+                        .wrapContentHeight(Alignment.CenterVertically)
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                        .padding(horizontal = 18.dp, vertical = 10.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = stringResource(R.string.max_access),
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        modifier = Modifier,
+                    )
+                }
             }
+
+            // 描述
+            Text(
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .constrainAs(text) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(button.start)
+                        start.linkTo(parent.start)
+                        width = Dimension.fillToConstraints
+                    },
+                text = stringResource(R.string.max_allow_to_access_media_file),
+                color = when (isSystemInDarkTheme()) {
+                    true -> FirefoxTheme.colors.textPrimary
+                    false -> FirefoxTheme.colors.textSecondary
+                },
+                fontSize = 16.sp,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
+            )
         }
     }
-
 }
