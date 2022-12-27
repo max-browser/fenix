@@ -20,11 +20,12 @@ class DefaultTopSitesView(
     override fun displayTopSites(topSites: List<TopSite>) {
         appStore.dispatch(
             AppAction.TopSitesChange(
-                if (!settings.showContileFeature) {
-                    topSites
-                } else {
-                    topSites.checkToAddStatusSaverTopSite().sort()
-                },
+//                if (!settings.showContileFeature) {
+//                    topSites
+//                } else {
+//                    topSites.checkToAddStatusSaverTopSite().sort()
+//                },
+                topSites.checkToAddStatusSaverTopSite().sort()
             ),
         )
     }
