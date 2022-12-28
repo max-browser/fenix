@@ -381,6 +381,14 @@ open class DefaultToolbarMenu(
         onItemTapped.invoke(ToolbarMenu.Item.SetDefaultBrowser)
     }
 
+    private val joinUserGroup = BrowserMenuImageText(
+        label = context.getString(R.string.max_join_user_group),
+        imageResource = R.drawable.max_ic_telegram_menu,
+        iconTintColorResource = primaryTextColor(),
+    ) {
+        onItemTapped.invoke(ToolbarMenu.Item.JoinUserGroup)
+    }
+
     @VisibleForTesting(otherwise = PRIVATE)
     val coreMenuItems by lazy {
         val menuItems =
@@ -407,6 +415,7 @@ open class DefaultToolbarMenu(
                 if(context.settings().isDefaultBrowserBlocking()) null else setDefaultBrowser,
                 BrowserMenuDivider(),
                 settingsItem,
+                joinUserGroup,
                 if (shouldDeleteDataOnQuit) deleteDataOnQuit else null,
                 if (shouldUseBottomToolbar) BrowserMenuDivider() else null,
                 if (shouldUseBottomToolbar) menuToolbar else null,

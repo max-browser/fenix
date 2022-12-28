@@ -5,6 +5,7 @@
 package org.mozilla.fenix.home
 
 import android.content.Context
+import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -56,7 +57,7 @@ class HomeMenu(
         object ReconnectSync : Item()
         data class DesktopMode(val checked: Boolean) : Item()
         object SetDefaultBrowser : Item()
-
+        object JoinUserGroup : Item()
     }
 
     private val primaryTextColor = ThemeManager.resolveAttribute(R.attr.textPrimary, context)
@@ -238,6 +239,20 @@ class HomeMenu(
             ReportManager.getInstance().report("home_menu_set_default_browser")
         }
 
+        val joinUSerGroupItem = BrowserMenuImageText(
+            context.getString(R.string.max_join_user_group),
+            R.drawable.max_ic_telegram_menu,
+            primaryTextColor,
+        ) {
+            onItemTapped.invoke(Item.JoinUserGroup)
+            ReportManager.getInstance().report(
+                "join_group_click",
+                Bundle().apply {
+                    putString("class", "home")
+                },
+            )
+        }
+
         val menuItems = listOfNotNull(
             bookmarksItem,
             historyItem,
@@ -254,6 +269,7 @@ class HomeMenu(
             customizeHomeItem,
             if (settings.isDefaultBrowserBlocking()) null else setDefaultBrowserItem,
             settingsItem,
+            joinUSerGroupItem,
             if (settings.shouldDeleteBrowsingDataOnQuit) quitItem else null,
         ).also { items ->
             items.getHighlight()?.let { onHighlightPresent(it) }

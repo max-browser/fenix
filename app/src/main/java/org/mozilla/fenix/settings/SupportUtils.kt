@@ -41,6 +41,7 @@ object SupportUtils {
     const val INSTAGRAM_URL = "https://www.instagram.com/"
     const val TWITTER_URL = "https://twitter.com/"
     const val YOUTUBE_URL = "https://www.youtube.com/"
+    const val JOIN_USER_GROUP_URL = "https://t.me/MaxBrowserOfficial"
 
     enum class SumoTopic(internal val topicStr: String) {
         HELP("faq-android"),

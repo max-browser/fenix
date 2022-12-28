@@ -4,6 +4,8 @@
 
 package org.mozilla.fenix.browser
 
+//import cl.jesualex.stooltip.Position
+//import cl.jesualex.stooltip.Tooltip
 import android.Manifest
 import android.app.KeyguardManager
 import android.content.Context
@@ -33,6 +35,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+
 import cl.jesualex.stooltip.Position
 import cl.jesualex.stooltip.Tooltip
 import com.google.android.material.snackbar.Snackbar
@@ -82,7 +85,10 @@ import mozilla.components.feature.prompts.login.LoginDelegate
 import mozilla.components.feature.prompts.share.ShareDelegate
 import mozilla.components.feature.readerview.ReaderViewFeature
 import mozilla.components.feature.search.SearchFeature
-import mozilla.components.feature.session.*
+import mozilla.components.feature.session.PictureInPictureFeature
+import mozilla.components.feature.session.ScreenOrientationFeature
+import mozilla.components.feature.session.SessionFeature
+import mozilla.components.feature.session.SwipeRefreshFeature
 import mozilla.components.feature.session.behavior.EngineViewBrowserToolbarBehavior
 import mozilla.components.feature.sitepermissions.SitePermissionsFeature
 import mozilla.components.feature.webauthn.WebAuthnFeature
@@ -105,9 +111,7 @@ import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifChanged
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.mozilla.fenix.*
-import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.GleanMetrics.MediaState
-import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.browser.readermode.DefaultReaderModeController
 import org.mozilla.fenix.components.FenixSnackbar
@@ -418,6 +422,12 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
             lifecycleOwner = viewLifecycleOwner,
             onMenuDismissed = {
                 ReportManager.getInstance().report("browser_menu_dismissed")
+                ReportManager.getInstance().report(
+                    "join_group_show",
+                    Bundle().apply {
+                        putString("class", "browser")
+                    },
+                )
             },
         )
 

@@ -30,6 +30,7 @@ import mozilla.components.feature.top.sites.PinnedSiteStorage
 import mozilla.components.feature.top.sites.TopSite
 import mozilla.components.service.glean.private.NoExtras
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
+import org.mozilla.fenix.BrowserDirection
 import org.mozilla.fenix.GleanMetrics.Collections
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.ExperimentsDefaultBrowser
@@ -44,11 +45,8 @@ import org.mozilla.fenix.collections.SaveCollectionStep
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.TabCollectionStorage
 import org.mozilla.fenix.components.accounts.AccountState
-import org.mozilla.fenix.ext.components
-import org.mozilla.fenix.ext.getRootView
-import org.mozilla.fenix.ext.nav
-import org.mozilla.fenix.ext.navigateSafe
-import org.mozilla.fenix.ext.openSetDefaultBrowserOption
+import org.mozilla.fenix.ext.*
+import org.mozilla.fenix.settings.SupportUtils
 import org.mozilla.fenix.settings.deletebrowsingdata.deleteAndQuit
 import org.mozilla.fenix.utils.Do
 import org.mozilla.fenix.utils.Settings
@@ -440,6 +438,19 @@ class DefaultBrowserToolbarMenuController(
                         .show()
                 }
             }
+            is ToolbarMenu.Item.JoinUserGroup -> {
+                ReportManager.getInstance().report(
+                    "join_group_click",
+                    Bundle().apply {
+                        putString("class", "browser")
+                    },
+                )
+                activity.openToBrowserAndLoad(
+                    searchTermOrURL = SupportUtils.JOIN_USER_GROUP_URL,
+                    newTab = true,
+                    from = BrowserDirection.FromGlobal,
+                )
+            }
         }
     }
 
@@ -511,6 +522,7 @@ class DefaultBrowserToolbarMenuController(
                 Events.browserMenuAction.record(Events.BrowserMenuActionExtra("set_default_browser"))
             is ToolbarMenu.Item.RemoveFromTopSites ->
                 Events.browserMenuAction.record(Events.BrowserMenuActionExtra("remove_from_top_sites"))
+            is ToolbarMenu.Item.JoinUserGroup -> {}
         }
     }
 

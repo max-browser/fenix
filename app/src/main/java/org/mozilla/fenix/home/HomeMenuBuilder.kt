@@ -5,6 +5,7 @@
 package org.mozilla.fenix.home
 
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting.Companion.PRIVATE
@@ -17,7 +18,6 @@ import mozilla.appservices.places.BookmarkRoot
 import mozilla.components.browser.menu.view.MenuButton
 import mozilla.components.service.glean.private.NoExtras
 import org.mozilla.fenix.BrowserDirection
-import org.mozilla.fenix.Config
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.HomeScreen
 import org.mozilla.fenix.HomeActivity
@@ -80,6 +80,12 @@ class HomeMenuBuilder(
             val internalObserver = object : mozilla.components.concept.menu.MenuButton.Observer {
                 override fun onShow() {
                     ReportManager.getInstance().report("home_menu")
+                    ReportManager.getInstance().report(
+                        "join_group_show",
+                        Bundle().apply {
+                            putString("class", "home")
+                        },
+                    )
                 }
 
                 override fun onDismiss() {
@@ -211,6 +217,13 @@ class HomeMenuBuilder(
             }
             HomeMenu.Item.SetDefaultBrowser -> {
                 homeActivity.openSetDefaultBrowserOption()
+            }
+            HomeMenu.Item.JoinUserGroup -> {
+                homeActivity.openToBrowserAndLoad(
+                    searchTermOrURL = SupportUtils.JOIN_USER_GROUP_URL,
+                    newTab = true,
+                    from = BrowserDirection.FromHome,
+                )
             }
         }
     }
