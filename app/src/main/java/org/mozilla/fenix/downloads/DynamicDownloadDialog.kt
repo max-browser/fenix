@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.max.browser.core.feature.reader.audio.openAudioReaderByFilePath
 import com.max.browser.core.pdf.openPdfReaderByFilePath
 import com.max.browser.core.feature.reader.image.openImageReaderByFilePath
 import com.max.browser.core.feature.reader.video.openVideoReaderByFilePath
@@ -104,6 +105,9 @@ class DynamicDownloadDialog(
 
                     } else if (downloadState.contentType?.startsWith("video/") == true) {
                         context.openVideoReaderByFilePath(downloadState.filePath)
+
+                    } else if (downloadState.contentType?.startsWith("audio/") == true) {
+                        context.openAudioReaderByFilePath(downloadState.filePath)
 
                     } else {
                         val fileWasOpened = AbstractFetchDownloadService.openFile(

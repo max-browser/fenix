@@ -11,6 +11,7 @@ import android.view.*
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
+import com.max.browser.core.feature.reader.audio.openAudioReaderByFilePath
 import com.max.browser.core.pdf.openPdfReaderByFilePath
 import com.max.browser.core.feature.reader.image.openImageReaderByFilePath
 import com.max.browser.core.feature.reader.video.openVideoReaderByFilePath
@@ -215,6 +216,9 @@ class DownloadFragment : LibraryPageFragment<DownloadItem>(), UserInteractionHan
 
         } else if (item.contentType?.startsWith("video/") == true) {
             requireContext().openVideoReaderByFilePath(item.filePath)
+
+        } else if (item.contentType?.startsWith("audio/") == true) {
+            requireContext().openAudioReaderByFilePath(item.filePath)
 
         } else {
             mode?.let { (activity as HomeActivity).browsingModeManager.mode = it }
