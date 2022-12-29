@@ -224,6 +224,12 @@ class HomeMenuBuilder(
                     newTab = true,
                     from = BrowserDirection.FromHome,
                 )
+                ReportManager.getInstance().report(
+                    "join_group_click",
+                    Bundle().apply {
+                        putString("class", "home")
+                    },
+                )
             }
         }
     }

@@ -450,6 +450,12 @@ class DefaultBrowserToolbarMenuController(
                     newTab = true,
                     from = BrowserDirection.FromGlobal,
                 )
+                ReportManager.getInstance().report(
+                    "join_group_click",
+                    Bundle().apply {
+                        putString("class", "browser")
+                    },
+                )
             }
         }
     }
