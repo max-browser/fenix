@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.speech.RecognizerIntent
 import androidx.appcompat.app.AppCompatActivity
+import com.max.browser.core.ReportManager
 import mozilla.components.support.locale.LocaleManager
 import mozilla.components.support.utils.ext.getParcelableCompat
 import mozilla.telemetry.glean.private.NoExtras
@@ -55,6 +56,7 @@ class VoiceSearchActivity : AppCompatActivity() {
         if (intent.isForSpeechProcessing()) {
             previousIntent = intent
             displaySpeechRecognizer()
+            ReportManager.getInstance().report("widget_search_click")
         } else {
             finish()
         }

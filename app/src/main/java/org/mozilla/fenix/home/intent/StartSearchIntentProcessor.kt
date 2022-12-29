@@ -7,6 +7,7 @@ package org.mozilla.fenix.home.intent
 import android.content.Intent
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import com.max.browser.core.ReportManager
 import mozilla.components.service.glean.private.NoExtras
 import org.mozilla.fenix.GleanMetrics.SearchWidget
 import org.mozilla.fenix.HomeActivity
@@ -28,6 +29,7 @@ class StartSearchIntentProcessor : HomeIntentProcessor {
                 SEARCH_WIDGET -> {
                     SearchWidget.newTabButton.record(NoExtras())
                     MetricsUtils.Source.WIDGET
+                    ReportManager.getInstance().report("widget_search_click")
                 }
                 STATIC_SHORTCUT_NEW_TAB,
                 STATIC_SHORTCUT_NEW_PRIVATE_TAB,
