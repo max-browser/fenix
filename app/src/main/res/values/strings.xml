@@ -215,6 +215,8 @@
     <!-- Browser Toolbar -->
     <!-- Content description for the Home screen button on the browser toolbar -->
     <string name="browser_toolbar_home">Home screen</string>
+    <!-- Content description for the ad block button on the browser toolbar -->
+    <string name="browser_toolbar_adblock">Max AD Block</string>
 
     <!-- Locale Settings Fragment -->
     <!-- Content description for tick mark on selected language -->

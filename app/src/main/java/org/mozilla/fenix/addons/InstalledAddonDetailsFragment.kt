@@ -16,6 +16,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.max.browser.core.MaxBrowserConstant
 import com.max.browser.core.ReportManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -313,6 +314,11 @@ class InstalledAddonDetailsFragment : Fragment() {
         }
     }
     private fun bindRemoveButton() {
+        if (MaxBrowserConstant.MAX_ADDON_HIDE_LIST.contains(addon.id)) {
+            binding.removeAddOn.visibility = View.GONE
+        } else {
+            binding.removeAddOn.visibility = View.VISIBLE
+        }
         binding.removeAddOn.setOnClickListener {
             setAllInteractiveViewsClickable(binding, false)
             requireContext().components.addonManager.uninstallAddon(

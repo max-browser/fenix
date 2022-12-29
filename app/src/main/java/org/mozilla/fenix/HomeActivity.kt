@@ -30,6 +30,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
+import com.max.browser.core.MaxBrowserConstant
 import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.MaxBrowserActivityDelegate
@@ -40,6 +41,7 @@ import com.max.browser.downloader.DownloaderActivityDelegate
 import com.max.browser.downloader.worker.ARG_NOTIFICATION_FILE_PATH
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import mozilla.appservices.places.BookmarkRoot
 import mozilla.components.browser.state.action.ContentAction
 import mozilla.components.browser.state.action.SearchAction
@@ -52,6 +54,7 @@ import mozilla.components.concept.engine.EngineView
 import mozilla.components.concept.storage.BookmarkNode
 import mozilla.components.concept.storage.BookmarkNodeType
 import mozilla.components.concept.storage.HistoryMetadataKey
+import mozilla.components.feature.addons.AddonManagerException
 import mozilla.components.feature.contextmenu.DefaultSelectionActionDelegate
 import mozilla.components.feature.media.ext.findActiveMediaTab
 import mozilla.components.feature.privatemode.notification.PrivateNotificationFeature
@@ -70,6 +73,7 @@ import mozilla.components.support.locale.LocaleAwareAppCompatActivity
 import mozilla.components.support.utils.SafeIntent
 import mozilla.components.support.utils.toSafeIntent
 import mozilla.components.support.webextensions.WebExtensionPopupFeature
+import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.Metrics
@@ -333,6 +337,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             beginTransaction(supportFragmentManager, UpdateAppDialog.newInstance())
         }
 
+        setupAdBlockAddon()
+
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
     }
 
@@ -353,6 +359,40 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             safeIntent,
             binding.rootContainer,
         )
+    }
+
+    private fun setupAdBlockAddon(){
+        lifecycleScope.launch(IO) {
+            try {
+                val addons = components.addonManager.getAddons(waitForPendingActions = false)
+                val adBlockAddon = addons.find { it.id == MaxBrowserConstant.ADBLOCK_ADDON_ID }
+
+                adBlockAddon?.let {
+                    if (WebExtensionSupport.installedExtensions[it.id] == null) {
+                        lifecycleScope.launch(Main) {
+                            components.addonManager.installAddon(
+                                it,
+                                onSuccess = {
+                                    applicationContext?.components?.addonManager?.setAddonAllowedInPrivateBrowsing(
+                                        adBlockAddon,
+                                        true,
+                                        onSuccess = {
+                                            Logger.debug("adBlockAddon enable private success")
+                                        },
+                                    )
+                                },
+                                onError = { _, e ->
+                                    Logger.debug("adBlockAddon install error: $e")
+                                },
+                            )
+                        }
+                    }
+                }
+
+            } catch (e: AddonManagerException) {
+                Logger.debug("adBlockAddon setup error: $e")
+            }
+        }
     }
 
     @CallSuper

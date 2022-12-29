@@ -15,7 +15,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
+import com.max.browser.core.MaxBrowserConstant
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mozilla.components.browser.state.selector.findTab
@@ -24,6 +27,7 @@ import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.thumbnails.BrowserThumbnails
 import mozilla.components.browser.toolbar.BrowserToolbar
 import mozilla.components.concept.engine.permission.SitePermissions
+import mozilla.components.feature.addons.AddonManagerException
 import mozilla.components.feature.app.links.AppLinksUseCases
 import mozilla.components.feature.contextmenu.ContextMenuCandidate
 import mozilla.components.feature.readerview.ReaderViewFeature
@@ -33,6 +37,7 @@ import mozilla.components.service.glean.private.NoExtras
 import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.base.log.logger.Logger
+import mozilla.components.support.webextensions.WebExtensionSupport
 import org.mozilla.fenix.GleanMetrics.ReaderMode
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
@@ -97,6 +102,7 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
         browserToolbarView.view.addNavigationAction(homeAction)
 
         updateToolbarActions(isTablet = resources.getBoolean(R.bool.tablet))
+        checkToAddAdBlockButton()
 
         val readerModeAction =
             BrowserToolbar.ToggleButton(
@@ -309,6 +315,43 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
         }
 
         browserToolbarView.view.invalidateActions()
+    }
+
+    private fun checkToAddAdBlockButton(){
+        lifecycleScope.launch(IO) {
+            try {
+                val addons = requireContext().components.addonManager.getAddons(waitForPendingActions = false)
+                val adBlockAddon = addons.find { it.id == MaxBrowserConstant.ADBLOCK_ADDON_ID }
+
+                adBlockAddon?.let {
+                    if (WebExtensionSupport.installedExtensions[it.id] != null) {
+                        lifecycleScope.launch(Main) {
+                            val adBlockAction = BrowserToolbar.Button(
+                                imageDrawable = AppCompatResources.getDrawable(
+                                    requireContext(),
+                                    R.drawable.ic_adblock
+                                )!!,
+                                contentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
+                                visible = { true },
+                                listener = {
+                                    findNavController().navigateSafe(
+                                        R.id.browserFragment,
+                                        if (it.isInstalled()) {
+                                            BrowserFragmentDirections.actionBrowserFragmentToInstalledAddonDetails(it)
+                                        } else {
+                                            BrowserFragmentDirections.actionBrowserFragmentToAddonDetails(it)
+                                        }
+                                    )
+                                }
+                            )
+                            browserToolbarView.view.addBrowserAction(adBlockAction)
+                        }
+                    }
+                }
+            } catch (e: AddonManagerException) {
+                Logger.debug("checkToAddAdBlockButton setup error: $e")
+            }
+        }
     }
 
     override fun onStart() {
