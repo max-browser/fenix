@@ -21,6 +21,7 @@ import androidx.annotation.Dimension.Companion.DP
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
+import com.max.browser.core.ReportManager
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.IntentReceiverActivity
 import org.mozilla.fenix.R
@@ -38,6 +39,12 @@ class SearchWidgetProvider : AppWidgetProvider() {
 
     override fun onEnabled(context: Context) {
         context.settings().addSearchWidgetInstalled(1)
+        ReportManager.getInstance().report(
+            "quick_menu_click",
+            Bundle().apply {
+                putString("type", "widget")
+            },
+        )
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {

@@ -7,6 +7,8 @@ package org.mozilla.fenix.shortcut
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.os.Bundle
+import com.max.browser.core.ReportManager
 import mozilla.components.feature.intent.processing.IntentProcessor
 import mozilla.components.support.utils.SafeIntent
 import org.mozilla.fenix.HomeActivity
@@ -23,8 +25,24 @@ class NewTabShortcutIntentProcessor : IntentProcessor {
     override fun process(intent: Intent): Boolean {
         val safeIntent = SafeIntent(intent)
         val (searchExtra, startPrivateMode) = when (safeIntent.action) {
-            ACTION_OPEN_TAB -> StartSearchIntentProcessor.STATIC_SHORTCUT_NEW_TAB to false
-            ACTION_OPEN_PRIVATE_TAB -> StartSearchIntentProcessor.STATIC_SHORTCUT_NEW_PRIVATE_TAB to true
+            ACTION_OPEN_TAB -> {
+                ReportManager.getInstance().report(
+                    "quick_menu_click",
+                    Bundle().apply {
+                        putString("type", "new_tab")
+                    },
+                )
+                StartSearchIntentProcessor.STATIC_SHORTCUT_NEW_TAB to false
+            }
+            ACTION_OPEN_PRIVATE_TAB -> {
+                ReportManager.getInstance().report(
+                    "quick_menu_click",
+                    Bundle().apply {
+                        putString("type", "new_private_tab")
+                    },
+                )
+                StartSearchIntentProcessor.STATIC_SHORTCUT_NEW_PRIVATE_TAB to true
+            }
             else -> return false
         }
 

@@ -97,7 +97,6 @@ import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.onboarding.ReEngagementNotificationWorker
 import org.mozilla.fenix.perf.*
 import org.mozilla.fenix.qrcode.OpenQrcodeScannerIntentProcessor
-import org.mozilla.fenix.qrcode.QrcodeIntentProcessor
 import org.mozilla.fenix.search.SearchDialogFragmentDirections
 import org.mozilla.fenix.session.PrivateNotificationService
 import org.mozilla.fenix.settings.HttpsOnlyFragmentDirections
