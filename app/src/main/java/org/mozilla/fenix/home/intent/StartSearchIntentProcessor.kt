@@ -27,9 +27,9 @@ class StartSearchIntentProcessor : HomeIntentProcessor {
         return if (event != null) {
             val source = when (event) {
                 SEARCH_WIDGET -> {
+                    ReportManager.getInstance().report("widget_search_click")
                     SearchWidget.newTabButton.record(NoExtras())
                     MetricsUtils.Source.WIDGET
-                    ReportManager.getInstance().report("widget_search_click")
                 }
                 STATIC_SHORTCUT_NEW_TAB,
                 STATIC_SHORTCUT_NEW_PRIVATE_TAB,
