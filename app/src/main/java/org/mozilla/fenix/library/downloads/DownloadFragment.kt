@@ -36,6 +36,9 @@ import org.mozilla.fenix.databinding.FragmentDownloadsBinding
 import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.library.LibraryPageFragment
 import org.mozilla.fenix.utils.allowUndo
+import timber.log.Timber
+import java.io.File
+import java.io.IOException
 
 @SuppressWarnings("TooManyFunctions", "LargeClass")
 class DownloadFragment : LibraryPageFragment<DownloadItem>(), UserInteractionHandler, MenuProvider {
@@ -253,6 +256,13 @@ class DownloadFragment : LibraryPageFragment<DownloadItem>(), UserInteractionHan
                 context.let {
                     for (item in items) {
                         it.components.useCases.downloadUseCases.removeDownload(item.id)
+                        try {
+                            File(item.filePath).delete()
+                        } catch (se: SecurityException) {
+                            Timber.e(se)
+                        } catch (ioe: IOException) {
+                            Timber.e(ioe)
+                        }
                     }
                 }
                 downloadStore.dispatch(DownloadFragmentAction.ExitDeletionMode)
