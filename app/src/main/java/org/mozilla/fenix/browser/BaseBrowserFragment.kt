@@ -39,6 +39,8 @@ import androidx.preference.PreferenceManager
 import cl.jesualex.stooltip.Position
 import cl.jesualex.stooltip.Tooltip
 import com.google.android.material.snackbar.Snackbar
+import com.max.browser.core.RemoteConfigKey
+import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
 import com.max.browser.downloader.report.Action
@@ -217,6 +219,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     private val viewModel: WebViewViewModel by viewModel()
     private var hasStartRepeatCheck = false
     private var currentWebUrl = ""
+    private var isVideoDownloaderEnabled = true
     private val requestWritePermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -273,7 +276,8 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         val profilerStartTime = requireComponents.core.engine.profiler?.getProfilerTime()
         Logger.info("onViewCreated")
         initializeUI(view)
-
+        isVideoDownloaderEnabled = RemoteConfigManager.getInstance().getConfig(RemoteConfigKey.VIDEO_DOWNLOADER_ENABLE)
+        Timber.d("isVideoDownloaderEnabled:$isVideoDownloaderEnabled")
         if (customTabSessionId == null) {
             // We currently only need this observer to navigate to home
             // in case all tabs have been removed on startup. No need to
@@ -1468,7 +1472,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     @VisibleForTesting
     internal fun fullScreenChanged(inFullScreen: Boolean) {
         if (inFullScreen) {
-            if (currentWebUrl.isDownloadableWebsite()) {
+            if (currentWebUrl.isDownloadableWebsite() && isVideoDownloaderEnabled) {
                 binding.fabDownload.isVisible = false
             }
             // Close find in page bar if opened
@@ -1504,7 +1508,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                 initializeEngineView(toolbarHeight)
                 browserToolbarView.expand()
             }
-            if (currentWebUrl.isDownloadableWebsite()) {
+            if (currentWebUrl.isDownloadableWebsite() && isVideoDownloaderEnabled) {
                 binding.fabDownload.isVisible = true
             }
         }
@@ -1633,7 +1637,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
 
     private fun checkUrlDownloadable(url: String) {
         currentWebUrl = url
-        if (url.isDownloadableWebsite()) {
+        if (url.isDownloadableWebsite() && isVideoDownloaderEnabled) {
             Timber.d("checkUrlDownloadable prefetchVideoUrl:$prefetchVideoUrl, url:$url")
             binding.fabDownload.isVisible = true
             showDownloadTip(requireContext())
@@ -1710,7 +1714,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     private fun setFabState(status: FabStatus = FabStatus.NORMAL) {
         Logger.info("setFabState status:$status")
         if (isAdded) {
-            if (currentWebUrl.isDownloadableWebsite()) {
+            if (currentWebUrl.isDownloadableWebsite() && isVideoDownloaderEnabled) {
                 viewModel.updateFabState(state = status)
                 when (status) {
                     FabStatus.CONVERTING -> {
@@ -1756,7 +1760,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
 
     private fun monitorButtonState(url:String) {
         Timber.d("monitorButtonState url:$url")
-        if (hasStartRepeatCheck.not() && url.isDownloadableWebsite()) {
+        if (hasStartRepeatCheck.not() && url.isDownloadableWebsite() && isVideoDownloaderEnabled) {
             hasStartRepeatCheck = true
             checkDownloadingJob = startRepeatingCheckJob()
         }
