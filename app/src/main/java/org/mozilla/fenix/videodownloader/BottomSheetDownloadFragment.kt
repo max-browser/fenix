@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +29,11 @@ import com.max.browser.downloader.vo.VideoInfo
 import com.max.browser.videodownloader.R
 import com.max.browser.videodownloader.databinding.FragmentDlpFormatChooserBinding
 import com.max.browser.videodownloader.databinding.ItemBottomsheetVideoformatsBinding
+import mozilla.components.browser.state.action.ContentAction
+import mozilla.components.browser.state.selector.selectedTab
+import mozilla.components.browser.state.state.content.DownloadState
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.mozilla.fenix.ext.requireComponents
 import timber.log.Timber
 
 
@@ -39,6 +43,7 @@ class BottomSheetDownloadFragment : DialogFragment() {
     private val binding get() = _binding!!
     private val args: BottomSheetDownloadFragmentArgs by navArgs()
     private val viewModel: DlpFormatChooserViewModel by viewModel()
+    private val navController by lazy { this.findNavController() }
 
     private lateinit var videoInfo:VideoInfo
     private var currentVideoFormat: VideoFormat? = null
@@ -53,7 +58,6 @@ class BottomSheetDownloadFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = FragmentDlpFormatChooserBinding.inflate(LayoutInflater.from(context))
         AppEventReporter.reportDownloadFlow(classStr = Action.SHOW, page = PageType.DOWNLOAD_DETAIL)
-        val navController = findNavController()
         videoInfo = args.argVideoInfo
 
         viewModel.isOkToDownload.observe(this) { event ->
@@ -81,18 +85,27 @@ class BottomSheetDownloadFragment : DialogFragment() {
                 ).apply {
                     this.root.tag = videoFormat.formatId
                     layoutList.add(this.root)
-                    val fileExist = checkMediaFile(
-                        videoInfo.title,
-                        videoFormat.ext,
-                        if (videoFormat.height == 0) "${videoFormat.abr}K" else "${videoFormat.height}P"
-                    ).exists()
+
+                    val fileExist = if (isImage(videoFormat.ext)) {
+                        checkMaxBrowserDownloadFile(videoInfo.title).exists()
+                    } else {
+                        checkDlpMediaFile(
+                            videoInfo.title,
+                            videoFormat.ext,
+                            if (videoFormat.height == 0) "${videoFormat.abr}K" else "${videoFormat.height}P"
+                        ).exists()
+                    }
 
                     with(textFormatTitle) {
-                        text =
+                        text = if (isImage(videoFormat.ext)) {
+                            videoFormat.ext.uppercase()
+                        } else {
                             if (videoFormat.height == 0)
                                 "${videoFormat.abr.abr2ReadableString()} - ${videoFormat.ext.uppercase()}"
                             else
                                 "${videoFormat.height}P - ${videoFormat.ext.uppercase()}"
+                        }
+
                         if (fileExist) {
                             setTextColor(resources.getColor(R.color.mine_shaft_77))
                         }
@@ -129,7 +142,7 @@ class BottomSheetDownloadFragment : DialogFragment() {
                                 return@setOnClickListener
                             }
                             currentVideoFormat = tag as VideoFormat
-                            Timber.d("VD videoFormat id:${currentVideoFormat?.formatId}")
+                            Timber.d("VD videoFormat id:${currentVideoFormat?.formatId}, type:${currentVideoFormat?.ext}")
 
                             val mediaFormat = textFormatTitle.text.toString()
                             val isMusic = if (isAudio(videoFormat.ext)) "true" else "false"
@@ -185,24 +198,54 @@ class BottomSheetDownloadFragment : DialogFragment() {
         }
     }
 
-
     private fun startDownload() {
         Timber.d("start download reportItem: $downloadReportItem")
         downloadReportItem?.let {
             AppEventReporter.reportDownloadStart(it)
             AppEventReporter.reportDownloadFlow(classStr = Action.SHOW, page = PageType.DOWNLOAD_DETAIL, action = it.selectedType)
         }
-        Toast.makeText(
-            requireActivity(),
-            R.string.toast_video_is_downloading,
-            Toast.LENGTH_SHORT
-        ).show()
+
         currentVideoFormat?.let {
-            viewModel.getVideo(
-                WorkManager.getInstance(requireActivity()),
-                videoInfo, it
-            )
+            if (isImage(it.ext)) {
+                downloadImage(it.url)
+            } else {
+                Toast.makeText(
+                    requireActivity(),
+                    R.string.toast_video_is_downloading,
+                    Toast.LENGTH_SHORT
+                ).show()
+                viewModel.getVideo(
+                    WorkManager.getInstance(requireActivity()),
+                    videoInfo, it
+                )
+            }
         }
+    }
+
+    private fun downloadImage(url:String) {
+        Timber.d("downloadImage url:$url, fileName:${videoInfo.title}")
+        val download = DownloadState(
+            url = url, // 下載地址
+            fileName = videoInfo.title, // 儲存檔名
+            contentType = "image/*",
+            contentLength = null,
+            currentBytesCopied = 0,
+            status = DownloadState.Status.INITIATED,
+            userAgent = null,
+            destinationDirectory = Environment.DIRECTORY_DOWNLOADS,
+            private = false,
+            response = null,
+        )
+
+        // 向 BrowserStore dispatch 一個 DownloadAction 即展示下載彈窗，詢問用戶是否下載
+        requireComponents.core.store.apply {
+            state.selectedTab?.id?.let {selectedTabId->
+                dispatch(
+                    ContentAction.UpdateDownloadAction(selectedTabId, download)
+                )
+            }
+        }
+        navController.navigateUp()
     }
 
 }

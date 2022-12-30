@@ -563,8 +563,13 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                     },
                     binding = binding.viewDynamicDownloadDialog,
                     toolbarHeight = toolbarHeight,
-                ) { sharedViewModel.downloadDialogState.remove(downloadState.sessionId) }
-
+                ) {
+                    sharedViewModel.downloadDialogState.remove(downloadState.sessionId)
+                    setFabState()
+                    monitorButtonState(currentWebUrl)
+                }
+                binding.fabDownload.isVisible = false
+                cancelButtonMonitor()
                 dynamicDownloadDialog.show()
                 browserToolbarView.expand()
             }
@@ -1218,12 +1223,6 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         if (findNavController().currentDestination?.id != R.id.searchDialogFragment) {
             view?.hideKeyboard()
         }
-        hasStartRepeatCheck = false
-        checkDownloadingJob?.isActive?.let {
-            if (it) {
-                checkDownloadingJob?.cancel()
-            }
-        }
     }
 
     @CallSuper
@@ -1231,8 +1230,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         super.onStop()
         Logger.info("onStop")
         initUIJob?.cancel()
-        hasStartRepeatCheck = false
-        checkDownloadingJob?.cancel()
+        cancelButtonMonitor()
         requireComponents.core.store.state.findTabOrCustomTabOrSelectedTab(customTabSessionId)
             ?.let { session ->
                 // If we didn't enter PiP, exit full screen on stop
@@ -1763,6 +1761,15 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         if (hasStartRepeatCheck.not() && url.isDownloadableWebsite() && isVideoDownloaderEnabled) {
             hasStartRepeatCheck = true
             checkDownloadingJob = startRepeatingCheckJob()
+        }
+    }
+
+    private fun cancelButtonMonitor() {
+        hasStartRepeatCheck = false
+        checkDownloadingJob?.isActive?.let {
+            if (it) {
+                checkDownloadingJob?.cancel()
+            }
         }
     }
 
