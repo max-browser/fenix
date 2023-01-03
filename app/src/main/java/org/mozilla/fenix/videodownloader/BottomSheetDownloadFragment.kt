@@ -152,7 +152,8 @@ class BottomSheetDownloadFragment : DialogFragment() {
                                 selectedType = mediaFormat,
                                 isMusic = isMusic,
                                 domain = domain,
-                                url = videoInfo.originUrl
+                                url = videoInfo.originUrl,
+                                fileType = videoFormat.ext
                             )
 
                             clearAllView()
@@ -202,12 +203,12 @@ class BottomSheetDownloadFragment : DialogFragment() {
         Timber.d("start download reportItem: $downloadReportItem")
         downloadReportItem?.let {
             AppEventReporter.reportDownloadStart(it)
-            AppEventReporter.reportDownloadFlow(classStr = Action.SHOW, page = PageType.DOWNLOAD_DETAIL, action = it.selectedType)
+            AppEventReporter.reportDownloadFlow(classStr = Action.SHOW, page = PageType.DOWNLOAD_DETAIL, action = it.selectedType.lowercase())
         }
 
         currentVideoFormat?.let {
             if (isImage(it.ext)) {
-                downloadImage(it.url)
+                downloadImage(it)
             } else {
                 Toast.makeText(
                     requireActivity(),
@@ -222,12 +223,12 @@ class BottomSheetDownloadFragment : DialogFragment() {
         }
     }
 
-    private fun downloadImage(url:String) {
-        Timber.d("downloadImage url:$url, fileName:${videoInfo.title}")
+    private fun downloadImage(format:VideoFormat) {
+        Timber.d("downloadImage url:${format.url}, fileName:${videoInfo.title}")
         val download = DownloadState(
-            url = url, // 下載地址
+            url = format.url, // 下載地址
             fileName = videoInfo.title, // 儲存檔名
-            contentType = "image/*",
+            contentType = "image/${format.ext}",
             contentLength = null,
             currentBytesCopied = 0,
             status = DownloadState.Status.INITIATED,

@@ -564,6 +564,9 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                     binding = binding.viewDynamicDownloadDialog,
                     toolbarHeight = toolbarHeight,
                 ) {
+                    if (isInstagramDownloadImageUrl(downloadState.url)) {
+                        AppEventReporter.reportSniffDownloadSuccess(downloadState.contentType!!)
+                    }
                     sharedViewModel.downloadDialogState.remove(downloadState.sessionId)
                     setFabState()
                     monitorButtonState(currentWebUrl)
