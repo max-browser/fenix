@@ -203,7 +203,7 @@ class BottomSheetDownloadFragment : DialogFragment() {
         Timber.d("start download reportItem: $downloadReportItem")
         downloadReportItem?.let {
             AppEventReporter.reportDownloadStart(it)
-            AppEventReporter.reportDownloadFlow(classStr = Action.SHOW, page = PageType.DOWNLOAD_DETAIL, action = it.selectedType.lowercase())
+            AppEventReporter.reportDownloadFlow(classStr = Action.CLICK, page = PageType.DOWNLOAD_DETAIL, action = it.selectedType.lowercase())
         }
 
         currentVideoFormat?.let {

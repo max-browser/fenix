@@ -1667,6 +1667,9 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                             viewModel.killPreviousJob()
                             prefetchVideoJob?.cancel()
                             parseVideoJob?.cancel()
+                            if (url.isDownloadableWebsite() && isVideoDownloaderEnabled) {
+                                AppEventReporter.reportDownloadFlow(classStr = Action.SHOW, page = PageType.DOWNLOAD)
+                            }
                             setFabState()
                         }
                         checkUrlDownloadable(url)
