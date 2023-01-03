@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.MaxBrowserConstant
+import com.max.browser.core.ReportManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -342,6 +343,7 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
                                             BrowserFragmentDirections.actionBrowserFragmentToAddonDetails(it)
                                         }
                                     )
+                                    ReportManager.getInstance().report("browser_adblock_click")
                                 }
                             )
                             browserToolbarView.view.addBrowserAction(adBlockAction)
