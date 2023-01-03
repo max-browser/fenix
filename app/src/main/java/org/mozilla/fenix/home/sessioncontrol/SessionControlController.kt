@@ -521,14 +521,14 @@ class DefaultSessionControlController(
      * user's current region.
      */
     private fun appendSearchAttributionToUrlIfNeeded(url: String): String {
-        if (url == SupportUtils.GOOGLE_URL) {
-            store.state.search.region?.let { region ->
-                return when (region.current) {
-                    "US" -> SupportUtils.GOOGLE_US_URL
-                    else -> SupportUtils.GOOGLE_XX_URL
-                }
-            }
-        }
+//        if (url == SupportUtils.GOOGLE_URL) {
+//            store.state.search.region?.let { region ->
+//                return when (region.current) {
+//                    "US" -> SupportUtils.GOOGLE_US_URL
+//                    else -> SupportUtils.GOOGLE_XX_URL
+//                }
+//            }
+//        }
 
         return url
     }
