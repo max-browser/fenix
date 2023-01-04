@@ -13,7 +13,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.MaxBrowserConstant
 import com.max.browser.core.ReportManager
@@ -40,7 +39,6 @@ import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.webextensions.WebExtensionSupport
 import org.mozilla.fenix.GleanMetrics.ReaderMode
-import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.TabCollectionStorage
@@ -327,13 +325,21 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
                 adBlockAddon?.let {
                     if (WebExtensionSupport.installedExtensions[it.id] != null) {
                         lifecycleScope.launch(Main) {
-                            val adBlockAction = BrowserToolbar.Button(
-                                imageDrawable = AppCompatResources.getDrawable(
+                            val adBlockAction = BrowserToolbar.TwoStateButton(
+                                primaryImage = AppCompatResources.getDrawable(
                                     requireContext(),
-                                    R.drawable.ic_adblock
+                                    R.drawable.ic_adblock_on
                                 )!!,
-                                contentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
-                                visible = { true },
+                                primaryContentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
+                                secondaryImage = AppCompatResources.getDrawable(
+                                    requireContext(),
+                                    R.drawable.ic_adblock_off
+                                )!!,
+                                secondaryContentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
+                                isInPrimaryState = {
+                                    adBlockAddon.isEnabled()
+                                },
+                                disableInSecondaryState = false,
                                 listener = {
                                     findNavController().navigateSafe(
                                         R.id.browserFragment,
