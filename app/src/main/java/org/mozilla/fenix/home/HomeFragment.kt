@@ -52,8 +52,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
-import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
-import com.max.browser.core.delegate.MaxHomeFragmentDelegate
+import com.max.browser.core.delegate.home.fragment.MaxHomeFragmentDelegate
 import com.max.browser.core.ext.openApplicationDetailsSettings
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -132,7 +131,6 @@ import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.perf.MarkersFragmentLifecycleCallbacks
 import org.mozilla.fenix.perf.runBlockingIncrement
 import org.mozilla.fenix.search.toolbar.SearchSelectorMenu
-import org.mozilla.fenix.setdefaultbrowser.checkToShowDefaultBrowserSheetDialogFragment
 import org.mozilla.fenix.tabstray.TabsTrayAccessPoint
 import org.mozilla.fenix.utils.Settings.Companion.TOP_SITES_PROVIDER_MAX_THRESHOLD
 import org.mozilla.fenix.utils.ToolbarPopupWindow
@@ -496,8 +494,6 @@ class HomeFragment : Fragment() {
         activity.themeManager.applyStatusBarTheme(activity)
 
         FxNimbus.features.homescreen.recordExposure()
-
-        checkToShowDefaultBrowserSheetDialogFragment()
 
         maxHomeFragmentDelegate.onCreateView()
 

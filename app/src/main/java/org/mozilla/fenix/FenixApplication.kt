@@ -19,7 +19,7 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.work.Configuration.Builder
 import androidx.work.Configuration.Provider
-import com.max.browser.core.delegate.MaxBrowserApplicationDelegate
+import com.max.browser.core.delegate.application.MaxBrowserApplicationDelegate
 import com.max.browser.downloader.DownloaderApplicationDelegate
 import com.max.browser.downloader.util.LineNumberDebugTree
 import com.max.browser.downloader.util.ReleaseTree

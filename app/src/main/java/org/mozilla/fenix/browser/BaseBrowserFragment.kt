@@ -42,7 +42,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.RemoteConfigKey
 import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
-import com.max.browser.core.delegate.MaxBrowserFragmentDelegate
+import com.max.browser.core.delegate.browser.fragment.MaxBrowserFragmentDelegate
 import com.max.browser.downloader.report.Action
 import com.max.browser.downloader.report.AppEventReporter
 import com.max.browser.downloader.report.PageType
@@ -132,7 +132,6 @@ import org.mozilla.fenix.home.HomeScreenViewModel
 import org.mozilla.fenix.home.SharedViewModel
 import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.perf.MarkersFragmentLifecycleCallbacks
-import org.mozilla.fenix.setdefaultbrowser.checkToShowDefaultBrowserSheetDialogFragment
 import org.mozilla.fenix.settings.SupportUtils
 import org.mozilla.fenix.settings.biometric.BiometricPromptFeature
 import org.mozilla.fenix.theme.ThemeManager
@@ -257,8 +256,6 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                 BrowserFragmentState(),
             )
         }
-
-        checkToShowDefaultBrowserSheetDialogFragment()
 
         maxBrowserFragmentDelegate.onCreateView()
 

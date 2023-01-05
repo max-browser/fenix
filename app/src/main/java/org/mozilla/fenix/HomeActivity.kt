@@ -29,14 +29,9 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import androidx.preference.PreferenceManager
 import com.max.browser.core.MaxBrowserConstant
-import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
-import com.max.browser.core.delegate.MaxBrowserActivityDelegate
-import com.max.browser.core.ext.beginTransaction
-import com.max.browser.core.feature.update.UpdateAppDialog
-import com.max.browser.core.feature.update.shouldUpdateAppDialogShow
+import com.max.browser.core.delegate.home.activity.MaxHomeActivityDelegate
 import com.max.browser.downloader.DownloaderActivityDelegate
 import com.max.browser.downloader.worker.ARG_NOTIFICATION_FILE_PATH
 import kotlinx.coroutines.*
@@ -103,6 +98,7 @@ import org.mozilla.fenix.perf.*
 import org.mozilla.fenix.qrcode.OpenQrcodeScannerIntentProcessor
 import org.mozilla.fenix.search.SearchDialogFragmentDirections
 import org.mozilla.fenix.session.PrivateNotificationService
+import org.mozilla.fenix.setdefaultbrowser.checkToShowDefaultBrowserSheetDialogFragment
 import org.mozilla.fenix.settings.HttpsOnlyFragmentDirections
 import org.mozilla.fenix.settings.SettingsFragmentDirections
 import org.mozilla.fenix.settings.TrackingProtectionFragmentDirections
@@ -189,13 +185,12 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
     private val startupPathProvider = StartupPathProvider()
     private lateinit var startupTypeTelemetry: StartupTypeTelemetry
 
-    private val maxBrowserActivityDelegate = MaxBrowserActivityDelegate()
+    private val maxBrowserActivityDelegate = MaxHomeActivityDelegate()
     private val downloaderActivityDelegate = DownloaderActivityDelegate()
 
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
         val startTimeProfiler = components.core.engine.profiler?.getProfilerTime()
-        RemoteConfigManager.getInstance().initRemoteConfig(this)
 
         components.strictMode.attachListenerToDisablePenaltyDeath(supportFragmentManager)
         MarkersFragmentLifecycleCallbacks.register(supportFragmentManager, components.core.engine)
@@ -326,17 +321,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             "HomeActivity.onCreate",
         )
 
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val key = getPreferenceKey(R.string.pref_key_has_checked_setting_default_browser_after_cold_starting_app)
-        sp.edit().putBoolean(key, false).apply()
-
-
-        maxBrowserActivityDelegate.onCreate(this)
-
-        if (shouldUpdateAppDialogShow("home")) {
-            beginTransaction(supportFragmentManager, UpdateAppDialog.newInstance())
+        maxBrowserActivityDelegate.onCreate(this, supportFragmentManager) {
+            checkToShowDefaultBrowserSheetDialogFragment()
         }
-
         setupAdBlockAddon()
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.

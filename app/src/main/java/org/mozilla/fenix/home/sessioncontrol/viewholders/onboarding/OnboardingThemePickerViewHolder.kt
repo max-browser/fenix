@@ -6,17 +6,16 @@ package org.mozilla.fenix.home.sessioncontrol.viewholders.onboarding
 
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
+import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import org.mozilla.fenix.GleanMetrics.Onboarding
 import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.OnboardingThemePickerBinding
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.onboarding.OnboardingRadioButton
-import org.mozilla.fenix.setdefaultbrowser.setAfterUpdatingTheme
 import org.mozilla.fenix.utils.view.addToRadioGroup
 
 class OnboardingThemePickerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -126,7 +125,7 @@ class OnboardingThemePickerViewHolder(view: View) : RecyclerView.ViewHolder(view
             core.engine.settings.preferredColorScheme = core.getPreferredColorScheme()
             useCases.sessionUseCases.reload.invoke()
         }
-        itemView.context.setAfterUpdatingTheme()
+        MaxBrowserSettings.getInstance().isAfterUpdatingTheme = true
     }
 
     companion object {

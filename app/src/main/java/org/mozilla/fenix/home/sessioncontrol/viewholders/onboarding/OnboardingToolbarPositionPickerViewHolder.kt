@@ -6,6 +6,7 @@ package org.mozilla.fenix.home.sessioncontrol.viewholders.onboarding
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import org.mozilla.fenix.GleanMetrics.Onboarding
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
@@ -13,7 +14,6 @@ import org.mozilla.fenix.databinding.OnboardingToolbarPositionPickerBinding
 import org.mozilla.fenix.ext.asActivity
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.onboarding.OnboardingRadioButton
-import org.mozilla.fenix.setdefaultbrowser.setAfterUpdatingTheme
 import org.mozilla.fenix.utils.view.addToRadioGroup
 
 class OnboardingToolbarPositionPickerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -79,7 +79,7 @@ class OnboardingToolbarPositionPickerViewHolder(view: View) : RecyclerView.ViewH
     }
 
     fun onChangeToolbarPosition() {
-        itemView.context.setAfterUpdatingTheme()
+        MaxBrowserSettings.getInstance().isAfterUpdatingTheme = true
     }
 
     companion object {
