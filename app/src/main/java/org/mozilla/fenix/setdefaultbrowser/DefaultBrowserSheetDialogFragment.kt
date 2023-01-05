@@ -30,7 +30,6 @@ fun Activity.checkToShowDefaultBrowserSheetDialogFragment() {
         MaxBrowserSettings.getInstance().hasCheckedSettingDefaultBrowserAfterColdStartingApp
     // 每一次的冷啟動開始，只會 check 一次是否展示彈窗
     if (hasCheckedSettingsDefaultBrowser) {
-        Log.e("AAA", "每一次的冷啟動開始，只會 check 一次是否展示彈窗")
         return
     } else {
         MaxBrowserSettings.getInstance().hasCheckedSettingDefaultBrowserAfterColdStartingApp = true
