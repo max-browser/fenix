@@ -39,6 +39,7 @@ import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.webextensions.WebExtensionSupport
 import org.mozilla.fenix.GleanMetrics.ReaderMode
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.TabCollectionStorage
@@ -337,7 +338,11 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
                                 )!!,
                                 secondaryContentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
                                 isInPrimaryState = {
-                                    adBlockAddon.isEnabled()
+                                    if ((activity as HomeActivity).browsingModeManager.mode.isPrivate) {
+                                        adBlockAddon.isAllowedInPrivateBrowsing()
+                                    } else {
+                                        adBlockAddon.isEnabled()
+                                    }
                                 },
                                 disableInSecondaryState = false,
                                 listener = {

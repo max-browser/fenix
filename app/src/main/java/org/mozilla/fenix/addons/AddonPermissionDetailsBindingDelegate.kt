@@ -5,6 +5,7 @@
 package org.mozilla.fenix.addons
 
 import android.net.Uri
+import android.view.View
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import mozilla.components.feature.addons.Addon
@@ -48,6 +49,7 @@ class AddonPermissionDetailsBindingDelegate(
     }
 
     private fun bindLearnMore() {
+        binding.learnMoreLabel.visibility = View.GONE
         binding.learnMoreLabel.setOnClickListener {
             interactor.openWebsite(LEARN_MORE_URL.toUri())
         }
