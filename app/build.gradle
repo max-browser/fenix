@@ -39,7 +39,7 @@ android {
         applicationId "com.max"
         minSdkVersion Config.minSdkVersion
         targetSdkVersion Config.targetSdkVersion
-        versionCode 20
+        versionCode 21
         versionName "1.0.8"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -277,6 +277,10 @@ android {
         exclude 'META-INF/AL2.0'
         exclude 'META-INF/LGPL2.1'
         pickFirst "lib/**/libxul.so"
+
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 
     testOptions {
