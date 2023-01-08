@@ -10,15 +10,10 @@ import androidx.core.graphics.BlendModeCompat.SRC_IN
 import androidx.core.graphics.drawable.toBitmap
 import mozilla.components.browser.state.search.SearchEngine
 import mozilla.components.browser.state.state.searchEngines
+import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import mozilla.components.concept.awesomebar.AwesomeBar
 import mozilla.components.concept.engine.EngineSession
-import mozilla.components.feature.awesomebar.provider.BookmarksStorageSuggestionProvider
-import mozilla.components.feature.awesomebar.provider.CombinedHistorySuggestionProvider
-import mozilla.components.feature.awesomebar.provider.HistoryStorageSuggestionProvider
-import mozilla.components.feature.awesomebar.provider.SearchActionProvider
-import mozilla.components.feature.awesomebar.provider.SearchEngineSuggestionProvider
-import mozilla.components.feature.awesomebar.provider.SearchSuggestionProvider
-import mozilla.components.feature.awesomebar.provider.SessionSuggestionProvider
+import mozilla.components.feature.awesomebar.provider.*
 import mozilla.components.feature.search.SearchUseCases
 import mozilla.components.feature.session.SessionUseCases
 import mozilla.components.feature.syncedtabs.DeviceIndicators
@@ -108,10 +103,7 @@ class AwesomeBarView(
                 components.core.icons,
                 getDrawable(activity, R.drawable.ic_search_results_tab),
                 excludeSelectedSession = !fromHomeFragment,
-                suggestionsHeader = String.format(
-                    activity.getString(R.string.firefox_suggest_header),
-                    activity.getString(R.string.firefox)
-                ),
+                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             )
 
         historyStorageProvider =
@@ -120,10 +112,7 @@ class AwesomeBarView(
                 loadUrlUseCase,
                 components.core.icons,
                 engineForSpeculativeConnects,
-                suggestionsHeader = String.format(
-                    activity.getString(R.string.firefox_suggest_header),
-                    activity.getString(R.string.firefox)
-                ),
+                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             )
 
         combinedHistoryProvider =
@@ -134,10 +123,7 @@ class AwesomeBarView(
                 icons = components.core.icons,
                 engine = engineForSpeculativeConnects,
                 maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
-                suggestionsHeader = String.format(
-                    activity.getString(R.string.firefox_suggest_header),
-                    activity.getString(R.string.firefox)
-                ),
+                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             )
 
         bookmarksStorageSuggestionProvider =
@@ -147,10 +133,7 @@ class AwesomeBarView(
                 icons = components.core.icons,
                 indicatorIcon = getDrawable(activity, R.drawable.ic_search_results_bookmarks),
                 engine = engineForSpeculativeConnects,
-                suggestionsHeader = String.format(
-                    activity.getString(R.string.firefox_suggest_header),
-                    activity.getString(R.string.firefox)
-                ),
+                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             )
 
         syncedTabsStorageSuggestionProvider =
@@ -163,10 +146,7 @@ class AwesomeBarView(
                     getDrawable(activity, R.drawable.ic_search_results_device_mobile),
                     getDrawable(activity, R.drawable.ic_search_results_device_tablet),
                 ),
-                suggestionsHeader = String.format(
-                    activity.getString(R.string.firefox_suggest_header),
-                    activity.getString(R.string.firefox)
-                ),
+                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             )
 
         val searchBitmap = getDrawable(activity, R.drawable.ic_search)!!.apply {
@@ -191,6 +171,7 @@ class AwesomeBarView(
                     BrowsingMode.Normal -> false
                     BrowsingMode.Private -> true
                 },
+                suggestionsHeader = getSearchEngineSuggestionsHeader(),
             )
 
         defaultSearchActionProvider =
@@ -199,6 +180,7 @@ class AwesomeBarView(
                 searchUseCase = searchUseCase,
                 icon = searchBitmap,
                 showDescription = false,
+                suggestionsHeader = getSearchEngineSuggestionsHeader(),
             )
 
         shortcutsEnginePickerProvider =
@@ -220,6 +202,25 @@ class AwesomeBarView(
             )
 
         searchSuggestionProviderMap = HashMap()
+    }
+
+    private fun getSearchEngineSuggestionsHeader(): String? {
+        val searchState = activity.components.core.store.state.search
+        var searchEngine = searchState.selectedOrDefaultSearchEngine?.name
+
+        if (!searchEngine.isNullOrEmpty()) {
+            searchEngine = when (searchEngine) {
+                GOOGLE_SEARCH_ENGINE_NAME -> activity.getString(
+                    R.string.google_search_engine_suggestion_header,
+                )
+                else -> activity.getString(
+                    R.string.other_default_search_engine_suggestion_header,
+                    searchEngine,
+                )
+            }
+        }
+
+        return searchEngine
     }
 
     fun update(state: SearchFragmentState) {
@@ -370,6 +371,8 @@ class AwesomeBarView(
     companion object {
         // Maximum number of suggestions returned.
         const val METADATA_SUGGESTION_LIMIT = 3
+
+        const val GOOGLE_SEARCH_ENGINE_NAME = "Google"
     }
 }
 

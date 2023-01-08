@@ -67,6 +67,8 @@
     <!-- Private mode shortcut "contextual feature recommendation" (CFR) -->
     <!-- Text for the main message -->
     <string moz:removedIn="109" name="cfr_message" tools:ignore="UnusedResources">Ajoutez un raccourci pour ouvrir des onglets privés depuis votre écran d’accueil.</string>
+    <!-- Text for the Private mode shortcut CFR message for adding a private mode shortcut to open private tabs from the Home screen -->
+    <string name="private_mode_cfr_message">Lancez le prochain onglet privé d’un seul doigt.</string>
     <!-- Text for the positive button -->
     <string moz:removedIn="109" name="cfr_pos_button_text" tools:ignore="UnusedResources">Ajouter un raccourci</string>
     <!-- Text for the positive button to accept adding a Private Browsing shortcut to the Home screen -->
@@ -1926,6 +1928,11 @@
     <!-- Text for the snackbar to confirm auto-close is enabled for inactive tabs -->
     <string name="inactive_tabs_auto_close_message_snackbar">Fermeture automatique activée</string>
 
+    <!-- Title for search suggestions when Google is the default search suggestion engine. -->
+    <string name="google_search_engine_suggestion_header">Recherche Google</string>
+    <!-- Title for search suggestions when the default search suggestion engine is anything other than Google. The first parameter is default search engine name. -->
+    <string name="other_default_search_engine_suggestion_header">Recherche %s</string>
+
     <!-- Default browser experiment -->
     <string name="default_browser_experiment_card_text">Faites en sorte que les liens des sites web, des e-mails et des messages s’ouvrent automatiquement dans Max Browser.</string>
 
@@ -1964,7 +1971,9 @@
     <string name="experiments_snackbar">Activez la télémétrie pour envoyer des données.</string>
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">Ouvrir les paramètres</string>
+
     <string name="firefox_suggest_header">%s suggère</string>
+
 
     <!-- Accessibility services actions labels. These will be appended to accessibility actions like "Double tap to.." but not by or applications but by services like Talkback. -->
     <!-- Action label for elements that can be collapsed if interacting with them. Talkback will append this to say "Double tap to collapse". -->

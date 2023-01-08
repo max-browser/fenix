@@ -36,6 +36,7 @@ import org.mozilla.fenix.search.SearchDialogFragmentStore
  */
 class SearchSelectorToolbarAction(
     private val store: SearchDialogFragmentStore,
+    private val defaultSearchEngine: SearchEngine?,
     private val menu: SearchSelectorMenu,
 ) : Toolbar.Action {
     private var updateIconJob: Job? = null
@@ -43,7 +44,17 @@ class SearchSelectorToolbarAction(
     override fun createView(parent: ViewGroup): View {
         val context = parent.context
 
+        // Only search engines with type APPLICATION (tabs, history, bookmarks) will have a valid icon at this time.
+        // For other search engines show the icon of the default search engine which should be shown in the selector.
+        val initialSearchEngine = store.state.searchEngineSource.searchEngine ?: defaultSearchEngine
         return SearchSelector(context).apply {
+            initialSearchEngine?.let {
+                this.setIcon(
+                    icon = initialSearchEngine.getScaledIcon(this.context),
+                    contentDescription = initialSearchEngine.name,
+                )
+            }
+
             setOnClickListener {
                 val orientation = if (context.settings().shouldUseBottomToolbar) {
                     Orientation.UP
@@ -55,7 +66,9 @@ class SearchSelectorToolbarAction(
                 menu.menuController.show(anchor = it, orientation = orientation, forceOrientation = true)
             }
 
-            setTopMargin(resources.getDimensionPixelSize(R.dimen.search_engine_engine_icon_top_margin))
+            val topPadding = resources.getDimensionPixelSize(R.dimen.search_engine_engine_icon_top_margin)
+            setPadding(0, topPadding, 0, 0)
+
             setBackgroundResource(
                 context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless),
             )

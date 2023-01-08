@@ -11,12 +11,14 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.spyk
 import io.mockk.verify
 import mozilla.components.browser.state.search.SearchEngine
 import mozilla.components.browser.toolbar.BrowserToolbar
 import mozilla.components.browser.toolbar.edit.EditToolbar
 import mozilla.components.concept.engine.Engine
+import mozilla.components.concept.toolbar.Toolbar
 import mozilla.components.support.test.robolectric.testContext
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -24,12 +26,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mozilla.fenix.FeatureFlags
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.metrics.MetricsUtils
+import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.helpers.FenixRobolectricTestRunner
 import org.mozilla.fenix.search.SearchEngineSource
 import org.mozilla.fenix.search.SearchFragmentState
-import org.mozilla.fenix.utils.Settings
+import java.util.UUID
 
 @RunWith(FenixRobolectricTestRunner::class)
 class ToolbarViewTest {
@@ -49,6 +53,7 @@ class ToolbarViewTest {
                 every { name } returns "Search Engine"
                 every { icon } returns testContext.getDrawable(R.drawable.ic_search)!!.toBitmap()
                 every { type } returns SearchEngine.Type.BUNDLED
+                every { isGeneral } returns true
             },
         ),
         defaultEngine = null,
@@ -69,6 +74,7 @@ class ToolbarViewTest {
     fun setup() {
         MockKAnnotations.init(this)
         context = ContextThemeWrapper(testContext, R.style.NormalTheme)
+        every { context.settings() } returns mockk(relaxed = true)
         toolbar = spyk(BrowserToolbar(context))
     }
 
@@ -111,6 +117,31 @@ class ToolbarViewTest {
         // search term changes update the url and invoke the interactor.
         verify(exactly = 2) { toolbar.url = any() }
         verify(exactly = 2) { interactor.onTextChanged(any()) }
+    }
+
+    @Test
+    fun `GIVEN search term is set WHEN switching to edit mode THEN the cursor is set at the end of the search term`() {
+        every { context.settings().showUnifiedSearchFeature } returns true
+        val view = buildToolbarView(false)
+        mockkObject(FeatureFlags)
+
+        view.update(defaultState.copy(searchTerms = "search terms"))
+
+        // editMode gets called when the view is initialized.
+        verify(exactly = 1) { toolbar.editMode(Toolbar.CursorPlacement.ALL) }
+        verify(exactly = 1) { toolbar.editMode(Toolbar.CursorPlacement.END) }
+    }
+
+    @Test
+    fun `GIVEN no search term is set WHEN switching to edit mode THEN the cursor is set at the end of the search term`() {
+        every { context.settings().showUnifiedSearchFeature } returns true
+        val view = buildToolbarView(false)
+        mockkObject(FeatureFlags)
+
+        view.update(defaultState)
+
+        // editMode gets called when the view is initialized.
+        verify(exactly = 2) { toolbar.editMode(Toolbar.CursorPlacement.ALL) }
     }
 
     @Test
@@ -158,12 +189,81 @@ class ToolbarViewTest {
         verify { editToolbar.setIcon(any(), "Search Engine") }
     }
 
+    @Test
+    fun `GIVEN a general search engine is default WHEN a topic specific engine is selected THEN the hint changes`() {
+        val topicSpecificEngine = buildSearchEngine(SearchEngine.Type.BUNDLED, false)
+        val toolbarView = buildToolbarView(false)
+        toolbarView.update(defaultState)
+        assertEquals(context.getString(R.string.search_hint), toolbarView.view.edit.hint)
+
+        toolbarView.update(defaultState.copy(searchEngineSource = SearchEngineSource.Default(topicSpecificEngine)))
+
+        assertEquals(context.getString(R.string.application_search_hint), toolbarView.view.edit.hint)
+    }
+
+    @Test
+    fun `GIVEN a topic specific engine is default WHEN a general engine is selected THEN the hint changes`() {
+        val topicSpecificEngine = buildSearchEngine(SearchEngine.Type.BUNDLED, false)
+        val toolbarView = buildToolbarView(false)
+        toolbarView.update(defaultState.copy(searchEngineSource = SearchEngineSource.Default(topicSpecificEngine)))
+        assertEquals(context.getString(R.string.application_search_hint), toolbarView.view.edit.hint)
+
+        toolbarView.update(defaultState)
+
+        assertEquals(context.getString(R.string.search_hint), toolbarView.view.edit.hint)
+    }
+
+    @Test
+    fun `GIVEN a topic specific engine is default WHEN a custom engine is selected THEN the hint changes`() {
+        val topicSpecificEngine = buildSearchEngine(SearchEngine.Type.BUNDLED, false)
+        val customEngine = buildSearchEngine(SearchEngine.Type.CUSTOM, true)
+        val toolbarView = buildToolbarView(false)
+        toolbarView.update(defaultState.copy(searchEngineSource = SearchEngineSource.Default(topicSpecificEngine)))
+        assertEquals(context.getString(R.string.application_search_hint), toolbarView.view.edit.hint)
+
+        toolbarView.update(defaultState.copy(searchEngineSource = SearchEngineSource.Default(customEngine)))
+
+        assertEquals(context.getString(R.string.search_hint), toolbarView.view.edit.hint)
+    }
+
+    @Test
+    fun `GIVEN a general engine is default WHEN a custom engine is selected THEN the hint does not change`() {
+        val customEngine = buildSearchEngine(SearchEngine.Type.CUSTOM, true)
+        val toolbarView = buildToolbarView(false)
+        toolbarView.update(defaultState)
+        assertEquals(context.getString(R.string.search_hint), toolbarView.view.edit.hint)
+
+        toolbarView.update(defaultState.copy(searchEngineSource = SearchEngineSource.Default(customEngine)))
+
+        assertEquals(context.getString(R.string.search_hint), toolbarView.view.edit.hint)
+    }
+
+    @Test
+    fun `GIVEN a custom engine is default WHEN a general engine is selected THEN the hint does not change`() {
+        val customEngine = buildSearchEngine(SearchEngine.Type.CUSTOM, true)
+        val toolbarView = buildToolbarView(false)
+        toolbarView.update(defaultState.copy(searchEngineSource = SearchEngineSource.Default(customEngine)))
+        assertEquals(context.getString(R.string.search_hint), toolbarView.view.edit.hint)
+
+        toolbarView.update(defaultState)
+
+        assertEquals(context.getString(R.string.search_hint), toolbarView.view.edit.hint)
+    }
+
     private fun buildToolbarView(isPrivate: Boolean) = ToolbarView(
         context,
-        Settings(context),
+        context.settings(),
         interactor,
         isPrivate = isPrivate,
         view = toolbar,
         fromHomeFragment = false,
+    )
+
+    private fun buildSearchEngine(type: SearchEngine.Type, isGeneral: Boolean) = SearchEngine(
+        id = UUID.randomUUID().toString(),
+        name = "General",
+        icon = testContext.getDrawable(R.drawable.ic_search)!!.toBitmap(),
+        type = type,
+        isGeneral = isGeneral,
     )
 }
