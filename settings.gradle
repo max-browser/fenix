@@ -18,6 +18,10 @@ project(":video-downloader-library").projectDir = file("../max-browser-core/vide
 include ':stooltip'
 project(":stooltip").projectDir = file("../max-browser-core/stooltip")
 
+include ":vpn-library"
+project(":vpn-library").projectDir = file("../max-browser-core/vpn-library")
+
+
 def log(message) {
     logger.lifecycle("[settings] ${message}")
 }
