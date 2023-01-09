@@ -23,6 +23,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting.Companion.PROTECTED
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.postDelayed
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDirections
@@ -285,9 +286,10 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
         startupTelemetryOnCreateCalled(intent.toSafeIntent())
         startupPathProvider.attachOnActivityOnCreate(lifecycle, intent)
-        startupTypeTelemetry = StartupTypeTelemetry(components.startupStateProvider, startupPathProvider).apply {
-            attachOnHomeActivityOnCreate(lifecycle)
-        }
+        startupTypeTelemetry =
+            StartupTypeTelemetry(components.startupStateProvider, startupPathProvider).apply {
+                attachOnHomeActivityOnCreate(lifecycle)
+            }
 
         components.core.requestInterceptor.setNavigationController(navHost.navController)
 
@@ -321,9 +323,12 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             "HomeActivity.onCreate",
         )
 
-        maxBrowserActivityDelegate.onCreate(this, supportFragmentManager) {
+        maxBrowserActivityDelegate.onCreate(this, supportFragmentManager)
+
+        binding.root.postDelayed(1000) {
             checkToShowDefaultBrowserSheetDialogFragment()
         }
+
         setupAdBlockAddon()
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
@@ -348,7 +353,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         )
     }
 
-    private fun setupAdBlockAddon(){
+    private fun setupAdBlockAddon() {
         lifecycleScope.launch(IO) {
             try {
                 val addons = components.addonManager.getAddons(waitForPendingActions = false)
@@ -411,7 +416,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             // that we should not rely on the application being killed between user sessions.
             components.appStore.dispatch(AppAction.ResumedMetricsAction)
 
-            DefaultBrowserNotificationWorker.setDefaultBrowserNotificationIfNeeded(applicationContext)
+            DefaultBrowserNotificationWorker.setDefaultBrowserNotificationIfNeeded(
+                applicationContext,
+            )
             ReEngagementNotificationWorker.setReEngagementNotificationIfNeeded(applicationContext)
         }
 
@@ -842,7 +849,15 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         historyMetadata: HistoryMetadataKey? = null,
     ) {
         openToBrowser(from, customTabSessionId)
-        load(searchTermOrURL, newTab, engine, forceSearch, flags, requestDesktopMode, historyMetadata)
+        load(
+            searchTermOrURL,
+            newTab,
+            engine,
+            forceSearch,
+            flags,
+            requestDesktopMode,
+            historyMetadata,
+        )
     }
 
     fun openToBrowser(from: BrowserDirection, customTabSessionId: String? = null) {
@@ -935,8 +950,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             BrowsingMode.Normal -> false
         }
 
-        val eventName:String
-        val paramName :String
+        val eventName: String
+        val paramName: String
         // In situations where we want to perform a search but have no search engine (e.g. the user
         // has removed all of them, or we couldn't load any) we will pass searchTermOrURL to Gecko
         // and let it try to load whatever was entered.
@@ -1115,9 +1130,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         // First time opening this activity in the task.
         // Cold start / start from Recents after back press.
         return activityIcicle == null &&
-            // Activity was restarted from Recents after it was destroyed by Android while in background
-            // in cases of memory pressure / "Don't keep activities".
-            startingIntent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0
+                // Activity was restarted from Recents after it was destroyed by Android while in background
+                // in cases of memory pressure / "Don't keep activities".
+                startingIntent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0
     }
 
     /**
@@ -1147,7 +1162,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
     private fun shouldNavigateToBrowserOnColdStart(savedInstanceState: Bundle?): Boolean {
         return isActivityColdStarted(intent, savedInstanceState) &&
-            !processIntent(intent)
+                !processIntent(intent)
     }
 
     private fun initDownloaderLibrary() {
