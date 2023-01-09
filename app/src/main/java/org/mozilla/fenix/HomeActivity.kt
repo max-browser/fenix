@@ -30,6 +30,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.max.browser.core.MaxBrowserConstant
+import com.max.browser.core.RemoteConfigKey
+import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.home.activity.MaxHomeActivityDelegate
 import com.max.browser.downloader.DownloaderActivityDelegate
@@ -324,7 +326,13 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         )
 
         maxBrowserActivityDelegate.onCreate(this, supportFragmentManager) {
-            checkToShowDefaultBrowserSheetDialogFragment()
+            val browserGroup = RemoteConfigManager.getInstance()
+                .getConfig<String>(RemoteConfigKey.DEFAULT_BROWSER_DIALOG_SETTING_GROUP)
+            if (browserGroup == "B") {
+
+            } else {
+                checkToShowDefaultBrowserSheetDialogFragment()
+            }
         }
         setupAdBlockAddon()
 
