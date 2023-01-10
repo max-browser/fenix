@@ -188,7 +188,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
     private val startupPathProvider = StartupPathProvider()
     private lateinit var startupTypeTelemetry: StartupTypeTelemetry
 
-    private val maxBrowserActivityDelegate = MaxHomeActivityDelegate()
+    private val maxHomeActivityDelegate = MaxHomeActivityDelegate(this)
     private val downloaderActivityDelegate = DownloaderActivityDelegate()
 
     final override fun onCreate(savedInstanceState: Bundle?) {
@@ -325,12 +325,10 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             "HomeActivity.onCreate",
         )
 
-        maxBrowserActivityDelegate.onCreate(this, supportFragmentManager)
-
+        maxHomeActivityDelegate.onCreate(supportFragmentManager)
         binding.root.postDelayed(1000) {
             checkToShowDefaultBrowserSheetDialogFragment()
         }
-
         setupAdBlockAddon()
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
@@ -424,6 +422,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             ReEngagementNotificationWorker.setReEngagementNotificationIfNeeded(applicationContext)
         }
 
+        maxHomeActivityDelegate.onResume()
+
         // This was done in order to refresh search engines when app is running in background
         // and the user changes the system language
         // More details here: https://github.com/mozilla-mobile/fenix/pull/27793#discussion_r1029892536
@@ -499,6 +499,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         //
         // NB: There are ways for the user to install new products without leaving the browser.
         BrowsersCache.resetAll()
+
+        maxHomeActivityDelegate.onPause()
     }
 
     private fun getBookmarkCount(node: BookmarkNode): Int {
@@ -563,13 +565,13 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
      */
     final override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        startupPathProvider.onIntentReceived(intent)
+
+        maxHomeActivityDelegate.onNewIntent(intent)
         intent?.let {
             handleNewIntent(it)
             handleIntentFromNotification(it)
         }
-        startupPathProvider.onIntentReceived(intent)
-
-        maxBrowserActivityDelegate.onNewIntent(this, intent)
     }
 
     open fun handleNewIntent(intent: Intent) {
