@@ -1217,7 +1217,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
                                 if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
                                     beginTransaction(supportFragmentManager,
                                         DefaultBrowserFullScreenGuideDialogFragment.newInstance())
-                                    MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed = true
                                 } else {
                                     checkToShowDefaultBrowserSheetDialogFragment()
                                 }
@@ -1230,7 +1229,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
                             if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
                                 beginTransaction(supportFragmentManager,
                                     DefaultBrowserFullScreenGuideDialogFragment.newInstance())
-                                MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed = true
                             } else {
                                 checkToShowDefaultBrowserSheetDialogFragment()
                             }
