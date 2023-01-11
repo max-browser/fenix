@@ -12,6 +12,7 @@ import com.max.browser.core.RemoteConfigKey
 import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
 import com.max.browser.core.data.local.sp.MaxBrowserSettings
+import org.json.JSONObject
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
 import org.mozilla.fenix.android.FenixDialogFragment
@@ -20,6 +21,9 @@ import org.mozilla.fenix.ext.openSetDefaultBrowserOption
 import org.mozilla.fenix.ext.settings
 import java.util.concurrent.TimeUnit
 
+const val GROUP_A = "A"
+const val GROUP_B = "B"
+const val GROUP_C = "C"
 
 fun Activity.checkToShowDefaultBrowserSheetDialogFragment() {
     if (settings().isDefaultBrowserBlocking()) {
@@ -71,6 +75,18 @@ fun Activity.checkToShowDefaultBrowserSheetDialogFragment() {
         }
     }
 
+}
+
+fun reportBrowserGroupInfo(browserGroup:String) {
+    val jsonObject = JSONObject()
+    jsonObject.put("test_id", "default browser test")
+    jsonObject.put("group_id", browserGroup)
+    ReportManager.getInstance().report(
+        "experiment_info_report",
+        Bundle().apply {
+            putString("result", jsonObject.toString())
+        },
+    )
 }
 
 class DefaultBrowserSheetDialogFragment : FenixDialogFragment() {

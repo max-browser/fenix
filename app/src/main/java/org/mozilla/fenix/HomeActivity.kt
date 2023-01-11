@@ -23,21 +23,28 @@ import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting.Companion.PROTECTED
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.postDelayed
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.max.browser.core.MaxBrowserConstant
+import com.max.browser.core.RemoteConfigKey
+import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
+import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import com.max.browser.core.delegate.home.activity.MaxHomeActivityDelegate
+import com.max.browser.core.ext.beginTransaction
+import com.max.browser.core.ext.isInternetAvailable
 import com.max.browser.downloader.DownloaderActivityDelegate
 import com.max.browser.downloader.worker.ARG_NOTIFICATION_FILE_PATH
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.collectLatest
 import mozilla.appservices.places.BookmarkRoot
 import mozilla.components.browser.state.action.ContentAction
 import mozilla.components.browser.state.action.SearchAction
@@ -72,6 +79,7 @@ import mozilla.components.support.utils.toSafeIntent
 import mozilla.components.support.webextensions.WebExtensionPopupFeature
 import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.telemetry.glean.private.NoExtras
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.Metrics
 import org.mozilla.fenix.GleanMetrics.StartOnHome
@@ -100,7 +108,7 @@ import org.mozilla.fenix.perf.*
 import org.mozilla.fenix.qrcode.OpenQrcodeScannerIntentProcessor
 import org.mozilla.fenix.search.SearchDialogFragmentDirections
 import org.mozilla.fenix.session.PrivateNotificationService
-import org.mozilla.fenix.setdefaultbrowser.checkToShowDefaultBrowserSheetDialogFragment
+import org.mozilla.fenix.setdefaultbrowser.*
 import org.mozilla.fenix.settings.CookieBannersFragmentDirections
 import org.mozilla.fenix.settings.HttpsOnlyFragmentDirections
 import org.mozilla.fenix.settings.SettingsFragmentDirections
@@ -120,6 +128,7 @@ import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.trackingprotection.TrackingProtectionPanelDialogFragmentDirections
 import org.mozilla.fenix.utils.BrowsersCache
 import org.mozilla.fenix.utils.Settings
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 /**
@@ -190,6 +199,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
     private val maxHomeActivityDelegate = MaxHomeActivityDelegate(this)
     private val downloaderActivityDelegate = DownloaderActivityDelegate()
+    private val defaultBrowserViewModel: DefaultBrowserViewModel by viewModel()
 
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
@@ -325,10 +335,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             "HomeActivity.onCreate",
         )
 
-        maxHomeActivityDelegate.onCreate(supportFragmentManager)
-        binding.root.postDelayed(1000) {
-            checkToShowDefaultBrowserSheetDialogFragment()
-        }
+        maxHomeActivityDelegate.onCreate( supportFragmentManager)
+        observeData()
+
         setupAdBlockAddon()
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
@@ -1181,6 +1190,54 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         Logger.info("VD filePath:$filePath")
         filePath?.let {
             navHost.navController.navigate(NavGraphDirections.actionGlobalMyFileFragment(true))
+        }
+    }
+
+    private fun observeData() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                defaultBrowserViewModel.remoteConfigInited.collectLatest {
+                    if (it) {
+                        val browserGroup = RemoteConfigManager.getInstance()
+                            .getConfig<String>(RemoteConfigKey.DEFAULT_BROWSER_DIALOG_SETTING_GROUP)
+                        Timber.d("browserGroup:$browserGroup")
+                        reportBrowserGroupInfo(browserGroup)
+                        when (browserGroup) {
+                            GROUP_A -> {
+                                checkToShowDefaultBrowserSheetDialogFragment()
+                            }
+                            GROUP_B -> {
+                                if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
+                                    beginTransaction(supportFragmentManager,
+                                        DefaultBrowserFullScreenGuideDialogFragment.newInstance())
+                                }
+                            }
+                            GROUP_C -> {
+                                //新安裝或更新後，先彈全屏default browser彈窗
+                                if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
+                                    beginTransaction(supportFragmentManager,
+                                        DefaultBrowserFullScreenGuideDialogFragment.newInstance())
+                                    MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed = true
+                                } else {
+                                    checkToShowDefaultBrowserSheetDialogFragment()
+                                }
+                            }
+                        }
+                    } else {
+                        //如果網路沒開，且也沒拉到雲控，預設展示C組
+                        if (isInternetAvailable().not()) {
+                            reportBrowserGroupInfo(GROUP_C)
+                            if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
+                                beginTransaction(supportFragmentManager,
+                                    DefaultBrowserFullScreenGuideDialogFragment.newInstance())
+                                MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed = true
+                            } else {
+                                checkToShowDefaultBrowserSheetDialogFragment()
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
