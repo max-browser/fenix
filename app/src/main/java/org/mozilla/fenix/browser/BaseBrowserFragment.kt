@@ -1470,7 +1470,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     @VisibleForTesting
     internal fun fullScreenChanged(inFullScreen: Boolean) {
         if (inFullScreen) {
-            if (currentWebUrl.isDownloadableWebsite() && isVideoDownloaderEnabled) {
+            if (isDownloadButtonEnabled(currentWebUrl)) {
                 binding.fabDownload.isVisible = false
             }
             // Close find in page bar if opened
@@ -1506,7 +1506,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                 initializeEngineView(toolbarHeight)
                 browserToolbarView.expand()
             }
-            if (currentWebUrl.isDownloadableWebsite() && isVideoDownloaderEnabled) {
+            if (isDownloadButtonEnabled(currentWebUrl)) {
                 binding.fabDownload.isVisible = true
             }
         }
@@ -1635,7 +1635,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
 
     private fun checkUrlDownloadable(url: String) {
         currentWebUrl = url
-        if (url.isDownloadableWebsite() && isVideoDownloaderEnabled) {
+        if (isDownloadButtonEnabled(url)) {
             Timber.d("checkUrlDownloadable prefetchVideoUrl:$prefetchVideoUrl, url:$url")
             binding.fabDownload.isVisible = true
             showDownloadTip(requireContext())
@@ -1664,8 +1664,8 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                             viewModel.killPreviousJob()
                             prefetchVideoJob?.cancel()
                             parseVideoJob?.cancel()
-                            checkDlpRegexListState(requireContext())
-                            if (url.isDownloadableWebsite() && isVideoDownloaderEnabled) {
+                            checkDlpLibraryState()
+                            if (isDownloadButtonEnabled(url)) {
                                 AppEventReporter.reportDownloadFlow(classStr = Action.SHOW, page = PageType.DOWNLOAD)
                             }
                             setFabState()
@@ -1716,7 +1716,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
     private fun setFabState(status: FabStatus = FabStatus.NORMAL) {
         Logger.info("setFabState status:$status")
         if (isAdded) {
-            if (currentWebUrl.isDownloadableWebsite() && isVideoDownloaderEnabled) {
+            if (isDownloadButtonEnabled(currentWebUrl)) {
                 viewModel.updateFabState(state = status)
                 when (status) {
                     FabStatus.CONVERTING -> {
@@ -1762,7 +1762,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
 
     private fun monitorButtonState(url:String) {
         Timber.d("monitorButtonState url:$url")
-        if (hasStartRepeatCheck.not() && url.isDownloadableWebsite() && isVideoDownloaderEnabled) {
+        if (hasStartRepeatCheck.not() && isDownloadButtonEnabled(url)) {
             hasStartRepeatCheck = true
             checkDownloadingJob = startRepeatingCheckJob()
         }
@@ -1774,6 +1774,17 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
             if (it) {
                 checkDownloadingJob?.cancel()
             }
+        }
+    }
+
+    private fun isDownloadButtonEnabled(url:String): Boolean {
+        return url.isDownloadableWebsite() && isVideoDownloaderEnabled && vdDownloaderPref.isDlpLibraryInitialized
+    }
+
+    private fun checkDlpLibraryState() {
+        lifecycleScope.launch(IO) {
+            checkYtDlpInitialized(requireContext())
+            checkDlpRegexListState(requireContext())
         }
     }
 
