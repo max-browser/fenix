@@ -125,5 +125,9 @@
 # https://bugzilla.mozilla.org/show_bug.cgi?id=1596302
 -keep class androidx.lifecycle.** { *; }
 
+# core entities
 -keep class com.max.browser.core.data.local.entities.**  { *; }
 -keep class com.max.browser.core.data.remote.entities.**  { *; }
+
+# AppsFlyer
+-keep class com.appsflyer.** { *; }
