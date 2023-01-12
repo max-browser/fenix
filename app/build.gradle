@@ -39,7 +39,7 @@ android {
         applicationId "com.max"
         minSdkVersion Config.minSdkVersion
         targetSdkVersion Config.targetSdkVersion
-        versionCode 23
+        versionCode 25
         versionName "1.0.8"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
