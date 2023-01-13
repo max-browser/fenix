@@ -454,6 +454,12 @@ class DefaultBrowserToolbarMenuController(
             }
             is ToolbarMenu.Item.VPN -> {
                 activity.startActivity(Intent(activity, VpnActivity::class.java))
+                ReportManager.getInstance().report(
+                    "vpn_enter_click",
+                    Bundle().apply {
+                        putString("page", "browser_menu")
+                    },
+                )
             }
         }
     }

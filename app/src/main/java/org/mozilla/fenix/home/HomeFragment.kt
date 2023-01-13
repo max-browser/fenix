@@ -675,6 +675,12 @@ class HomeFragment : Fragment() {
                 visibility = View.VISIBLE
                 setOnClickListener {
                     startActivity(Intent(requireContext(), VpnActivity::class.java))
+                    ReportManager.getInstance().report(
+                        "vpn_enter_click",
+                        Bundle().apply {
+                            putString("page", "home_menu")
+                        },
+                    )
                 }
             }
         } else {

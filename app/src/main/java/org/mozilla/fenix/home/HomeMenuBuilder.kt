@@ -235,6 +235,12 @@ class HomeMenuBuilder(
             }
             HomeMenu.Item.VPN -> {
                 homeActivity.startActivity(Intent(homeActivity, VpnActivity::class.java))
+                ReportManager.getInstance().report(
+                    "vpn_enter_click",
+                    Bundle().apply {
+                        putString("page", "home_tool")
+                    },
+                )
             }
         }
     }
