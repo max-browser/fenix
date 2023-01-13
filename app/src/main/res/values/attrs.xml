@@ -64,6 +64,10 @@
     <attr name="homeBackground" format="reference"/>
     <attr name="bottomBarBackground" format="reference"/>
     <attr name="bottomBarBackgroundTop" format="reference"/>
+    <attr name="vpnButtonBackgroundGradientStartColor" format="reference" />
+    <attr name="vpnButtonBackgroundGradientEndColor" format="reference" />
+    <attr name="vpnButtonAccent" format="reference" />
+    <attr name="vpnButtonDisconnected" format="reference" />
     <attr name="privateBrowsingButtonBackground" format="reference" />
     <attr name="privateBrowsingButtonAccent" format="reference" />
     <attr name="fenixLogo" format="reference" />

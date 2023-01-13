@@ -36,6 +36,7 @@ interface ToolbarMenu {
         object Downloads : Item()
         object NewTab : Item()
         object JoinUserGroup : Item()
+        object VPN : Item()
     }
 
     val menuBuilder: BrowserMenuBuilder

@@ -54,7 +54,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.home.fragment.MaxHomeFragmentDelegate
 import com.max.browser.core.ext.openApplicationDetailsSettings
-import com.max.browser.core.feature.vpn.SubscribeVpnActivity
+import com.max.browser.core.feature.vpn.VpnActivity
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.MainScope
@@ -656,7 +656,7 @@ class HomeFragment : Fragment() {
 
         binding.vpnButton.apply {
             setOnClickListener {
-                startActivity(Intent(requireContext(), SubscribeVpnActivity::class.java))
+                startActivity(Intent(requireContext(), VpnActivity::class.java))
             }
         }
 

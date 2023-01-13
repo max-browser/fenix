@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.ReportManager
+import com.max.browser.core.feature.vpn.VpnActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -439,12 +440,6 @@ class DefaultBrowserToolbarMenuController(
                 }
             }
             is ToolbarMenu.Item.JoinUserGroup -> {
-                ReportManager.getInstance().report(
-                    "join_group_click",
-                    Bundle().apply {
-                        putString("class", "browser")
-                    },
-                )
                 activity.openToBrowserAndLoad(
                     searchTermOrURL = SupportUtils.JOIN_USER_GROUP_URL,
                     newTab = true,
@@ -456,6 +451,9 @@ class DefaultBrowserToolbarMenuController(
                         putString("class", "browser")
                     },
                 )
+            }
+            is ToolbarMenu.Item.VPN -> {
+                activity.startActivity(Intent(activity, VpnActivity::class.java))
             }
         }
     }
@@ -529,6 +527,7 @@ class DefaultBrowserToolbarMenuController(
             is ToolbarMenu.Item.RemoveFromTopSites ->
                 Events.browserMenuAction.record(Events.BrowserMenuActionExtra("remove_from_top_sites"))
             is ToolbarMenu.Item.JoinUserGroup -> {}
+            is ToolbarMenu.Item.VPN -> {}
         }
     }
 

@@ -7,6 +7,7 @@
 
     <style name="NormalTheme" parent="NormalThemeBase" >
         <item name="fenixWordmarkText">@drawable/ic_wordmark_text_night</item>
+        <item name="vpnButtonDisconnected">@drawable/max_ic_ffffff_vpn_with_word</item>
     </style>
 
 </resources>

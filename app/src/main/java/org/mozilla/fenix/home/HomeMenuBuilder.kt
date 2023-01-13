@@ -5,6 +5,7 @@
 package org.mozilla.fenix.home
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.VisibleForTesting
@@ -14,6 +15,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import com.max.browser.core.ReportManager
+import com.max.browser.core.feature.vpn.VpnActivity
 import mozilla.appservices.places.BookmarkRoot
 import mozilla.components.browser.menu.view.MenuButton
 import mozilla.components.service.glean.private.NoExtras
@@ -230,6 +232,9 @@ class HomeMenuBuilder(
                         putString("class", "home")
                     },
                 )
+            }
+            HomeMenu.Item.VPN -> {
+                homeActivity.startActivity(Intent(homeActivity, VpnActivity::class.java))
             }
         }
     }

@@ -58,6 +58,7 @@ class HomeMenu(
         data class DesktopMode(val checked: Boolean) : Item()
         object SetDefaultBrowser : Item()
         object JoinUserGroup : Item()
+        object VPN : Item()
     }
 
     private val primaryTextColor = ThemeManager.resolveAttribute(R.attr.textPrimary, context)
@@ -132,6 +133,15 @@ class HomeMenu(
     @Suppress("ComplexMethod")
     private fun coreMenuItems(): List<BrowserMenuItem> {
         val settings = context.components.settings
+
+        val vpnItem = BrowserMenuImageText(
+            context.getString(R.string.max_vpn_function),
+            R.drawable.max_ic_vpn,
+            primaryTextColor,
+        ) {
+            onItemTapped.invoke(Item.VPN)
+            ReportManager.getInstance().report("home_menu_vpn")
+        }
 
         val bookmarksItem = BrowserMenuImageText(
             context.getString(R.string.library_bookmarks),
@@ -254,6 +264,7 @@ class HomeMenu(
         }
 
         val menuItems = listOfNotNull(
+            vpnItem,
             bookmarksItem,
             historyItem,
             downloadsItem,
