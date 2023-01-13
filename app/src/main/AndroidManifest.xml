@@ -43,6 +43,7 @@
         android:theme="@style/NormalTheme"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
+        tools:replace="android:allowBackup"
         tools:ignore="UnusedAttribute">
 
         <!--
