@@ -54,7 +54,7 @@ import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
-import com.max.browser.core.ReportManager
+import com.max.browser.core.*
 import com.max.browser.core.delegate.home.fragment.MaxHomeFragmentDelegate
 import com.max.browser.core.ext.openApplicationDetailsSettings
 import com.max.browser.core.feature.vpn.VpnActivity
@@ -665,10 +665,20 @@ class HomeFragment : Fragment() {
             )
         }
 
-        binding.vpnButton.apply {
-            setOnClickListener {
-                startActivity(Intent(requireContext(), VpnActivity::class.java))
+        val isVpnEntranceEnableRemote: Boolean = RemoteConfigManager.getInstance().getConfig(RemoteConfigKey.VPN_ENTRANCE_ENABLE)
+        val vpnSubsProductId: String = RemoteConfigManager.getInstance().getConfig(RemoteConfigKey.VPN_SUBSCRIBE_PRODUCT_ID)
+        val vpnSubsPurchase = InAppBillingManager.getInstance().getProductPurchase(vpnSubsProductId)
+        val isVpnEntranceEnable = vpnSubsPurchase?.isPurchased() == true || isVpnEntranceEnableRemote
+
+        if (isVpnEntranceEnable) {
+            binding.vpnButton.apply {
+                visibility = View.VISIBLE
+                setOnClickListener {
+                    startActivity(Intent(requireContext(), VpnActivity::class.java))
+                }
             }
+        } else {
+            binding.vpnButton.visibility = View.GONE
         }
 
         consumeFrom(requireComponents.core.store) {

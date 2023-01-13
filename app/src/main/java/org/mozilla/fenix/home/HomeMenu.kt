@@ -9,7 +9,7 @@ import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.max.browser.core.ReportManager
+import com.max.browser.core.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import mozilla.components.browser.menu.BrowserMenuBuilder
@@ -263,8 +263,14 @@ class HomeMenu(
             )
         }
 
+        val isVpnEntranceEnableRemote: Boolean = RemoteConfigManager.getInstance().getConfig(
+            RemoteConfigKey.VPN_ENTRANCE_ENABLE)
+        val vpnSubsProductId: String = RemoteConfigManager.getInstance().getConfig(RemoteConfigKey.VPN_SUBSCRIBE_PRODUCT_ID)
+        val vpnSubsPurchase = InAppBillingManager.getInstance().getProductPurchase(vpnSubsProductId)
+        val isVpnEntranceEnable = vpnSubsPurchase?.isPurchased() == true || isVpnEntranceEnableRemote
+
         val menuItems = listOfNotNull(
-            vpnItem,
+            if (isVpnEntranceEnable) vpnItem else null,
             bookmarksItem,
             historyItem,
             downloadsItem,

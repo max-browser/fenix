@@ -582,6 +582,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 }
 
 dependencies {
+    implementation project(path: ':vpn-library')
     jnaForTest FenixDependencies.jna
     testImplementation files(configurations.jnaForTest.copyRecursive().files)
 
@@ -807,6 +808,11 @@ dependencies {
 
     // Constraintlayout Compose
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+
+    // google billing
+    def billing_version = "5.1.0"
+    implementation "com.android.billingclient:billing:$billing_version"
+    implementation "com.android.billingclient:billing-ktx:$billing_version"
 
 }
 
