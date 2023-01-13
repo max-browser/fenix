@@ -5,8 +5,10 @@
 package org.mozilla.fenix.home
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -43,6 +45,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,6 +58,8 @@ import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.home.fragment.MaxHomeFragmentDelegate
 import com.max.browser.core.ext.openApplicationDetailsSettings
 import com.max.browser.core.feature.vpn.VpnActivity
+import de.blinkt.openvpn.core.OpenVPNService
+import de.blinkt.openvpn.core.VpnStatus
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.MainScope
@@ -217,6 +222,12 @@ class HomeFragment : Fragment() {
 
     private val maxHomeFragmentDelegate: MaxHomeFragmentDelegate by lazy{
         MaxHomeFragmentDelegate(this)
+    }
+
+    private val vpnConnectionReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            binding.vpnButton.isActivated = OpenVPNService.getStatus() == VpnStatus.State.CONNECTED
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -934,6 +945,11 @@ class HomeFragment : Fragment() {
         requireComponents.useCases.sessionUseCases.updateLastAccess()
 
         myDocumentsFeature.get()?.start()
+
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(vpnConnectionReceiver, IntentFilter("connectionState"))
+
+        binding.vpnButton.isActivated = OpenVPNService.getStatus() == VpnStatus.State.CONNECTED
     }
 
     override fun onPause() {
@@ -952,6 +968,8 @@ class HomeFragment : Fragment() {
         // Counterpart to the update in onResume to keep the last access timestamp of the selected
         // tab up-to-date.
         requireComponents.useCases.sessionUseCases.updateLastAccess()
+
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(vpnConnectionReceiver)
     }
 
     @SuppressLint("InflateParams")
