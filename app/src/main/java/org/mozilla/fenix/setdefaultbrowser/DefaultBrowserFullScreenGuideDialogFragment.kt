@@ -2,6 +2,7 @@ package org.mozilla.fenix.setdefaultbrowser
 
 import android.graphics.Paint
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.FragmentDefaultBrowserGuideDialogBinding
 import org.mozilla.fenix.ext.openSetDefaultBrowserOption
-import timber.log.Timber
+import org.mozilla.fenix.ext.settings
 
 class DefaultBrowserFullScreenGuideDialogFragment : BaseDialogFragment() {
 
@@ -59,6 +60,17 @@ class DefaultBrowserFullScreenGuideDialogFragment : BaseDialogFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        dialog?.setOnKeyListener { dialog, keyCode, event ->
+            keyCode == KeyEvent.KEYCODE_BACK // pass on to be processed as normal
+        }
+        val default = requireActivity().settings().isDefaultBrowserBlocking()
+        if (default) {
+            dismissAllowingStateLoss()
+        }
+    }
+
     private fun setListeners() {
 
         binding.apply {
@@ -67,7 +79,6 @@ class DefaultBrowserFullScreenGuideDialogFragment : BaseDialogFragment() {
                 ReportManager.getInstance().report("click_full_default_browser_dialog_cancel")
             }
             bNext.setOnClickListener {
-                dismissAllowingStateLoss()
                 activity?.openSetDefaultBrowserOption()
                 ReportManager.getInstance().report("click_full_default_browser_dialog_next")
                 ReportManager.getInstance().report(
