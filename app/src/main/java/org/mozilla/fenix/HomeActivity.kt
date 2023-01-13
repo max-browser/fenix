@@ -337,7 +337,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
         maxHomeActivityDelegate.onCreate( supportFragmentManager)
         observeData()
-
         setupAdBlockAddon()
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
@@ -567,6 +566,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         )
 
         super.recreate()
+        maxHomeActivityDelegate.onRecreate()
     }
 
     /**
