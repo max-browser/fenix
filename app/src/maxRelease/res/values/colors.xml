@@ -344,4 +344,11 @@
 
     <!-- App Spinners colors -->
     <color name="spinner_selected_item">#1415141A</color>
+
+    <!-- MAX -->
+    <!-- VPN button -->
+    <color name="max_mobile_vpn_button_color_primary">#FFFFFF</color>
+    <color name="max_mobile_vpn_button_color_private">#000000</color>
+    <color name="max_mobile_vpn_button_connected_background_gradient_start_color">#34778d</color>
+    <color name="max_mobile_vpn_button_connected_background_gradient_end_color">#70cfdf</color>
 </resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <size
+                android:width="40dp"
+                android:height="40dp" />
+            <gradient
+                android:angle="270"
+                android:startColor="?vpnButtonBackgroundGradientStartColor"
+                android:endColor="?vpnButtonBackgroundGradientEndColor"
+                android:type="linear" />
+        </shape>
+    </item>
+    <item
+        android:bottom="12dp"
+        android:left="12dp"
+        android:right="12dp"
+        android:top="12dp">
+        <vector
+            android:width="16dp"
+            android:height="16dp"
+            android:viewportWidth="16"
+            android:viewportHeight="16">
+            <path
+                android:pathData="M16,8a8,8 0,0 1,-12.63 6.524c0.072,-0.632 0.191,-1.248 0.353,-1.847a6.338,6.338 0,0 0,8.954 -8.953,12.587 12.587,0 0,1 1.846,-0.355A7.956,7.956 0,0 1,16 8zM8,0c1.316,0 2.558,0.318 3.652,0.88a15.54,15.54 0,0 0,-2.398 0.907,6.338 6.338,0 0,0 -7.468,7.468 15.662,15.662 0,0 0,-0.906 2.397A8,8 0,0 1,8 0z"
+                android:fillColor="?vpnButtonAccent"
+                android:fillType="nonZero"/>
+            <path
+                android:pathData="M16,0.947v1.662C8.604,2.609 2.609,8.604 2.609,16H0.947C0.947,7.686 7.687,0.947 16,0.947z"
+                android:fillColor="?vpnButtonAccent"
+                android:fillType="nonZero"/>
+        </vector>
+    </item>
+</layer-list>
+

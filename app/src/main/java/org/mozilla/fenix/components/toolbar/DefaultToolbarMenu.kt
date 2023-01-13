@@ -389,6 +389,14 @@ open class DefaultToolbarMenu(
         onItemTapped.invoke(ToolbarMenu.Item.JoinUserGroup)
     }
 
+    private val vpnItem = BrowserMenuImageText(
+        label = context.getString(R.string.max_vpn_function),
+        imageResource = R.drawable.max_ic_vpn,
+        iconTintColorResource = primaryTextColor(),
+    ) {
+        onItemTapped.invoke(ToolbarMenu.Item.VPN)
+    }
+
     @VisibleForTesting(otherwise = PRIVATE)
     val coreMenuItems by lazy {
         val menuItems =
@@ -396,6 +404,7 @@ open class DefaultToolbarMenu(
                 if (shouldUseBottomToolbar) null else menuToolbar,
                 newTabItem,
                 BrowserMenuDivider(),
+                vpnItem,
                 bookmarksItem,
                 historyItem,
                 downloadsItem,
