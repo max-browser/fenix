@@ -1198,6 +1198,10 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 delay(1000)
                 defaultBrowserViewModel.remoteConfigInited.collectLatest {
+                    if (settings().isDefaultBrowserBlocking()) {
+                        Timber.d("User has default browser.")
+                        return@collectLatest
+                    }
                     if (it) {
                         val browserGroup = RemoteConfigManager.getInstance().getConfig<String>(RemoteConfigKey.DEFAULT_BROWSER_DIALOG_SETTING_GROUP)
                         Timber.d("browserGroup:$browserGroup")
