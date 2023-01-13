@@ -23,14 +23,15 @@ import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting.Companion.PROTECTED
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.max.browser.core.MaxBrowserConstant
 import com.max.browser.core.RemoteConfigKey
 import com.max.browser.core.RemoteConfigManager
@@ -44,7 +45,6 @@ import com.max.browser.downloader.worker.ARG_NOTIFICATION_FILE_PATH
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.flow.collectLatest
 import mozilla.appservices.places.BookmarkRoot
 import mozilla.components.browser.state.action.ContentAction
 import mozilla.components.browser.state.action.SearchAction
@@ -203,12 +203,11 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             // This is called after checking splash on onResume(), just called one time.
             // has splash: onResume() -> checkSplash() -> onAfterCheckingSplashCallback()
             // no splash : onResume() -> checkSplash() -> startSplashActivity() -> onResume() ->onAfterCheckingSplashCallback()
-
+            fetchRemoteConfig()
         }
     }
 
     private val downloaderActivityDelegate = DownloaderActivityDelegate()
-    private val defaultBrowserViewModel: DefaultBrowserViewModel by viewModel()
 
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
@@ -345,7 +344,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         )
 
         maxHomeActivityDelegate.onCreate()
-        observeData()
         setupAdBlockAddon()
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
@@ -1202,51 +1200,60 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         }
     }
 
-    private fun observeData() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                delay(1000)
-                defaultBrowserViewModel.remoteConfigInited.collectLatest {
-                    if (settings().isDefaultBrowserBlocking()) {
-                        Timber.d("User has default browser.")
-                        return@collectLatest
+    private fun fetchRemoteConfig() {
+        Firebase.remoteConfig.apply {
+            setConfigSettingsAsync(
+                remoteConfigSettings {
+                minimumFetchIntervalInSeconds = 0
+            })
+            setDefaultsAsync(com.max.browser.core.R.xml.max_remote_config_defaults)
+            fetchAndActivate().addOnCompleteListener { task ->
+                checkDefaultBrowserBehavior(task.isSuccessful)
+            }.addOnFailureListener {
+                checkDefaultBrowserBehavior(false)
+            }
+        }
+    }
+
+    private fun checkDefaultBrowserBehavior(successful:Boolean) {
+        Timber.d("checkDefaultBrowserBehavior successful:$successful")
+        if (settings().isDefaultBrowserBlocking()) {
+            Timber.d("User has default browser.")
+            return
+        }
+        if (successful) {
+            val browserGroup = RemoteConfigManager.getInstance().getConfig<String>(RemoteConfigKey.DEFAULT_BROWSER_DIALOG_SETTING_GROUP)
+            Timber.d("browserGroup:$browserGroup")
+            reportBrowserGroupInfo(browserGroup)
+            when (browserGroup) {
+                GROUP_A -> {
+                    checkToShowDefaultBrowserSheetDialogFragment()
+                }
+                GROUP_B -> {
+                    if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
+                        beginTransaction(supportFragmentManager,
+                            DefaultBrowserFullScreenGuideDialogFragment.newInstance())
                     }
-                    if (it) {
-                        val browserGroup = RemoteConfigManager.getInstance().getConfig<String>(RemoteConfigKey.DEFAULT_BROWSER_DIALOG_SETTING_GROUP)
-                        Timber.d("browserGroup:$browserGroup")
-                        reportBrowserGroupInfo(browserGroup)
-                        when (browserGroup) {
-                            GROUP_A -> {
-                                checkToShowDefaultBrowserSheetDialogFragment()
-                            }
-                            GROUP_B -> {
-                                if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
-                                    beginTransaction(supportFragmentManager,
-                                        DefaultBrowserFullScreenGuideDialogFragment.newInstance())
-                                }
-                            }
-                            GROUP_C -> {
-                                //新安裝或更新後，先彈全屏default browser彈窗
-                                if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
-                                    beginTransaction(supportFragmentManager,
-                                        DefaultBrowserFullScreenGuideDialogFragment.newInstance())
-                                } else {
-                                    checkToShowDefaultBrowserSheetDialogFragment()
-                                }
-                            }
-                        }
+                }
+                GROUP_C -> {
+                    //新安裝或更新後，先彈全屏default browser彈窗
+                    if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
+                        beginTransaction(supportFragmentManager,
+                            DefaultBrowserFullScreenGuideDialogFragment.newInstance())
                     } else {
-                        //如果網路沒開，且也沒拉到雲控，預設展示C組
-                        if (isInternetAvailable().not()) {
-                            reportBrowserGroupInfo(GROUP_C)
-                            if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
-                                beginTransaction(supportFragmentManager,
-                                    DefaultBrowserFullScreenGuideDialogFragment.newInstance())
-                            } else {
-                                checkToShowDefaultBrowserSheetDialogFragment()
-                            }
-                        }
+                        checkToShowDefaultBrowserSheetDialogFragment()
                     }
+                }
+            }
+        } else {
+            //如果網路沒開，且也沒拉到雲控，預設展示C組
+            if (isInternetAvailable().not()) {
+                reportBrowserGroupInfo(GROUP_C)
+                if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
+                    beginTransaction(supportFragmentManager,
+                        DefaultBrowserFullScreenGuideDialogFragment.newInstance())
+                } else {
+                    checkToShowDefaultBrowserSheetDialogFragment()
                 }
             }
         }
