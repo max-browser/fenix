@@ -197,12 +197,14 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
     private val startupPathProvider = StartupPathProvider()
     private lateinit var startupTypeTelemetry: StartupTypeTelemetry
 
-    private val maxHomeActivityDelegate = MaxHomeActivityDelegate(this) {
-        // onAfterCheckingSplashCallback
-        // This is called after checking splash on onResume(), just called one time.
-        // has splash: onResume() -> checkSplash() -> onAfterCheckingSplashCallback()
-        // no splash : onResume() -> checkSplash() -> startSplashActivity() -> onResume() ->onAfterCheckingSplashCallback()
+    private val maxHomeActivityDelegate: MaxHomeActivityDelegate by lazy {
+        MaxHomeActivityDelegate(this, supportFragmentManager) {
+            // onAfterCheckingSplashCallback
+            // This is called after checking splash on onResume(), just called one time.
+            // has splash: onResume() -> checkSplash() -> onAfterCheckingSplashCallback()
+            // no splash : onResume() -> checkSplash() -> startSplashActivity() -> onResume() ->onAfterCheckingSplashCallback()
 
+        }
     }
 
     private val downloaderActivityDelegate = DownloaderActivityDelegate()
@@ -342,7 +344,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             "HomeActivity.onCreate",
         )
 
-        maxHomeActivityDelegate.onCreate( supportFragmentManager)
+        maxHomeActivityDelegate.onCreate()
         observeData()
         setupAdBlockAddon()
 
