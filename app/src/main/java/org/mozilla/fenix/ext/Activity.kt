@@ -14,6 +14,7 @@ import android.view.WindowManager
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import mozilla.components.concept.base.crash.Breadcrumb
 import mozilla.components.concept.engine.EngineSession
 import org.mozilla.fenix.BrowserDirection
@@ -78,9 +79,9 @@ fun Activity.openSetDefaultBrowserOption(
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
             getSystemService(RoleManager::class.java).also {
                 if (it.isRoleAvailable(RoleManager.ROLE_BROWSER) && !it.isRoleHeld(
-                        RoleManager.ROLE_BROWSER,
-                    )
+                        RoleManager.ROLE_BROWSER) && MaxBrowserSettings.getInstance().isFirstTimeToSystemDefaultBrowserChooserDialog
                 ) {
+                    MaxBrowserSettings.getInstance().isFirstTimeToSystemDefaultBrowserChooserDialog = false
                     startActivityForResult(
                         it.createRequestRoleIntent(RoleManager.ROLE_BROWSER),
                         REQUEST_CODE_BROWSER_ROLE,
