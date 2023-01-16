@@ -203,7 +203,12 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             // This is called after checking splash on onResume(), just called one time.
             // has splash: onResume() -> checkSplash() -> onAfterCheckingSplashCallback()
             // no splash : onResume() -> checkSplash() -> startSplashActivity() -> onResume() ->onAfterCheckingSplashCallback()
-            fetchRemoteConfig()
+            // Handle default browser behavior
+            if (MaxBrowserSettings.getInstance().isGetDefaultBrowserGroupCloudConfig.not()) {
+                fetchRemoteConfig()
+            } else {
+                checkDefaultBrowserBehavior(true)
+            }
         }
     }
 
@@ -1222,6 +1227,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             return
         }
         if (successful) {
+            MaxBrowserSettings.getInstance().isGetDefaultBrowserGroupCloudConfig = true
             val browserGroup = RemoteConfigManager.getInstance().getConfig<String>(RemoteConfigKey.DEFAULT_BROWSER_DIALOG_SETTING_GROUP)
             Timber.d("browserGroup:$browserGroup")
             reportBrowserGroupInfo(browserGroup)
