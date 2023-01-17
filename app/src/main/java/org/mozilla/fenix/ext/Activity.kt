@@ -14,12 +14,15 @@ import android.view.WindowManager
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import com.max.browser.core.RemoteConfigKey
+import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import mozilla.components.concept.base.crash.Breadcrumb
 import mozilla.components.concept.engine.EngineSession
 import org.mozilla.fenix.BrowserDirection
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
+import org.mozilla.fenix.setdefaultbrowser.GROUP_A
 import org.mozilla.fenix.settings.SupportUtils
 
 /**
@@ -79,13 +82,25 @@ fun Activity.openSetDefaultBrowserOption(
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
             getSystemService(RoleManager::class.java).also {
                 if (it.isRoleAvailable(RoleManager.ROLE_BROWSER) && !it.isRoleHeld(
-                        RoleManager.ROLE_BROWSER) && MaxBrowserSettings.getInstance().isFirstTimeToSystemDefaultBrowserChooserDialog
+                        RoleManager.ROLE_BROWSER)
                 ) {
-                    MaxBrowserSettings.getInstance().isFirstTimeToSystemDefaultBrowserChooserDialog = false
-                    startActivityForResult(
-                        it.createRequestRoleIntent(RoleManager.ROLE_BROWSER),
-                        REQUEST_CODE_BROWSER_ROLE,
-                    )
+                    val browserGroup = RemoteConfigManager.getInstance().getConfig<String>(RemoteConfigKey.DEFAULT_BROWSER_DIALOG_SETTING_GROUP)
+                    if (browserGroup == GROUP_A) {
+                        startActivityForResult(
+                            it.createRequestRoleIntent(RoleManager.ROLE_BROWSER),
+                            REQUEST_CODE_BROWSER_ROLE,
+                        )
+                    } else {
+                        if (MaxBrowserSettings.getInstance().isFirstTimeToSystemDefaultBrowserChooserDialog) {
+                            MaxBrowserSettings.getInstance().isFirstTimeToSystemDefaultBrowserChooserDialog = false
+                            startActivityForResult(
+                                it.createRequestRoleIntent(RoleManager.ROLE_BROWSER),
+                                REQUEST_CODE_BROWSER_ROLE,
+                            )
+                        } else {
+                            navigateToDefaultBrowserAppsSettings()
+                        }
+                    }
                 } else {
                     navigateToDefaultBrowserAppsSettings()
                 }

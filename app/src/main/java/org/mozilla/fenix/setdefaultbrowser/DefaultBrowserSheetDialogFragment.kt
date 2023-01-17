@@ -71,11 +71,7 @@ fun Activity.checkToShowDefaultBrowserSheetDialogFragment() {
     if (count < maxCount) {
         when (browserGroup) {
             GROUP_A -> {
-                if (MaxBrowserSettings.getInstance().isFirstTimeToSystemDefaultBrowserChooserDialog) {
-                    openSetDefaultBrowserOption()
-                } else {
-                    findNavController(R.id.container).navigate(NavGraphDirections.actionGlobalDefaultBrowserSheetDialogFragment())
-                }
+                openSetDefaultBrowserOption()
             }
             else -> {
                 findNavController(R.id.container).navigate(NavGraphDirections.actionGlobalDefaultBrowserSheetDialogFragment())
