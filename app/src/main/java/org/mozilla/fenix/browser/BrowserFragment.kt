@@ -327,51 +327,53 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
     }
 
     private fun checkToAddAdBlockButton(){
-        lifecycleScope.launch(IO) {
-            try {
-                val addons = requireContext().components.addonManager.getAddons(waitForPendingActions = false)
-                val adBlockAddon = addons.find { it.id == MaxBrowserConstant.ADBLOCK_ADDON_ID }
+        runIfFragmentIsAttached {
+            lifecycleScope.launch(IO) {
+                try {
+                    val addons = requireContext().components.addonManager.getAddons(waitForPendingActions = false)
+                    val adBlockAddon = addons.find { it.id == MaxBrowserConstant.ADBLOCK_ADDON_ID }
 
-                adBlockAddon?.let {
-                    if (WebExtensionSupport.installedExtensions[it.id] != null) {
-                        lifecycleScope.launch(Main) {
-                            val adBlockAction = BrowserToolbar.TwoStateButton(
-                                primaryImage = AppCompatResources.getDrawable(
-                                    requireContext(),
-                                    R.drawable.ic_adblock_on
-                                )!!,
-                                primaryContentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
-                                secondaryImage = AppCompatResources.getDrawable(
-                                    requireContext(),
-                                    R.drawable.ic_adblock_off
-                                )!!,
-                                secondaryContentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
-                                isInPrimaryState = {
-                                    if ((activity as HomeActivity).browsingModeManager.mode.isPrivate) {
-                                        adBlockAddon.isAllowedInPrivateBrowsing()
-                                    } else {
-                                        adBlockAddon.isEnabled()
-                                    }
-                                },
-                                disableInSecondaryState = false,
-                                listener = {
-                                    findNavController().navigateSafe(
-                                        R.id.browserFragment,
-                                        if (it.isInstalled()) {
-                                            BrowserFragmentDirections.actionBrowserFragmentToInstalledAddonDetails(it)
+                    adBlockAddon?.let {
+                        if (WebExtensionSupport.installedExtensions[it.id] != null) {
+                            lifecycleScope.launch(Main) {
+                                val adBlockAction = BrowserToolbar.TwoStateButton(
+                                    primaryImage = AppCompatResources.getDrawable(
+                                        requireContext(),
+                                        R.drawable.ic_adblock_on
+                                    )!!,
+                                    primaryContentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
+                                    secondaryImage = AppCompatResources.getDrawable(
+                                        requireContext(),
+                                        R.drawable.ic_adblock_off
+                                    )!!,
+                                    secondaryContentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
+                                    isInPrimaryState = {
+                                        if ((activity as HomeActivity).browsingModeManager.mode.isPrivate) {
+                                            adBlockAddon.isAllowedInPrivateBrowsing()
                                         } else {
-                                            BrowserFragmentDirections.actionBrowserFragmentToAddonDetails(it)
+                                            adBlockAddon.isEnabled()
                                         }
-                                    )
-                                    ReportManager.getInstance().report("browser_adblock_click")
-                                }
-                            )
-                            browserToolbarView.view.addBrowserAction(adBlockAction)
+                                    },
+                                    disableInSecondaryState = false,
+                                    listener = {
+                                        findNavController().navigateSafe(
+                                            R.id.browserFragment,
+                                            if (it.isInstalled()) {
+                                                BrowserFragmentDirections.actionBrowserFragmentToInstalledAddonDetails(it)
+                                            } else {
+                                                BrowserFragmentDirections.actionBrowserFragmentToAddonDetails(it)
+                                            }
+                                        )
+                                        ReportManager.getInstance().report("browser_adblock_click")
+                                    }
+                                )
+                                browserToolbarView.view.addBrowserAction(adBlockAction)
+                            }
                         }
                     }
+                } catch (e: AddonManagerException) {
+                    Logger.debug("checkToAddAdBlockButton setup error: $e")
                 }
-            } catch (e: AddonManagerException) {
-                Logger.debug("checkToAddAdBlockButton setup error: $e")
             }
         }
     }
