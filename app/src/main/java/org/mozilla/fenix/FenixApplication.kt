@@ -147,6 +147,41 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         } else {
             Timber.plant(ReleaseTree())
         }
+        reportUserProperties(settings())
+    }
+
+    private fun reportUserProperties(settings: Settings) {
+        val themeMode = when (AppCompatDelegate.getDefaultNightMode()) {
+            AppCompatDelegate.MODE_NIGHT_NO -> "light"
+            AppCompatDelegate.MODE_NIGHT_YES -> "dark"
+            else -> "follow_device"
+        }
+
+        val toolbarPosition = when (settings.toolbarPosition) {
+            ToolbarPosition.TOP -> "top"
+            ToolbarPosition.BOTTOM -> "bottom"
+        }
+
+        val engine =
+            components.core.store.state.search.selectedOrDefaultSearchEngine?.name ?: ""
+
+        val hasAccessDocumentsPermission = if (SDK_INT >= Build.VERSION_CODES.Q) {
+            val key = getPreferenceKey(R.string.pref_key_directory_access_permission_uri)
+            val uriString =     settings.preferences.getString(key, "") ?: ""
+            uriString != ""
+        } else {
+            isPermissionGranted(MyDocumentsFeature.PERMISSIONS_BEFORE_API_28.asIterable())
+        }
+
+        maxBrowserApplication.setUserProperties(
+            this,
+            themeMode,
+            toolbarPosition,
+            settings.enabledAddonsCount,
+            engine,
+            BrowsersCache.all(applicationContext).isDefaultBrowser,
+            hasAccessDocumentsPermission
+        )
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
@@ -771,38 +806,6 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
                 }
             }
         }
-
-        val themeMode = when (AppCompatDelegate.getDefaultNightMode()) {
-            AppCompatDelegate.MODE_NIGHT_NO -> "light"
-            AppCompatDelegate.MODE_NIGHT_YES -> "dark"
-            else -> "follow_device"
-        }
-
-        val toolbarPosition = when (settings.toolbarPosition) {
-            ToolbarPosition.TOP -> "top"
-            ToolbarPosition.BOTTOM -> "bottom"
-        }
-
-        val engine =
-            components.core.store.state.search.selectedOrDefaultSearchEngine?.name ?: ""
-
-        val hasAccessDocumentsPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val key = getPreferenceKey(R.string.pref_key_directory_access_permission_uri)
-            val uriString =     settings.preferences.getString(key, "") ?: ""
-            uriString != ""
-        } else {
-            isPermissionGranted(MyDocumentsFeature.PERMISSIONS_BEFORE_API_28.asIterable())
-        }
-
-        maxBrowserApplication.setUserProperties(
-            this,
-            themeMode,
-            toolbarPosition,
-            settings.enabledAddonsCount,
-            engine,
-            browsersCache.all(applicationContext).isDefaultBrowser,
-            hasAccessDocumentsPermission
-        )
     }
 
     @Suppress("ComplexMethod")
