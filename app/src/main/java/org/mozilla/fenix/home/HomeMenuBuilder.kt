@@ -238,7 +238,7 @@ class HomeMenuBuilder(
                 ReportManager.getInstance().report(
                     "vpn_enter_click",
                     Bundle().apply {
-                        putString("page", "home_tool")
+                        putString("page", "home_menu")
                     },
                 )
             }

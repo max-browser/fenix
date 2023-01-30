@@ -678,7 +678,7 @@ class HomeFragment : Fragment() {
                     ReportManager.getInstance().report(
                         "vpn_enter_click",
                         Bundle().apply {
-                            putString("page", "home_menu")
+                            putString("page", "home_tool")
                         },
                     )
                 }
