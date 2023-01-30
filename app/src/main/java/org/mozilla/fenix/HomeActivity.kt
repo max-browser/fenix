@@ -37,6 +37,7 @@ import com.max.browser.core.RemoteConfigKey
 import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
 import com.max.browser.core.data.local.sp.MaxBrowserSettings
+import com.max.browser.core.delegate.application.MaxBrowserApplicationDelegate
 import com.max.browser.core.delegate.home.activity.MaxHomeActivityDelegate
 import com.max.browser.core.ext.beginTransaction
 import com.max.browser.core.ext.isInternetAvailable
@@ -1222,6 +1223,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
     private fun checkDefaultBrowserBehavior(successful:Boolean) {
         Timber.d("checkDefaultBrowserBehavior successful:$successful")
+        MaxBrowserApplicationDelegate.getInstance()?.setUserProperty(
+            application, "default_browser", settings().isDefaultBrowserBlocking().toString()
+        )
         if (settings().isDefaultBrowserBlocking()) {
             Timber.d("User has default browser.")
             return
