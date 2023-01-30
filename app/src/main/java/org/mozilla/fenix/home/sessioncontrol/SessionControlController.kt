@@ -420,10 +420,10 @@ class DefaultSessionControlController(
         )
 
         val topSiteUrlType = when (topSite.url) {
-            SupportUtils.FACEBOOK_URL -> "ins"
-            SupportUtils.INSTAGRAM_URL -> "youtube"
-            SupportUtils.TWITTER_URL -> "facebook"
-            SupportUtils.YOUTUBE_URL -> "twitter"
+            SupportUtils.FACEBOOK_URL -> "facebook"
+            SupportUtils.INSTAGRAM_URL -> "ins"
+            SupportUtils.TWITTER_URL -> "twitter"
+            SupportUtils.YOUTUBE_URL -> "youtube"
             else -> ""
         }
         if (topSiteUrlType != "" && topSite is TopSite.Default) {
