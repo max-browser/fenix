@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import mozilla.components.feature.intent.ext.sanitize
 import mozilla.components.feature.intent.processing.IntentProcessor
@@ -26,7 +27,6 @@ import org.mozilla.fenix.perf.MarkersActivityLifecycleCallbacks
 import org.mozilla.fenix.perf.StartupTimeline
 import org.mozilla.fenix.dynamiclink.DynamicLinkIntentProcessor
 import org.mozilla.fenix.shortcut.NewTabShortcutIntentProcessor
-import org.mozilla.fenix.shortcut.QrcodeShortcutIntentProcessor
 
 /**
  * Processes incoming intents and sends them to the corresponding activity.
@@ -115,8 +115,7 @@ class IntentReceiverActivity : Activity() {
                 components.intentProcessors.externalDeepLinkIntentProcessor +
                 components.intentProcessors.webNotificationsIntentProcessor +
                 modeDependentProcessors +
-                NewTabShortcutIntentProcessor() +
-                QrcodeShortcutIntentProcessor()
+                NewTabShortcutIntentProcessor()
 
     }
 
