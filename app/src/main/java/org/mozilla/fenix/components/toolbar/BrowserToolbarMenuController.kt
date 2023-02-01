@@ -458,6 +458,7 @@ class DefaultBrowserToolbarMenuController(
                         putString("page", "browser_menu")
                     },
                 )
+                ReportManager.getInstance().reportAppsFlyer("af_vpn_enter_click")
             }
         }
     }

@@ -241,6 +241,7 @@ class HomeMenuBuilder(
                         putString("page", "home_menu")
                     },
                 )
+                ReportManager.getInstance().reportAppsFlyer("af_vpn_enter_click")
             }
         }
     }

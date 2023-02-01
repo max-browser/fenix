@@ -679,6 +679,7 @@ class HomeFragment : Fragment() {
                             putString("page", "home_tool")
                         },
                     )
+                    ReportManager.getInstance().reportAppsFlyer("af_vpn_enter_click")
                 }
             }
         } else {
