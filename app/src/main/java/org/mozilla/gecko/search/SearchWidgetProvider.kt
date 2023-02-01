@@ -21,6 +21,7 @@ import androidx.annotation.Dimension.Companion.DP
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
+import com.max.browser.core.MaxBrowserConstant
 import com.max.browser.core.ReportManager
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.IntentReceiverActivity
@@ -98,6 +99,7 @@ class SearchWidgetProvider : AppWidgetProvider() {
                     PendingIntent.FLAG_UPDATE_CURRENT
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 intent.putExtra(HomeActivity.OPEN_TO_SEARCH, StartSearchIntentProcessor.SEARCH_WIDGET)
+                intent.putExtra(MaxBrowserConstant.FROM_APP_WIDGET_LAUNCHER, true)
                 PendingIntent.getActivity(
                     context,
                     REQUEST_CODE_NEW_TAB,

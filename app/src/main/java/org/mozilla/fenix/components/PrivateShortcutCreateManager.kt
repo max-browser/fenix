@@ -10,6 +10,7 @@ import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import com.max.browser.core.MaxBrowserConstant
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.home.intent.StartSearchIntentProcessor
@@ -48,6 +49,7 @@ object PrivateShortcutCreateManager {
                         HomeActivity.OPEN_TO_SEARCH,
                         StartSearchIntentProcessor.PRIVATE_BROWSING_PINNED_SHORTCUT,
                     )
+                    putExtra(MaxBrowserConstant.FROM_SHORTCUT_LAUNCHER, true)
                 },
             )
             .build()
