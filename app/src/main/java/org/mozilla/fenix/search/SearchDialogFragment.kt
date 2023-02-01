@@ -43,6 +43,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.max.browser.core.ReportManager
+import com.max.browser.core.feature.qrcode.QrcodeActivity
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import mozilla.components.browser.state.search.SearchEngine
@@ -358,12 +360,10 @@ class SearchDialogFragment : AppCompatDialogFragment(), UserInteractionHandler {
             view = view,
         )
 
-//        binding.qrScanButton.isVisible = when {
-//            showUnifiedSearchFeature -> false
-//            requireContext().hasCamera() -> true
-//            else -> false
-//        }
-        binding.qrScanButton.isVisible = false
+        binding.qrScanButton.isVisible = when {
+            requireContext().hasCamera() -> true
+            else -> false
+        }
 
         binding.qrScanButton.increaseTapArea(TAP_INCREASE_DPS)
 
@@ -371,20 +371,9 @@ class SearchDialogFragment : AppCompatDialogFragment(), UserInteractionHandler {
             if (!requireContext().hasCamera()) { return@setOnClickListener }
             view.hideKeyboard()
             toolbarView.view.clearFocus()
-
-            if (requireContext().settings().shouldShowCameraPermissionPrompt) {
-                qrFeature.get()?.scan(binding.searchWrapper.id)
-            } else {
-                if (requireContext().isPermissionGranted(Manifest.permission.CAMERA)) {
-                    qrFeature.get()?.scan(binding.searchWrapper.id)
-                } else {
-                    interactor.onCameraPermissionsNeeded()
-                    resetFocus()
-                    view.hideKeyboard()
-                    toolbarView.view.requestFocus()
-                }
-            }
-            requireContext().settings().setCameraPermissionNeededState = false
+            resetFocus()
+            ReportManager.getInstance().report("qrcode_keybord_click")
+            startActivity(Intent(requireContext(), QrcodeActivity::class.java))
         }
 
         binding.fillLinkFromClipboard.setOnClickListener {
