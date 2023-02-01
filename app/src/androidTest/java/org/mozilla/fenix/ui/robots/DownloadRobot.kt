@@ -12,7 +12,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -82,6 +81,13 @@ class DownloadRobot {
             return Transition()
         }
 
+        fun closeCompletedDownloadPrompt(interact: BrowserRobot.() -> Unit): BrowserRobot.Transition {
+            closeCompletedDownloadButton().click()
+
+            BrowserRobot().interact()
+            return BrowserRobot.Transition()
+        }
+
         fun closePrompt(interact: BrowserRobot.() -> Unit): BrowserRobot.Transition {
             closePromptButton().click()
 
@@ -90,6 +96,7 @@ class DownloadRobot {
         }
 
         fun clickOpen(type: String, interact: BrowserRobot.() -> Unit): BrowserRobot.Transition {
+            openDownloadButton().waitForExists(waitingTime)
             openDownloadButton().click()
 
             // verify open intent is matched with associated data type
@@ -182,17 +189,18 @@ private fun assertDownloadNotificationPopup() {
     )
 }
 
+private fun closeCompletedDownloadButton() =
+    onView(withId(R.id.download_dialog_close_button))
+
 private fun closePromptButton() =
-    onView(withContentDescription("Close"))
+    onView(withId(R.id.close_button))
 
 private fun downloadButton() =
-    onView(withText("Download"))
-        .inRoot(isDialog())
+    onView(withId(R.id.download_button))
         .check(matches(isDisplayed()))
 
 private fun openDownloadButton() =
-    onView(withId(R.id.download_dialog_action_button))
-        .check(matches(isDisplayed()))
+    mDevice.findObject(UiSelector().resourceId("$packageName:id/download_dialog_action_button"))
 
 private fun downloadedFile(fileName: String) = onView(withText(fileName))
 

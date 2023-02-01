@@ -113,6 +113,7 @@ import org.mozilla.fenix.databinding.FragmentHomeBinding
 import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.gleanplumb.DefaultMessageController
 import org.mozilla.fenix.gleanplumb.MessagingFeature
+import org.mozilla.fenix.gleanplumb.NimbusMessagingController
 import org.mozilla.fenix.home.mozonline.showPrivacyPopWindow
 import org.mozilla.fenix.home.mydocuments.MyDocumentsFeature
 import org.mozilla.fenix.home.mydocuments.MyDocumentsUseCase
@@ -403,11 +404,8 @@ class HomeFragment : Fragment() {
                 }
 
                 UnifiedSearch.searchMenuTapped.record(NoExtras())
-                searchSelectorMenu.menuController.show(
-                    anchor = it,
-                    orientation = orientation,
-                    forceOrientation = true,
-                )
+
+                searchSelectorMenu.menuController.show(anchor = it, orientation = orientation)
             }
         }
 
@@ -418,7 +416,7 @@ class HomeFragment : Fragment() {
                 engine = components.core.engine,
                 messageController = DefaultMessageController(
                     appStore = components.appStore,
-                    messagingStorage = components.analytics.messagingStorage,
+                    messagingController = NimbusMessagingController(components.analytics.messagingStorage),
                     homeActivity = activity,
                 ),
                 store = store,

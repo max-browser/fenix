@@ -33,7 +33,7 @@ class DownloadFileTypesTest(fileName: String) {
         @JvmStatic
         @Parameterized.Parameters
         fun downloadList() = listOf(
-            "washington.pdf",
+            "smallZip.zip",
             "MyDocument.docx",
             "audioSample.mp3",
             "textfile.txt",
@@ -53,7 +53,7 @@ class DownloadFileTypesTest(fileName: String) {
             verifyDownloadPrompt(downloadFile)
         }.clickDownload {
             verifyDownloadNotificationPopup()
-        }.closePrompt {
+        }.closeCompletedDownloadPrompt {
         }.openThreeDotMenu {
         }.openDownloadsManager {
             waitForDownloadsListToExist()

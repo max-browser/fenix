@@ -27,6 +27,7 @@ import kotlinx.coroutines.*
 import mozilla.appservices.Megazord
 import mozilla.components.browser.state.action.SystemAction
 import mozilla.components.browser.state.selector.selectedTab
+import mozilla.components.browser.state.state.searchEngines
 import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.browser.storage.sync.GlobalPlacesDependencyProvider
@@ -60,6 +61,7 @@ import mozilla.components.support.rustlog.RustLog
 import mozilla.components.support.utils.logElapsedTime
 import mozilla.components.support.webextensions.WebExtensionSupport
 import org.mozilla.fenix.GleanMetrics.*
+import org.mozilla.fenix.GleanMetrics.Events.marketingNotificationAllowed
 import org.mozilla.fenix.components.Components
 import org.mozilla.fenix.components.Core
 import org.mozilla.fenix.components.appstate.AppAction
@@ -72,7 +74,20 @@ import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.home.mydocuments.MyDocumentsFeature
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.perf.*
-import org.mozilla.fenix.onboarding.ensureMarketingChannelExists
+import org.mozilla.fenix.ext.areNotificationsEnabledSafe
+import org.mozilla.fenix.ext.containsQueryParameters
+import org.mozilla.fenix.ext.getCustomGleanServerUrlIfAvailable
+import org.mozilla.fenix.ext.isCustomEngine
+import org.mozilla.fenix.ext.isKnownSearchDomain
+import org.mozilla.fenix.ext.isNotificationChannelEnabled
+import org.mozilla.fenix.ext.setCustomEndpointIfAvailable
+import org.mozilla.fenix.ext.settings
+import org.mozilla.fenix.onboarding.MARKETING_CHANNEL_ID
+import org.mozilla.fenix.perf.MarkersActivityLifecycleCallbacks
+import org.mozilla.fenix.perf.ProfilerMarkerFactProcessor
+import org.mozilla.fenix.perf.StartupTimeline
+import org.mozilla.fenix.perf.StorageStatsMetrics
+import org.mozilla.fenix.perf.runBlockingIncrement
 import org.mozilla.fenix.push.PushFxaIntegration
 import org.mozilla.fenix.push.WebPushEngineIntegration
 import org.mozilla.fenix.session.PerformanceActivityLifecycleCallbacks
@@ -279,6 +294,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         setupLeakCanary()
         startMetricsIfEnabled()
         setupPush()
+        migrateTopicSpecificSearchEngines()
 
         visibilityLifecycleCallback = VisibilityLifecycleCallback(getSystemService())
         registerActivityLifecycleCallbacks(visibilityLifecycleCallback)
@@ -406,16 +422,6 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
             }
         }
 
-        // For Android 13 or above, prompt the user for notification permission at the start.
-        // Regardless if the user accepts or denies the permission prompt, the prompt will occur only once.
-        fun queueNotificationPermissionRequest() {
-            if (SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                queue.runIfReadyOrQueue {
-                    ensureMarketingChannelExists(this)
-                }
-            }
-        }
-
         initQueue()
 
         // We init these items in the visual completeness queue to avoid them initing in the critical
@@ -425,7 +431,6 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         queueReviewPrompt()
         queueRestoreLocale()
         queueStorageMaintenance()
-        queueNotificationPermissionRequest()
     }
 
     private fun startMetricsIfEnabled() {
@@ -593,6 +598,25 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
                         AppCompatDelegate.MODE_NIGHT_NO,
                     )
                     settings.shouldUseLightTheme = true
+                }
+            }
+        }
+    }
+
+    /**
+     * If unified search is enabled try to migrate the topic specific engine to the
+     * first general or custom search engine available.
+     */
+    @Suppress("NestedBlockDepth")
+    private fun migrateTopicSpecificSearchEngines() {
+        if (settings().showUnifiedSearchFeature) {
+            components.core.store.state.search.selectedOrDefaultSearchEngine.let { currentSearchEngine ->
+                if (currentSearchEngine?.isGeneral == false) {
+                    components.core.store.state.search.searchEngines.firstOrNull() { nextSearchEngine ->
+                        nextSearchEngine.isGeneral
+                    }?.let {
+                        components.useCases.searchUseCases.selectSearchEngine(it)
+                    }
                 }
             }
         }
@@ -772,14 +796,11 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
 
             defaultWallpaper.set(isDefaultTheCurrentWallpaper)
 
-            @Suppress("TooGenericExceptionCaught")
-            try {
-                notificationsAllowed.set(
-                    NotificationManagerCompat.from(applicationContext).areNotificationsEnabled(),
-                )
-            } catch (e: Exception) {
-                Logger.warn("Failed to check if notifications are enabled", e)
-            }
+            val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
+            notificationsAllowed.set(notificationManagerCompat.areNotificationsEnabledSafe())
+            marketingNotificationAllowed.set(
+                notificationManagerCompat.isNotificationChannelEnabled(MARKETING_CHANNEL_ID),
+            )
         }
 
         with(AndroidAutofill) {

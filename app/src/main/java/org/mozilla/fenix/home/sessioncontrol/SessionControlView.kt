@@ -23,8 +23,11 @@ import org.mozilla.fenix.home.Mode
 import org.mozilla.fenix.home.OnboardingState
 import org.mozilla.fenix.home.recentbookmarks.RecentBookmark
 import org.mozilla.fenix.home.recentvisits.RecentlyVisitedItem
+import org.mozilla.fenix.nimbus.MessageSurfaceId
+import org.mozilla.fenix.nimbus.OnboardingPanel
 import org.mozilla.fenix.onboarding.HomeCFRPresenter
 import org.mozilla.fenix.utils.Settings
+import org.mozilla.fenix.nimbus.Onboarding as OnboardingConfig
 
 // This method got a little complex with the addition of the tab tray feature flag
 // When we remove the tabs from the home screen this will get much simpler again.
@@ -129,35 +132,27 @@ private fun showCollections(
 
 private fun privateModeAdapterItems() = listOf(AdapterItem.PrivateBrowsingDescription)
 
-private fun onboardingAdapterItems(onboardingState: OnboardingState): List<AdapterItem> {
+private fun onboardingAdapterItems(
+    onboardingState: OnboardingState,
+    onboardingConfig: OnboardingConfig,
+): List<AdapterItem> {
     val items: MutableList<AdapterItem> = mutableListOf(AdapterItem.OnboardingHeader)
 
-    items.addAll(
-        listOf(
-            AdapterItem.OnboardingThemePicker,
-            AdapterItem.OnboardingToolbarPositionPicker,
-        ),
-    )
-    // Customize FxA items based on where we are with the account state:
-//    items.addAll(
-//        when (onboardingState) {
-//            OnboardingState.SignedOutNoAutoSignIn -> {
-//                listOf(
-//                    AdapterItem.OnboardingManualSignIn,
-//                )
+    onboardingConfig.order.forEach {
+        when (it) {
+            OnboardingPanel.THEMES -> items.add(AdapterItem.OnboardingThemePicker)
+            OnboardingPanel.TOOLBAR_PLACEMENT -> items.add(AdapterItem.OnboardingToolbarPositionPicker)
+            // Customize FxA items based on where we are with the account state:
+//            OnboardingPanel.SYNC -> if (onboardingState == OnboardingState.SignedOutNoAutoSignIn) {
+//                 items.add(AdapterItem.OnboardingManualSignIn)
 //            }
-//            OnboardingState.SignedIn -> listOf()
-//        },
-//    )
-
-    when (onboardingState) {
-        OnboardingState.SignedOutNoAutoSignIn -> {}
-        OnboardingState.SignedIn -> {}
+//            OnboardingPanel.TCP -> items.add(AdapterItem.OnboardingTrackingProtection)
+//            OnboardingPanel.PRIVACY_NOTICE -> items.add(AdapterItem.OnboardingPrivacyNotice)
+            else -> {}
+        }
     }
     items.addAll(
         listOf(
-//            AdapterItem.OnboardingTrackingProtection,
-//            AdapterItem.OnboardingPrivacyNotice,
             AdapterItem.OnboardingFinish,
             AdapterItem.BottomSpacer,
         ),
@@ -174,7 +169,7 @@ private fun AppState.toAdapterList(settings: Settings): List<AdapterItem> = when
         expandedCollections,
         recentBookmarks,
         showCollectionPlaceholder,
-        messaging.messageToShow,
+        messaging.messageToShow[MessageSurfaceId.HOMESCREEN],
         shouldShowRecentTabs(settings),
         shouldShowRecentSyncedTabs(settings),
         recentHistory,
@@ -182,7 +177,7 @@ private fun AppState.toAdapterList(settings: Settings): List<AdapterItem> = when
         firstFrameDrawn,
     )
     is Mode.Private -> privateModeAdapterItems()
-    is Mode.Onboarding -> onboardingAdapterItems(mode.state)
+    is Mode.Onboarding -> onboardingAdapterItems(mode.state, mode.config)
 }
 
 private fun collectionTabItems(collection: TabCollection) =

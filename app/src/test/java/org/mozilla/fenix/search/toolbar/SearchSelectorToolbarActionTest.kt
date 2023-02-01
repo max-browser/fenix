@@ -34,6 +34,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.fenix.GleanMetrics.UnifiedSearch
 import org.mozilla.fenix.R
+import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.components.metrics.MetricsUtils
 import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.helpers.FenixRobolectricTestRunner
@@ -87,7 +88,7 @@ class SearchSelectorToolbarActionTest {
 
         assertNotNull(UnifiedSearch.searchMenuTapped.testGetValue())
         verify {
-            menu.menuController.show(view, Orientation.DOWN, true)
+            menu.menuController.show(view, Orientation.DOWN)
         }
 
         every { settings.shouldUseBottomToolbar } returns true
@@ -95,7 +96,7 @@ class SearchSelectorToolbarActionTest {
 
         assertNotNull(UnifiedSearch.searchMenuTapped.testGetValue())
         verify {
-            menu.menuController.show(view, Orientation.UP, true)
+            menu.menuController.show(view, Orientation.UP)
         }
     }
 
@@ -111,6 +112,7 @@ class SearchSelectorToolbarActionTest {
             store.dispatch(
                 SearchDefaultEngineSelected(
                     engine = testSearchEngine,
+                    browsingMode = BrowsingMode.Normal,
                     settings = mockk(relaxed = true),
                 ),
             )
@@ -141,6 +143,7 @@ class SearchSelectorToolbarActionTest {
             store.dispatch(
                 SearchDefaultEngineSelected(
                     engine = testSearchEngine,
+                    browsingMode = BrowsingMode.Private,
                     settings = mockk(relaxed = true),
                 ),
             )
@@ -169,6 +172,7 @@ class SearchSelectorToolbarActionTest {
             store.dispatch(
                 SearchDefaultEngineSelected(
                     engine = testSearchEngine,
+                    browsingMode = BrowsingMode.Normal,
                     settings = mockk(relaxed = true),
                 ),
             )
@@ -185,6 +189,7 @@ class SearchSelectorToolbarActionTest {
             store.dispatch(
                 SearchDefaultEngineSelected(
                     engine = testSearchEngine,
+                    browsingMode = BrowsingMode.Private,
                     settings = mockk(relaxed = true),
                 ),
             )
@@ -253,16 +258,21 @@ private val testSearchFragmentState = SearchFragmentState(
     searchTerms = "search terms",
     searchEngineSource = SearchEngineSource.None,
     defaultEngine = null,
+    showSearchTermHistory = true,
     showSearchSuggestions = false,
     showSearchShortcutsSetting = false,
     showSearchSuggestionsHint = false,
     showSearchShortcuts = false,
     areShortcutsAvailable = false,
     showClipboardSuggestions = false,
-    showHistorySuggestions = false,
-    showBookmarkSuggestions = false,
-    showSyncedTabsSuggestions = false,
-    showSessionSuggestions = true,
+    showHistorySuggestionsForCurrentEngine = true,
+    showAllHistorySuggestions = false,
+    showBookmarksSuggestionsForCurrentEngine = false,
+    showAllBookmarkSuggestions = false,
+    showSyncedTabsSuggestionsForCurrentEngine = false,
+    showAllSyncedTabsSuggestions = false,
+    showSessionSuggestionsForCurrentEngine = false,
+    showAllSessionSuggestions = true,
     tabId = "tabId",
     pastedText = "",
     searchAccessPoint = MetricsUtils.Source.SHORTCUT,

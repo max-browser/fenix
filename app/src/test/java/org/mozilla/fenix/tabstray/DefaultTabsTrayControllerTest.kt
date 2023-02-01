@@ -10,24 +10,32 @@ import androidx.navigation.NavOptions
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkStatic
 import io.mockk.verify
 import io.mockk.verifyOrder
 import mozilla.components.browser.state.selector.findTab
 import mozilla.components.browser.state.selector.getNormalOrPrivateTabs
+import mozilla.components.browser.state.state.BrowserState
+import mozilla.components.browser.state.state.ContentState
 import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.state.state.content.DownloadState
 import mozilla.components.browser.state.state.createTab
 import mozilla.components.browser.state.store.BrowserStore
+import mozilla.components.browser.storage.sync.Tab
+import mozilla.components.browser.storage.sync.TabEntry
 import mozilla.components.concept.base.profiler.Profiler
 import mozilla.components.feature.tabs.TabsUseCases
 import mozilla.components.service.glean.testing.GleanTestRule
+import mozilla.components.support.test.libstate.ext.waitUntilIdle
 import mozilla.components.support.test.robolectric.testContext
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -35,11 +43,19 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mozilla.fenix.BrowserDirection
+import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.TabsTray
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
+import org.mozilla.fenix.components.AppStore
+import org.mozilla.fenix.ext.maxActiveTime
+import org.mozilla.fenix.ext.potentialInactiveTabs
 import org.mozilla.fenix.helpers.FenixRobolectricTestRunner
 import org.mozilla.fenix.home.HomeFragment
+import org.mozilla.fenix.utils.Settings
+import java.util.concurrent.TimeUnit
 
 @RunWith(FenixRobolectricTestRunner::class) // for gleanTestRule
 class DefaultTabsTrayControllerTest {
@@ -63,6 +79,12 @@ class DefaultTabsTrayControllerTest {
 
     @MockK(relaxed = true)
     private lateinit var tabsUseCases: TabsUseCases
+
+    @MockK(relaxed = true)
+    private lateinit var activity: HomeActivity
+
+    private val appStore: AppStore = mockk(relaxed = true)
+    private val settings: Settings = mockk(relaxed = true)
 
     @get:Rule
     val gleanTestRule = GleanTestRule(testContext)
@@ -475,6 +497,220 @@ class DefaultTabsTrayControllerTest {
         assertTrue(navigateToHomeAndDeleteSessionInvoked)
     }
 
+    @Test
+    fun `WHEN a synced tab is clicked THEN the metrics are reported and the tab is opened`() {
+        val tab = mockk<Tab>()
+        val entry = mockk<TabEntry>()
+        assertNull(Events.syncedTabOpened.testGetValue())
+
+        every { tab.active() }.answers { entry }
+        every { entry.url }.answers { "https://mozilla.org" }
+
+        var dismissTabTrayInvoked = false
+        createController(
+            dismissTray = {
+                dismissTabTrayInvoked = true
+            },
+        ).handleSyncedTabClicked(tab)
+
+        assertTrue(dismissTabTrayInvoked)
+        assertNotNull(Events.syncedTabOpened.testGetValue())
+
+        verify {
+            activity.openToBrowserAndLoad(
+                searchTermOrURL = "https://mozilla.org",
+                newTab = true,
+                from = BrowserDirection.FromTabsTray,
+            )
+        }
+    }
+
+    @Test
+    fun `GIVEN the user selects only the current tab WHEN the user forces tab to be inactive THEN tab does not become inactive`() {
+        val currentTab = TabSessionState(content = mockk(), id = "currentTab", createdAt = 11)
+        val secondTab = TabSessionState(content = mockk(), id = "secondTab", createdAt = 22)
+        browserStore = BrowserStore(
+            initialState = BrowserState(
+                tabs = listOf(currentTab, secondTab),
+                selectedTabId = currentTab.id,
+            ),
+        )
+
+        createController().forceTabsAsInactive(listOf(currentTab), 5)
+        browserStore.waitUntilIdle()
+
+        val updatedCurrentTab = browserStore.state.tabs.first { it.id == currentTab.id }
+        assertEquals(updatedCurrentTab, currentTab)
+        val updatedSecondTab = browserStore.state.tabs.first { it.id == secondTab.id }
+        assertEquals(updatedSecondTab, secondTab)
+    }
+
+    @Test
+    fun `GIVEN the user selects multiple tabs including the current tab WHEN the user forces them all to be inactive THEN all but current tab become inactive`() {
+        val currentTab = TabSessionState(content = mockk(), id = "currentTab", createdAt = 11)
+        val secondTab = TabSessionState(content = mockk(), id = "secondTab", createdAt = 22)
+        browserStore = BrowserStore(
+            initialState = BrowserState(
+                tabs = listOf(currentTab, secondTab),
+                selectedTabId = currentTab.id,
+            ),
+        )
+
+        createController().forceTabsAsInactive(listOf(currentTab, secondTab), 5)
+        browserStore.waitUntilIdle()
+
+        val updatedCurrentTab = browserStore.state.tabs.first { it.id == currentTab.id }
+        assertEquals(updatedCurrentTab, currentTab)
+        val updatedSecondTab = browserStore.state.tabs.first { it.id == secondTab.id }
+        assertNotEquals(updatedSecondTab, secondTab)
+        val expectedTime = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(5)
+        // Account for System.currentTimeMillis() giving different values in test vs the system under test
+        // and also for the waitUntilIdle to block for even hundreds of milliseconds.
+        assertTrue(updatedSecondTab.lastAccess in (expectedTime - 5000)..expectedTime)
+        assertTrue(updatedSecondTab.createdAt in (expectedTime - 5000)..expectedTime)
+    }
+
+    @Test
+    fun `GIVEN no value is provided for inactive days WHEN forcing tabs as inactive THEN set their last active time 15 days ago`() {
+        val controller = spyk(createController())
+        every { browserStore.state.selectedTabId } returns "test"
+
+        controller.forceTabsAsInactive(emptyList())
+
+        verify {
+            controller.forceTabsAsInactive(emptyList(), 15L)
+        }
+    }
+
+    fun `WHEN the inactive tabs section is expanded THEN the expanded telemetry event should be reported`() {
+        val controller = createController()
+
+        assertNull(TabsTray.inactiveTabsExpanded.testGetValue())
+        assertNull(TabsTray.inactiveTabsCollapsed.testGetValue())
+
+        controller.handleInactiveTabsHeaderClicked(expanded = true)
+
+        assertNotNull(TabsTray.inactiveTabsExpanded.testGetValue())
+        assertNull(TabsTray.inactiveTabsCollapsed.testGetValue())
+    }
+
+    @Test
+    fun `WHEN the inactive tabs section is collapsed THEN the collapsed telemetry event should be reported`() {
+        val controller = createController()
+
+        assertNull(TabsTray.inactiveTabsExpanded.testGetValue())
+        assertNull(TabsTray.inactiveTabsCollapsed.testGetValue())
+
+        controller.handleInactiveTabsHeaderClicked(expanded = false)
+
+        assertNull(TabsTray.inactiveTabsExpanded.testGetValue())
+        assertNotNull(TabsTray.inactiveTabsCollapsed.testGetValue())
+    }
+
+    @Test
+    fun `WHEN the inactive tabs auto-close feature prompt is dismissed THEN update settings and report the telemetry event`() {
+        val controller = spyk(createController())
+
+        assertNull(TabsTray.autoCloseDimissed.testGetValue())
+
+        controller.handleInactiveTabsAutoCloseDialogDismiss()
+
+        assertNotNull(TabsTray.autoCloseDimissed.testGetValue())
+        verify { settings.hasInactiveTabsAutoCloseDialogBeenDismissed = true }
+    }
+
+    @Test
+    fun `WHEN the inactive tabs auto-close feature prompt is accepted THEN update settings and report the telemetry event`() {
+        val controller = spyk(createController())
+
+        assertNull(TabsTray.autoCloseTurnOnClicked.testGetValue())
+
+        controller.handleEnableInactiveTabsAutoCloseClicked()
+
+        assertNotNull(TabsTray.autoCloseTurnOnClicked.testGetValue())
+
+        verify { settings.closeTabsAfterOneMonth = true }
+        verify { settings.closeTabsAfterOneWeek = false }
+        verify { settings.closeTabsAfterOneDay = false }
+        verify { settings.manuallyCloseTabs = false }
+        verify { settings.hasInactiveTabsAutoCloseDialogBeenDismissed = true }
+    }
+
+    @Test
+    fun `WHEN an inactive tab is selected THEN report the telemetry event and open the tab`() {
+        val controller = spyk(createController())
+        val tab = TabSessionState(
+            id = "tabId",
+            content = ContentState(
+                url = "www.mozilla.com",
+            ),
+        )
+
+        every { controller.handleTabSelected(any(), any()) } just runs
+
+        assertNull(TabsTray.openInactiveTab.testGetValue())
+
+        controller.handleInactiveTabClicked(tab)
+
+        assertNotNull(TabsTray.openInactiveTab.testGetValue())
+
+        verify { controller.handleTabSelected(tab, TrayPagerAdapter.INACTIVE_TABS_FEATURE_NAME) }
+    }
+
+    @Test
+    fun `WHEN an inactive tab is closed THEN report the telemetry event and delete the tab`() {
+        val controller = spyk(createController())
+        val tab = TabSessionState(
+            id = "tabId",
+            content = ContentState(
+                url = "www.mozilla.com",
+            ),
+        )
+
+        every { controller.handleTabDeletion(any(), any()) } just runs
+
+        assertNull(TabsTray.closeInactiveTab.testGetValue())
+
+        controller.handleCloseInactiveTabClicked(tab)
+
+        assertNotNull(TabsTray.closeInactiveTab.testGetValue())
+
+        verify { controller.handleTabDeletion(tab.id, TrayPagerAdapter.INACTIVE_TABS_FEATURE_NAME) }
+    }
+
+    @Test
+    fun `WHEN all inactive tabs are closed THEN perform the deletion and report the telemetry event and show a Snackbar`() {
+        var showSnackbarInvoked = false
+        val controller = createController(
+            showUndoSnackbarForTab = {
+                showSnackbarInvoked = true
+            },
+        )
+        val inactiveTab: TabSessionState = mockk {
+            every { lastAccess } returns maxActiveTime
+            every { createdAt } returns 0
+            every { id } returns "24"
+            every { content } returns mockk {
+                every { private } returns false
+            }
+        }
+
+        try {
+            mockkStatic("mozilla.components.browser.state.selector.SelectorsKt")
+            every { browserStore.state } returns mockk()
+            every { browserStore.state.potentialInactiveTabs } returns listOf(inactiveTab)
+            assertNull(TabsTray.closeAllInactiveTabs.testGetValue())
+
+            controller.handleDeleteAllInactiveTabsClicked()
+
+            verify { tabsUseCases.removeTabs(listOf("24")) }
+            assertNotNull(TabsTray.closeAllInactiveTabs.testGetValue())
+            assertTrue(showSnackbarInvoked)
+        } finally {
+            unmockkStatic("mozilla.components.browser.state.selector.SelectorsKt")
+        }
+    }
+
     private fun createController(
         navigateToHomeAndDeleteSession: (String) -> Unit = { },
         selectTabPosition: (Int, Boolean) -> Unit = { _, _ -> },
@@ -483,17 +719,20 @@ class DefaultTabsTrayControllerTest {
         showCancelledDownloadWarning: (Int, String?, String?) -> Unit = { _, _, _ -> },
     ): DefaultTabsTrayController {
         return DefaultTabsTrayController(
-            trayStore,
-            browserStore,
-            browsingModeManager,
-            navController,
-            navigateToHomeAndDeleteSession,
-            profiler,
-            navigationInteractor,
-            tabsUseCases,
-            selectTabPosition,
-            dismissTray,
-            showUndoSnackbarForTab,
+            activity = activity,
+            appStore = appStore,
+            tabsTrayStore = trayStore,
+            browserStore = browserStore,
+            settings = settings,
+            browsingModeManager = browsingModeManager,
+            navController = navController,
+            navigateToHomeAndDeleteSession = navigateToHomeAndDeleteSession,
+            profiler = profiler,
+            navigationInteractor = navigationInteractor,
+            tabsUseCases = tabsUseCases,
+            selectTabPosition = selectTabPosition,
+            dismissTray = dismissTray,
+            showUndoSnackbarForTab = showUndoSnackbarForTab,
             showCancelledDownloadWarning = showCancelledDownloadWarning,
         )
     }

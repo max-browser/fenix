@@ -1855,5 +1855,5 @@
     <string name="experiments_snackbar">Cuir an telemeatraidh an comas airson an dàta a chur.</string>
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">Tadhail air na roghainnean</string>
-    <string name="firefox_suggest_header">%s Suggest</string>
+    <string name="firefox_suggest_header">Max Browser Suggest</string>
 </resources>

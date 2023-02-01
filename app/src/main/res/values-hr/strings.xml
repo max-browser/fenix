@@ -1806,7 +1806,7 @@
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">Idi u postavke</string>
 
-    <string name="firefox_suggest_header">%s prijedlozi</string>
+    <string name="firefox_suggest_header">Max Browser prijedlozi</string>
 
 
     <!-- Accessibility services actions labels. These will be appended to accessibility actions like "Double tap to.." but not by or applications but by services like Talkback. -->

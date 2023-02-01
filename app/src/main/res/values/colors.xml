@@ -347,4 +347,8 @@
     <color name="max_mobile_vpn_button_color_private">#000000</color>
     <color name="max_mobile_vpn_button_connected_background_gradient_start_color">#34778d</color>
     <color name="max_mobile_vpn_button_connected_background_gradient_end_color">#70cfdf</color>
+
+    <!-- Material Design colors -->
+    <color name="material_scrim_color">#52000000</color>
+
 </resources>

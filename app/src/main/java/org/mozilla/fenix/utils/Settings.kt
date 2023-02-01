@@ -549,6 +549,13 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         default = false,
     )
 
+    var lastInteractionWithReEngageCookieBannerDialogInMs by longPreference(
+        appContext.getPreferenceKey(
+            R.string.pref_key_cookie_banner_re_engage_dialog_last_interaction_in_ms,
+        ),
+        default = 0L,
+    )
+
     var cookieBannerDetectedPreviously by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_cookie_banner_first_banner_detected),
         default = false,
@@ -573,7 +580,8 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         val shouldShowDialog =
             shouldShowCookieBannerUI && !userOptOutOfReEngageCookieBannerDialog && !shouldUseCookieBanner
         return if (!shouldShowTotalCookieProtectionCFR && shouldShowDialog) {
-            !cookieBannerDetectedPreviously || timeNowInMillis() - lastBrowseActivity >= timerForCookieBannerDialog
+            !cookieBannerDetectedPreviously ||
+                timeNowInMillis() - lastInteractionWithReEngageCookieBannerDialogInMs >= timerForCookieBannerDialog
         } else {
             false
         }
@@ -636,7 +644,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     var reEngagementNotificationEnabled by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_re_engagement_notification_enabled),
-        default = { FxNimbus.features.reEngagementNotification.value(appContext).enabled },
+        default = { FxNimbus.features.reEngagementNotification.value().enabled },
         featureFlag = true,
     )
 
@@ -1463,7 +1471,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     var showUnifiedSearchFeature by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_show_unified_search),
-        default = { FxNimbus.features.unifiedSearch.value(appContext).enabled },
+        default = { FxNimbus.features.unifiedSearch.value().enabled },
         featureFlag = FeatureFlags.unifiedSearchFeature,
     )
 
@@ -1473,6 +1481,23 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var homescreenBlocklist by stringSetPreference(
         appContext.getPreferenceKey(R.string.pref_key_home_blocklist),
         default = setOf(),
+    )
+
+    /**
+     * Indicates if notification pre permission prompt feature is enabled.
+     */
+    var notificationPrePermissionPromptEnabled by lazyFeatureFlagPreference(
+        key = appContext.getPreferenceKey(R.string.pref_key_notification_pre_permission_prompt_enabled),
+        default = { FxNimbus.features.prePermissionNotificationPrompt.value().enabled },
+        featureFlag = FeatureFlags.notificationPrePermissionPromptEnabled,
+    )
+
+    /**
+     * Indicates if notification permission prompt has been shown to the user.
+     */
+    var isNotificationPrePermissionShown by booleanPreference(
+        key = appContext.getPreferenceKey(R.string.pref_key_is_notification_pre_permission_prompt_shown),
+        default = false,
     )
 
     /**
@@ -1493,13 +1518,20 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     fun getCookieBannerHandling(): CookieBannerHandlingMode {
         return when (shouldUseCookieBanner) {
-            true -> CookieBannerHandlingMode.REJECT_OR_ACCEPT_ALL
-            false -> if (shouldShowCookieBannerUI && !userOptOutOfReEngageCookieBannerDialog) {
-                CookieBannerHandlingMode.DETECT_ONLY
+            true -> CookieBannerHandlingMode.REJECT_ALL
+            false -> if (shouldEnabledCookieBannerDetectOnlyMode()) {
+                CookieBannerHandlingMode.REJECT_ALL
             } else {
                 CookieBannerHandlingMode.DISABLED
             }
         }
+    }
+
+    /**
+     * Indicates if the cookie banner detect only mode should be enabled.
+     */
+    fun shouldEnabledCookieBannerDetectOnlyMode(): Boolean {
+        return shouldShowCookieBannerUI && !userOptOutOfReEngageCookieBannerDialog && !shouldUseCookieBanner
     }
 
     var setAsDefaultGrowthSent by booleanPreference(

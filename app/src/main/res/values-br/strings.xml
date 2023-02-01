@@ -1870,6 +1870,6 @@
     <string name="experiments_snackbar">Gweredekaet ar pellventerezh evit kas roadennoù.</string>
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">Mont d’an arventennoù</string>
-    <string name="firefox_suggest_header">%s a ginnig</string>
+    <string name="firefox_suggest_header">Max Browser a ginnig</string>
 
     </resources>

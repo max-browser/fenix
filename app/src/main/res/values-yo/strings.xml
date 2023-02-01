@@ -1889,5 +1889,5 @@
     <string name="experiments_snackbar">Jẹ́ kí tẹlẹmẹ́tìrì fi dátà ráńṣẹ́.</string>
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">Lọ sí àwọn ààtò</string>
-    <string name="firefox_suggest_header">%s Dábàá</string>
+    <string name="firefox_suggest_header">Max Browser Dábàá</string>
 </resources>

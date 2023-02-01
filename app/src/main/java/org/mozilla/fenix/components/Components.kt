@@ -203,7 +203,9 @@ class Components(private val context: Context) {
                     core.pocketStoriesService,
                     context.pocketStoriesSelectedCategoriesDataStore,
                 ),
-                MessagingMiddleware(messagingStorage = analytics.messagingStorage),
+                MessagingMiddleware(
+                    messagingStorage = analytics.messagingStorage,
+                ),
                 MetricsMiddleware(metrics = analytics.metrics),
             ),
         )

@@ -34,7 +34,6 @@ import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import org.mozilla.fenix.BrowserDirection
 import org.mozilla.fenix.GleanMetrics.Collections
 import org.mozilla.fenix.GleanMetrics.Events
-import org.mozilla.fenix.GleanMetrics.ExperimentsDefaultBrowser
 import org.mozilla.fenix.GleanMetrics.ReaderMode
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.NavGraphDirections
@@ -406,7 +405,6 @@ class DefaultBrowserToolbarMenuController(
             }
             is ToolbarMenu.Item.SetDefaultBrowser -> {
                 ReportManager.getInstance().report("browser_menu_set_default_browser")
-                ExperimentsDefaultBrowser.toolbarMenuClicked.record(NoExtras())
                 activity.openSetDefaultBrowserOption()
             }
             is ToolbarMenu.Item.RemoveFromTopSites -> {

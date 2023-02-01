@@ -10,7 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.DialogFragment
-import mozilla.components.concept.engine.EngineSession.CookieBannerHandlingMode.REJECT_OR_ACCEPT_ALL
+import mozilla.components.concept.engine.EngineSession.CookieBannerHandlingMode.DISABLED
+import mozilla.components.concept.engine.EngineSession.CookieBannerHandlingMode.REJECT_ALL
 import mozilla.components.concept.engine.Settings
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.GleanMetrics.CookieBanners
@@ -45,13 +46,14 @@ class CookieBannerReEngagementDialog : DialogFragment() {
                     onAllowButtonClicked = {
                         CookieBanners.allowReEngagementDialog.record(NoExtras())
                         requireContext().settings().shouldUseCookieBanner = true
-                        getEngineSettings().cookieBannerHandlingModePrivateBrowsing = REJECT_OR_ACCEPT_ALL
-                        getEngineSettings().cookieBannerHandlingMode = REJECT_OR_ACCEPT_ALL
+                        getEngineSettings().cookieBannerHandlingModePrivateBrowsing = REJECT_ALL
+                        getEngineSettings().cookieBannerHandlingMode = REJECT_ALL
+                        getEngineSettings().cookieBannerHandlingDetectOnlyMode = false
                         reload()
                         requireContext().getRootView()?.let {
                             FenixSnackbar.make(
                                 view = it,
-                                duration = FenixSnackbar.LENGTH_LONG,
+                                duration = LENGTH_SNACKBAR_DURATION,
                                 isDisplayedWithBrowserToolbar = true,
                             )
                                 .setText(getString(R.string.reduce_cookie_banner_dialog_snackbar_text))
@@ -64,6 +66,9 @@ class CookieBannerReEngagementDialog : DialogFragment() {
                         dismiss()
                     },
                     onCloseButtonClicked = {
+                        getEngineSettings().cookieBannerHandlingDetectOnlyMode = false
+                        getEngineSettings().cookieBannerHandlingModePrivateBrowsing = DISABLED
+                        getEngineSettings().cookieBannerHandlingMode = DISABLED
                         requireContext().settings().userOptOutOfReEngageCookieBannerDialog = true
                         CookieBanners.optOutReEngagementDialog.record(NoExtras())
                         dismiss()
@@ -79,5 +84,9 @@ class CookieBannerReEngagementDialog : DialogFragment() {
 
     private fun reload() {
         return requireContext().components.useCases.sessionUseCases.reload()
+    }
+
+    companion object {
+        private const val LENGTH_SNACKBAR_DURATION = 4000 /* 4 seconds in ms */
     }
 }
