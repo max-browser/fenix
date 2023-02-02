@@ -105,7 +105,7 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
         val allowCache = args.installAddonId == null || installExternalAddonComplete
         lifecycleScope.launch(IO) {
             try {
-                var addons = requireContext().components.addonManager.getAddons(allowCache = allowCache).removeFirefoxString(requireContext())
+                val addons = requireContext().components.addonManager.getAddons(allowCache = allowCache).removeFirefoxString(requireContext())
                 // Add-ons that should be excluded in Mozilla Online builds
                 val excludedAddonIDs = if (Config.channel.isMozillaOnline &&
                     !BuildConfig.MOZILLA_ONLINE_ADDON_EXCLUSIONS.isNullOrEmpty()
@@ -114,10 +114,6 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
                 } else {
                     emptyList<String>()
                 }
-
-                addons = addons.filter {
-                    it.id !in MaxBrowserConstant.MAX_ADDON_HIDE_LIST
-                } as ArrayList<Addon>
 
                 lifecycleScope.launch(Dispatchers.Main) {
                     runIfFragmentIsAttached {
