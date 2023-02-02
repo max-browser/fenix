@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mozilla.components.browser.state.selector.findCustomTabOrSelectedTab
 import mozilla.components.browser.state.selector.findTab
+import mozilla.components.browser.state.selector.selectedTab
 import mozilla.components.browser.state.state.SessionState
 import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.state.store.BrowserStore
@@ -44,7 +45,6 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifAnyChanged
 import org.mozilla.fenix.GleanMetrics.ReaderMode
-import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.TabCollectionStorage
@@ -327,15 +327,14 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
     }
 
     private fun checkToAddAdBlockButton(){
-        runIfFragmentIsAttached {
-            lifecycleScope.launch(IO) {
-                try {
-                    val addons = requireContext().components.addonManager.getAddons(waitForPendingActions = false)
-                    val adBlockAddon = addons.find { it.id == MaxBrowserConstant.ADBLOCK_ADDON_ID }
-
-                    adBlockAddon?.let {
-                        if (WebExtensionSupport.installedExtensions[it.id] != null) {
-                            lifecycleScope.launch(Main) {
+        lifecycleScope.launch(IO) {
+            try {
+                val addons = requireContext().components.addonManager.getAddons(waitForPendingActions = false)
+                val adBlockAddon = addons.find { it.id == MaxBrowserConstant.ADBLOCK_ADDON_ID }
+                adBlockAddon?.let { finalAdBlockAddon ->
+                    if (WebExtensionSupport.installedExtensions[finalAdBlockAddon.id] != null) {
+                        lifecycleScope.launch(Main) {
+                            runIfFragmentIsAttached {
                                 val adBlockAction = BrowserToolbar.TwoStateButton(
                                     primaryImage = AppCompatResources.getDrawable(
                                         requireContext(),
@@ -348,22 +347,37 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
                                     )!!,
                                     secondaryContentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
                                     isInPrimaryState = {
-                                        if ((activity as HomeActivity).browsingModeManager.mode.isPrivate) {
-                                            adBlockAddon.isAllowedInPrivateBrowsing()
-                                        } else {
-                                            adBlockAddon.isEnabled()
+                                        val adBlockAction = requireContext().components.core.store.state.selectedTab?.extensionState?.get(MaxBrowserConstant.ADBLOCK_ADDON_ID)?.browserAction
+                                        adBlockAction?.title?.let { adBlockTitle ->
+                                            val splitTitle = adBlockTitle.split(" ")
+                                            if (splitTitle.size == 3) {
+                                                val content = splitTitle[2].replace("[^A-Za-z0-9 ]".toRegex(), "")
+                                                if (content == "off") {
+                                                    return@TwoStateButton false
+                                                }
+                                            }
                                         }
+                                        return@TwoStateButton true
                                     },
                                     disableInSecondaryState = false,
                                     listener = {
-                                        findNavController().navigateSafe(
-                                            R.id.browserFragment,
-                                            if (it.isInstalled()) {
-                                                BrowserFragmentDirections.actionBrowserFragmentToInstalledAddonDetails(it)
-                                            } else {
-                                                BrowserFragmentDirections.actionBrowserFragmentToAddonDetails(it)
+                                        if (finalAdBlockAddon.isInstalled()) {
+                                            val extensions = requireContext().components.core.store.state.extensions
+                                            val adBlockExtension = extensions[MaxBrowserConstant.ADBLOCK_ADDON_ID]
+                                            adBlockExtension?.let {
+                                                it.browserAction?.onClick?.invoke()
+                                            }?: let {
+                                                findNavController().navigateSafe(
+                                                    R.id.browserFragment,
+                                                    BrowserFragmentDirections.actionBrowserFragmentToInstalledAddonDetails(finalAdBlockAddon)
+                                                )
                                             }
-                                        )
+                                        } else {
+                                            findNavController().navigateSafe(
+                                                R.id.browserFragment,
+                                                BrowserFragmentDirections.actionBrowserFragmentToAddonDetails(finalAdBlockAddon)
+                                            )
+                                        }
                                         ReportManager.getInstance().report("browser_adblock_click")
                                     }
                                 )
@@ -371,9 +385,9 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
                             }
                         }
                     }
-                } catch (e: AddonManagerException) {
-                    Logger.debug("checkToAddAdBlockButton setup error: $e")
                 }
+            } catch (e: AddonManagerException) {
+                Logger.debug("checkToAddAdBlockButton setup error: $e")
             }
         }
     }
