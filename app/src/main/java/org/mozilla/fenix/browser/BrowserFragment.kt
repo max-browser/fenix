@@ -45,6 +45,7 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifAnyChanged
 import org.mozilla.fenix.GleanMetrics.ReaderMode
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.TabCollectionStorage
@@ -347,36 +348,57 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
                                     )!!,
                                     secondaryContentDescription = requireContext().getString(R.string.browser_toolbar_adblock),
                                     isInPrimaryState = {
-                                        val adBlockAction = requireContext().components.core.store.state.selectedTab?.extensionState?.get(MaxBrowserConstant.ADBLOCK_ADDON_ID)?.browserAction
-                                        adBlockAction?.title?.let { adBlockTitle ->
-                                            val splitTitle = adBlockTitle.split(" ")
-                                            if (splitTitle.size == 3) {
-                                                val content = splitTitle[2].replace("[^A-Za-z0-9 ]".toRegex(), "")
-                                                if (content == "off") {
-                                                    return@TwoStateButton false
+                                        val isAddonEnabled =  if ((activity as HomeActivity).browsingModeManager.mode.isPrivate) {
+                                            adBlockAddon.isAllowedInPrivateBrowsing()
+                                        } else {
+                                            adBlockAddon.isEnabled()
+                                        }
+                                        if (isAddonEnabled) {
+                                            val adBlockAction = requireContext().components.core.store.state.selectedTab?.extensionState?.get(MaxBrowserConstant.ADBLOCK_ADDON_ID)?.browserAction
+                                            adBlockAction?.title?.let { adBlockTitle ->
+                                                val splitTitle = adBlockTitle.split(" ")
+                                                if (splitTitle.size == 3) {
+                                                    val content = splitTitle[2].replace("[^A-Za-z0-9 ]".toRegex(), "")
+                                                    if (content == "off") {
+                                                        return@TwoStateButton false
+                                                    }
                                                 }
                                             }
+                                            return@TwoStateButton true
+                                        } else {
+                                            return@TwoStateButton false
                                         }
-                                        return@TwoStateButton true
                                     },
                                     disableInSecondaryState = false,
                                     listener = {
-                                        if (finalAdBlockAddon.isInstalled()) {
-                                            val extensions = requireContext().components.core.store.state.extensions
-                                            val adBlockExtension = extensions[MaxBrowserConstant.ADBLOCK_ADDON_ID]
-                                            adBlockExtension?.let {
-                                                it.browserAction?.onClick?.invoke()
-                                            }?: let {
-                                                findNavController().navigateSafe(
-                                                    R.id.browserFragment,
-                                                    BrowserFragmentDirections.actionBrowserFragmentToInstalledAddonDetails(finalAdBlockAddon)
-                                                )
-                                            }
+                                        val isAddonEnabled =  if ((activity as HomeActivity).browsingModeManager.mode.isPrivate) {
+                                            adBlockAddon.isAllowedInPrivateBrowsing()
                                         } else {
+                                            adBlockAddon.isEnabled()
+                                        }
+                                        if (!isAddonEnabled) {
                                             findNavController().navigateSafe(
                                                 R.id.browserFragment,
-                                                BrowserFragmentDirections.actionBrowserFragmentToAddonDetails(finalAdBlockAddon)
+                                                BrowserFragmentDirections.actionBrowserFragmentToInstalledAddonDetails(finalAdBlockAddon)
                                             )
+                                        } else {
+                                            if (finalAdBlockAddon.isInstalled()) {
+                                                val extensions = requireContext().components.core.store.state.extensions
+                                                val adBlockExtension = extensions[MaxBrowserConstant.ADBLOCK_ADDON_ID]
+                                                adBlockExtension?.let {
+                                                    it.browserAction?.onClick?.invoke()
+                                                }?: let {
+                                                    findNavController().navigateSafe(
+                                                        R.id.browserFragment,
+                                                        BrowserFragmentDirections.actionBrowserFragmentToInstalledAddonDetails(finalAdBlockAddon)
+                                                    )
+                                                }
+                                            } else {
+                                                findNavController().navigateSafe(
+                                                    R.id.browserFragment,
+                                                    BrowserFragmentDirections.actionBrowserFragmentToAddonDetails(finalAdBlockAddon)
+                                                )
+                                            }
                                         }
                                         ReportManager.getInstance().report("browser_adblock_click")
                                     }
