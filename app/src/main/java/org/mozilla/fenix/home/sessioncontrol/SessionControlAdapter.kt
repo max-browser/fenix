@@ -33,10 +33,7 @@ import org.mozilla.fenix.home.recenttabs.view.RecentTabViewHolder
 import org.mozilla.fenix.home.recenttabs.view.RecentTabsHeaderViewHolder
 import org.mozilla.fenix.home.recentvisits.view.RecentVisitsHeaderViewHolder
 import org.mozilla.fenix.home.recentvisits.view.RecentlyVisitedViewHolder
-import org.mozilla.fenix.home.sessioncontrol.viewholders.CollectionHeaderViewHolder
-import org.mozilla.fenix.home.sessioncontrol.viewholders.CustomizeHomeButtonViewHolder
-import org.mozilla.fenix.home.sessioncontrol.viewholders.NoCollectionsMessageViewHolder
-import org.mozilla.fenix.home.sessioncontrol.viewholders.PrivateBrowsingDescriptionViewHolder
+import org.mozilla.fenix.home.sessioncontrol.viewholders.*
 import org.mozilla.fenix.home.sessioncontrol.viewholders.onboarding.*
 import org.mozilla.fenix.home.topsites.TopSitePagerViewHolder
 import mozilla.components.feature.tab.collections.Tab as ComponentTab
@@ -184,6 +181,8 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
     object MyDocumentsHeader : AdapterItem(MyDocumentsHeaderViewHolder.LAYOUT_ID)
     object MyDocumentsItems : AdapterItem(MyDocumentsViewHolder.LAYOUT_ID)
 
+    object SessionTailItem : AdapterItem(SessionTailViewHolder.LAYOUT_ID)
+
     /**
      * True if this item represents the same value as other. Used by [AdapterItemDiffCallback].
      */
@@ -310,6 +309,10 @@ class SessionControlAdapter(
                 viewLifecycleOwner = viewLifecycleOwner,
                 interactor = interactor,
             )
+            SessionTailViewHolder.LAYOUT_ID -> return SessionTailViewHolder(
+                composeView = ComposeView(parent.context),
+                viewLifecycleOwner = viewLifecycleOwner,
+            )
         }
 
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -366,6 +369,7 @@ class SessionControlAdapter(
             is PocketStoriesViewHolder,
             is MyDocumentsHeaderViewHolder,
             is MyDocumentsViewHolder,
+            is SessionTailViewHolder,
             -> {
                 // no op
                 // This previously called "composeView.disposeComposition" which would have the
@@ -445,6 +449,7 @@ class SessionControlAdapter(
             is PocketStoriesViewHolder,
             is MyDocumentsHeaderViewHolder,
             is MyDocumentsViewHolder,
+            is SessionTailViewHolder,
             -> {
                 // no-op. This ViewHolder receives the HomeStore as argument and will observe that
                 // without the need for us to manually update from here the data to be displayed.

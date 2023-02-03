@@ -495,11 +495,20 @@ class HomeFragment : Fragment() {
             containerView = binding.sessionControlRecyclerView,
             viewLifecycleOwner = viewLifecycleOwner,
             interactor = sessionControlInteractor,
+            browsingModeManager = browsingModeManager,
         )
 
         updateSessionControlView()
 
         appBarLayout = binding.homeAppBar
+
+        // set collapsingToolbar scrollable when in the private mode
+        val params = binding.collapsingToolbar.layoutParams as AppBarLayout.LayoutParams
+        params.scrollFlags = if (browsingModeManager.mode == BrowsingMode.Private)
+            AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
+        else
+            AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+        binding.collapsingToolbar.layoutParams = params
 
         activity.themeManager.applyStatusBarTheme(activity)
 

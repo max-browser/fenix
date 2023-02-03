@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.home.sessioncontrol
 
+import android.util.Log
 import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LifecycleOwner
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import mozilla.components.feature.tab.collections.TabCollection
 import mozilla.components.feature.top.sites.TopSite
 import mozilla.components.service.pocket.PocketStory
+import org.mozilla.fenix.browser.browsingmode.BrowsingMode
+import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
 import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.components.appstate.AppState
 import org.mozilla.fenix.ext.components
@@ -110,6 +113,8 @@ internal fun normalModeAdapterItems(
 
     items.add(AdapterItem.BottomSpacer)
 
+    // this is a last space item
+    items.add(AdapterItem.SessionTailItem)
     return items
 }
 
@@ -197,6 +202,7 @@ class SessionControlView(
     containerView: View,
     viewLifecycleOwner: LifecycleOwner,
     private val interactor: SessionControlInteractor,
+    private val browsingModeManager: BrowsingModeManager,
 ) {
 
     val view: RecyclerView = containerView as RecyclerView
@@ -250,6 +256,7 @@ class SessionControlView(
                     )
                 }
             }
+            isNestedScrollingEnabled = browsingModeManager.mode == BrowsingMode.Normal
         }
     }
 
