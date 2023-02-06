@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import mozilla.components.feature.tab.collections.TabCollection
 import mozilla.components.feature.top.sites.TopSite
 import org.mozilla.fenix.components.Components
+import org.mozilla.fenix.databinding.HomeNativeAdItemBinding
 import org.mozilla.fenix.gleanplumb.Message
 import org.mozilla.fenix.home.BottomSpacerViewHolder
 import org.mozilla.fenix.home.TopPlaceholderViewHolder
@@ -23,6 +24,7 @@ import org.mozilla.fenix.home.collections.CollectionViewHolder
 import org.mozilla.fenix.home.collections.TabInCollectionViewHolder
 import org.mozilla.fenix.home.mydocuments.view.MyDocumentsHeaderViewHolder
 import org.mozilla.fenix.home.mydocuments.view.MyDocumentsViewHolder
+import org.mozilla.fenix.home.homead.HomeNativeAdViewHolder
 import org.mozilla.fenix.home.pocket.PocketCategoriesViewHolder
 import org.mozilla.fenix.home.pocket.PocketRecommendationsHeaderViewHolder
 import org.mozilla.fenix.home.pocket.PocketStoriesViewHolder
@@ -183,6 +185,8 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
 
     object SessionTailItem : AdapterItem(SessionTailViewHolder.LAYOUT_ID)
 
+    object HomeNativeAdItem : AdapterItem(HomeNativeAdViewHolder.LAYOUT_ID)
+
     /**
      * True if this item represents the same value as other. Used by [AdapterItemDiffCallback].
      */
@@ -313,6 +317,12 @@ class SessionControlAdapter(
                 composeView = ComposeView(parent.context),
                 viewLifecycleOwner = viewLifecycleOwner,
             )
+            HomeNativeAdViewHolder.LAYOUT_ID -> return HomeNativeAdViewHolder(
+                binding = HomeNativeAdItemBinding.inflate(LayoutInflater.from(parent.context)),
+                viewLifecycleOwner = viewLifecycleOwner,
+                components.appStore,
+                interactor = interactor,
+            )
         }
 
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -392,6 +402,9 @@ class SessionControlAdapter(
                 // This ViewHolder can be removed / re-added and we need it to show a fresh new composition.
                 holder.composeView.disposeComposition()
             }
+            is HomeNativeAdViewHolder -> {
+                holder.destroy()
+            }
             else -> super.onViewRecycled(holder)
         }
     }
@@ -441,6 +454,9 @@ class SessionControlAdapter(
             is OnboardingSectionHeaderViewHolder -> holder.bind(
                 (item as AdapterItem.OnboardingSectionHeader).labelBuilder,
             )
+            is HomeNativeAdViewHolder -> {
+                holder.bind()
+            }
             is OnboardingManualSignInViewHolder,
             is RecentlyVisitedViewHolder,
             is RecentBookmarksViewHolder,

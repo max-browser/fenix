@@ -56,6 +56,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.*
 import com.max.browser.core.delegate.home.fragment.MaxHomeFragmentDelegate
+import com.max.browser.core.domain.repository.AdRepository
 import com.max.browser.core.ext.openApplicationDetailsSettings
 import com.max.browser.core.feature.vpn.VpnActivity
 import de.blinkt.openvpn.core.OpenVPNService
@@ -114,6 +115,7 @@ import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.gleanplumb.DefaultMessageController
 import org.mozilla.fenix.gleanplumb.MessagingFeature
 import org.mozilla.fenix.gleanplumb.NimbusMessagingController
+import org.mozilla.fenix.home.homead.controller.DefaultHomeAdController
 import org.mozilla.fenix.home.mozonline.showPrivacyPopWindow
 import org.mozilla.fenix.home.mydocuments.MyDocumentsFeature
 import org.mozilla.fenix.home.mydocuments.MyDocumentsUseCase
@@ -230,6 +232,8 @@ class HomeFragment : Fragment() {
             binding.vpnButton.isActivated = OpenVPNService.getStatus() == VpnStatus.State.CONNECTED
         }
     }
+
+    private val adRepository: AdRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT ADD ANYTHING ABOVE THIS getProfilerTime CALL!
@@ -488,6 +492,9 @@ class HomeFragment : Fragment() {
                     openPdf(it)
                 },
             ),
+           homeAdController = DefaultHomeAdController(
+               adRepository = adRepository,
+           ),
         )
 
         updateLayout(binding.root)

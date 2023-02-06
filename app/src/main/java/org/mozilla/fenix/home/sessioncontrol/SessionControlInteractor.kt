@@ -4,6 +4,8 @@
 
 package org.mozilla.fenix.home.sessioncontrol
 
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdOptions
 import mozilla.components.feature.tab.collections.Tab
 import mozilla.components.feature.tab.collections.TabCollection
 import mozilla.components.feature.top.sites.TopSite
@@ -11,9 +13,11 @@ import mozilla.components.service.pocket.PocketStory
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.components.appstate.AppState
 import org.mozilla.fenix.gleanplumb.Message
+import org.mozilla.fenix.home.homead.controller.HomeAdController
 import org.mozilla.fenix.home.mydocuments.MyDocumentsItem
 import org.mozilla.fenix.home.mydocuments.controller.MyDocumentsController
 import org.mozilla.fenix.home.mydocuments.interactor.MyDocumentsInteractor
+import org.mozilla.fenix.home.homead.interactor.HomeAdInteractor
 import org.mozilla.fenix.home.pocket.PocketRecommendedStoriesCategory
 import org.mozilla.fenix.home.pocket.PocketStoriesController
 import org.mozilla.fenix.home.pocket.PocketStoriesInteractor
@@ -255,6 +259,7 @@ class SessionControlInteractor(
     private val recentVisitsController: RecentVisitsController,
     private val pocketStoriesController: PocketStoriesController,
     private val myDocumentsController: MyDocumentsController,
+    private val homeAdController: HomeAdController,
 
     ) : CollectionInteractor,
     OnboardingInteractor,
@@ -269,7 +274,8 @@ class SessionControlInteractor(
     CustomizeHomeIteractor,
     PocketStoriesInteractor,
     SearchSelectorInteractor,
-    MyDocumentsInteractor
+    MyDocumentsInteractor,
+    HomeAdInteractor
 {
 
     override fun onCollectionAddTabTapped(collection: TabCollection) {
@@ -476,5 +482,9 @@ class SessionControlInteractor(
 
     override fun onMyDocumentsGetPermissionClicked() {
         myDocumentsController.handleMyDocumentsGetPermissionClicked()
+    }
+
+    override fun onGetHomeNativeAd(nativeAdOptions: NativeAdOptions, getNativeAdCallback: (nativeAd: NativeAd) -> Unit) {
+        homeAdController.handleGetHomeNativeAd(nativeAdOptions, getNativeAdCallback)
     }
 }

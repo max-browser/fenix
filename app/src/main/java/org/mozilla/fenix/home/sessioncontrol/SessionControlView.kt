@@ -10,6 +10,8 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.max.browser.core.feature.ad.AdPlacement
+import com.max.browser.core.getAdConfigs
 import mozilla.components.feature.tab.collections.TabCollection
 import mozilla.components.feature.top.sites.TopSite
 import mozilla.components.service.pocket.PocketStory
@@ -62,6 +64,12 @@ internal fun normalModeAdapterItems(
 
     if (settings.showTopSitesFeature && topSites.isNotEmpty()) {
         items.add(AdapterItem.TopSitePager(topSites))
+    }
+
+    val showNativeAd =
+        getAdConfigs().find { it.placement == AdPlacement.AD_PLACEMENT_HOME_NATIVE }?.showCondition?.isEnable == true
+    if (showNativeAd) {
+        items.add(AdapterItem.HomeNativeAdItem)
     }
 
     if (showRecentTab) {
