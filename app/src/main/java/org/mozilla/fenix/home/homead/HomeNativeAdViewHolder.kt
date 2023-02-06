@@ -1,21 +1,16 @@
 package org.mozilla.fenix.home.homead
 
-import android.util.Log
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
+import com.max.browser.core.data.local.sp.MaxAdSettings
 import com.max.browser.core.utils.DeviceUtil
-import kotlinx.coroutines.flow.map
-import mozilla.components.lib.state.ext.flowScoped
-import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifChanged
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.databinding.HomeNativeAdItemBinding
-import org.mozilla.fenix.ext.isSystemInDarkTheme
 import org.mozilla.fenix.home.homead.interactor.HomeAdInteractor
 
 class HomeNativeAdViewHolder(
@@ -27,25 +22,6 @@ class HomeNativeAdViewHolder(
 
     init {
         viewLifecycleOwner.lifecycle.addObserver(this)
-
-        appStore.flowScoped(viewLifecycleOwner) { flow ->
-            flow.map { state -> state.wallpaperState }.ifChanged().collect { currentState ->
-                val context = itemView.context
-                var backgroundColor =
-                    ContextCompat.getColor(context, R.color.fx_mobile_layer_color_2)
-
-                currentState.runIfWallpaperCardColorsAreAvailable { cardColorLight, cardColorDark ->
-                    backgroundColor = if (context.isSystemInDarkTheme()) {
-                        cardColorDark
-                    } else {
-                        cardColorLight
-                    }
-                }
-
-                binding.cvNativeAd.setCardBackgroundColor(backgroundColor)
-            }
-        }
-
     }
 
     companion object {
@@ -55,10 +31,6 @@ class HomeNativeAdViewHolder(
     private var nativeAd: NativeAd? = null
 
     fun bind() {
-
-
-        val wallpaperState = appStore.state.wallpaperState
-
         binding.apply {
             interactor.onGetHomeNativeAd(
                 nativeAdOptions = NativeAdOptions.Builder()
@@ -82,7 +54,7 @@ class HomeNativeAdViewHolder(
                     mvNativeAd.isVisible = nativeAd.mediaContent != null
                     mvNativeAd.mediaContent = nativeAd.mediaContent
 
-                    vNativeAd.setOnClickListener {  }
+                    vNativeAd.setOnClickListener { }
 
                     nav.apply {
                         iconView = ivNativeAd
@@ -92,6 +64,7 @@ class HomeNativeAdViewHolder(
                         callToActionView = vNativeAd
                         setNativeAd(nativeAd)
                     }
+
                 },
             )
         }
