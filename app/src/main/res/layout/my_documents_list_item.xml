@@ -44,8 +44,8 @@
         android:layout_marginTop="2dp"
         app:layout_constraintStart_toEndOf="@+id/iv_pdf"
         app:layout_constraintTop_toTopOf="@+id/gl_center"
-        app:layout_constraintWidth_percent="0.2"
-        tools:text="file size" />
+        app:layout_constraintWidth_percent="0.3"
+        tools:text="date" />
 
     <TextView
         android:id="@+id/tv_divider"

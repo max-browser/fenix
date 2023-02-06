@@ -152,7 +152,7 @@ private fun MyDocumentsItem(
             ) {
                 MyDocumentsItemSubText(
                     text = "${DateUtils.getRelativeTimeSpanString(myDocumentsItem.lastModified)}",
-                    modifier = Modifier.weight(0.16f),
+                    modifier = Modifier.weight(0.30f),
                 )
                 MyDocumentsItemSubText(
                     text = "|",
