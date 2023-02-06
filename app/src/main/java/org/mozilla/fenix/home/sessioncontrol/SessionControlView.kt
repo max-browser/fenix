@@ -4,12 +4,13 @@
 
 package org.mozilla.fenix.home.sessioncontrol
 
-import android.util.Log
+import android.text.format.DateUtils
 import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.max.browser.core.data.local.sp.MaxAdSettings
 import com.max.browser.core.feature.ad.AdPlacement
 import com.max.browser.core.getAdConfigs
 import mozilla.components.feature.tab.collections.TabCollection
@@ -66,11 +67,28 @@ internal fun normalModeAdapterItems(
         items.add(AdapterItem.TopSitePager(topSites))
     }
 
-    val showNativeAd =
-        getAdConfigs().find { it.placement == AdPlacement.AD_PLACEMENT_HOME_NATIVE }?.showCondition?.isEnable == true
-    if (showNativeAd) {
+    // Check to add home native ad
+    getAdConfigs().find { it.placement == AdPlacement.AD_PLACEMENT_HOME_NATIVE }?.let { adConfig ->
+        val showNativeAd = adConfig.showCondition.isEnable
+        if (showNativeAd.not()) {
+            return@let
+        }
+
+        val time = System.currentTimeMillis()
+        val firstTime = MaxAdSettings.getInstance().homeNativeAdFirstTimeOfDailyShowing
+        val duration = time - firstTime
+        if (duration >= DateUtils.DAY_IN_MILLIS) {
+            MaxAdSettings.getInstance().homeNativeAdDailyShowCount = 0
+        }
+
+        val dailyShowCount = MaxAdSettings.getInstance().homeNativeAdDailyShowCount
+        if (dailyShowCount >= adConfig.showCondition.dailyShowCount) {
+            return@let
+        }
+
         items.add(AdapterItem.HomeNativeAdItem)
     }
+
 
     if (showRecentTab) {
         shouldShowCustomizeHome = true

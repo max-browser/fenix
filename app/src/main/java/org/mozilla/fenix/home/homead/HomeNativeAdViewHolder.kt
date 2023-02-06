@@ -65,6 +65,13 @@ class HomeNativeAdViewHolder(
                         setNativeAd(nativeAd)
                     }
 
+                    val showCount = MaxAdSettings.getInstance().homeNativeAdDailyShowCount
+                    if (showCount == 0) {
+                        MaxAdSettings.getInstance().homeNativeAdFirstTimeOfDailyShowing =
+                            System.currentTimeMillis()
+                    }
+                    MaxAdSettings.getInstance().homeNativeAdDailyShowCount = showCount + 1
+
                 },
             )
         }
