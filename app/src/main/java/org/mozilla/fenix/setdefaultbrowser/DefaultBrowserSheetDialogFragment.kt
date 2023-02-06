@@ -29,7 +29,6 @@ fun Activity.checkToShowDefaultBrowserSheetDialogFragment() {
     if (settings().isDefaultBrowserBlocking()) {
         return
     }
-    val browserGroup = RemoteConfigManager.getInstance().getConfig<String>(RemoteConfigKey.DEFAULT_BROWSER_DIALOG_SETTING_GROUP)
 
     val hasCheckedSettingsDefaultBrowser =
         MaxBrowserSettings.getInstance().hasCheckedSettingDefaultBrowserAfterColdStartingApp
@@ -69,14 +68,7 @@ fun Activity.checkToShowDefaultBrowserSheetDialogFragment() {
         .getConfig<Int>(RemoteConfigKey.MAX_COUNT_OF_SHOWING_SET_DEFAULT_BROWSER_DIALOG)
 
     if (count < maxCount) {
-        when (browserGroup) {
-            GROUP_A -> {
-                openSetDefaultBrowserOption()
-            }
-            else -> {
-                findNavController(R.id.container).navigate(NavGraphDirections.actionGlobalDefaultBrowserSheetDialogFragment())
-            }
-        }
+        openSetDefaultBrowserOption()
         MaxBrowserSettings.getInstance().countOfShowingDefaultBrowserDialog = count + 1
         if (count == 0) {
             MaxBrowserSettings.getInstance().firstTimeOfShowingDefaultBrowserDialog = time

@@ -215,11 +215,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             // has splash: onResume() -> checkSplash() -> onAfterCheckingSplashCallback()
             // no splash : onResume() -> checkSplash() -> startSplashActivity() -> onResume() ->onAfterCheckingSplashCallback()
             // Handle default browser behavior
-            if (MaxBrowserSettings.getInstance().isGetDefaultBrowserGroupCloudConfig.not()) {
-                fetchRemoteConfig()
-            } else {
-                checkDefaultBrowserBehavior(true)
-            }
+            checkDefaultBrowserBehavior()
         }
     }
 
@@ -1261,23 +1257,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         }
     }
 
-    private fun fetchRemoteConfig() {
-        Firebase.remoteConfig.apply {
-            setConfigSettingsAsync(
-                remoteConfigSettings {
-                minimumFetchIntervalInSeconds = 0
-            })
-            setDefaultsAsync(com.max.browser.core.R.xml.max_remote_config_defaults)
-            fetchAndActivate().addOnCompleteListener { task ->
-                checkDefaultBrowserBehavior(task.isSuccessful)
-            }.addOnFailureListener {
-                checkDefaultBrowserBehavior(false)
-            }
-        }
-    }
-
-    private fun checkDefaultBrowserBehavior(successful:Boolean) {
-        Timber.d("checkDefaultBrowserBehavior successful:$successful")
+    private fun checkDefaultBrowserBehavior() {
+        Timber.d("checkDefaultBrowserBehavior")
         MaxBrowserApplicationDelegate.getInstance()?.setUserProperty(
             application, "default_browser", settings().isDefaultBrowserBlocking().toString()
         )
@@ -1285,43 +1266,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             Timber.d("User has default browser.")
             return
         }
-        if (successful) {
-            MaxBrowserSettings.getInstance().isGetDefaultBrowserGroupCloudConfig = true
-            val browserGroup = RemoteConfigManager.getInstance().getConfig<String>(RemoteConfigKey.DEFAULT_BROWSER_DIALOG_SETTING_GROUP)
-            Timber.d("browserGroup:$browserGroup")
-            reportBrowserGroupInfo(browserGroup)
-            when (browserGroup) {
-                GROUP_A -> {
-                    checkToShowDefaultBrowserSheetDialogFragment()
-                }
-                GROUP_B -> {
-                    if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
-                        beginTransaction(supportFragmentManager,
-                            DefaultBrowserFullScreenGuideDialogFragment.newInstance())
-                    }
-                }
-                GROUP_C -> {
-                    //新安裝或更新後，先彈全屏default browser彈窗
-                    if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
-                        beginTransaction(supportFragmentManager,
-                            DefaultBrowserFullScreenGuideDialogFragment.newInstance())
-                    } else {
-                        checkToShowDefaultBrowserSheetDialogFragment()
-                    }
-                }
-            }
-        } else {
-            //如果網路沒開，且也沒拉到雲控，預設展示C組
-            if (isInternetAvailable().not()) {
-                reportBrowserGroupInfo(GROUP_C)
-                if (MaxBrowserSettings.getInstance().fullScreenStyleDefaultBrowserSettingDialogHadShowed.not()) {
-                    beginTransaction(supportFragmentManager,
-                        DefaultBrowserFullScreenGuideDialogFragment.newInstance())
-                } else {
-                    checkToShowDefaultBrowserSheetDialogFragment()
-                }
-            }
-        }
+        checkToShowDefaultBrowserSheetDialogFragment()
     }
 
     companion object {
