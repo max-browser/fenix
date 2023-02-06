@@ -10,6 +10,7 @@ import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -17,11 +18,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import mozilla.components.lib.state.ext.flowScoped
+import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifChanged
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.mozilla.fenix.NavHostActivity
+import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.FragmentMyDocumentsBinding
 import org.mozilla.fenix.ext.createOpenPdfIntent
+import org.mozilla.fenix.ext.isSystemInDarkTheme
+import org.mozilla.fenix.ext.requireComponents
 import org.mozilla.fenix.home.mydocuments.MyDocumentsItem
 
 class MyDocumentsFragment : Fragment() {
@@ -92,6 +99,24 @@ class MyDocumentsFragment : Fragment() {
                 }
             }
         }
+
+//        requireComponents.appStore.flowScoped(viewLifecycleOwner) { flow ->
+//            flow.map { state -> state.wallpaperState }.ifChanged().collect { currentState ->
+//                val context = requireContext()
+//                var backgroundColor =
+//                    ContextCompat.getColor(context, R.color.fx_mobile_layer_color_2)
+//
+//                currentState.runIfWallpaperCardColorsAreAvailable { cardColorLight, cardColorDark ->
+//                    backgroundColor = if (context.isSystemInDarkTheme()) {
+//                        cardColorDark
+//                    } else {
+//                        cardColorLight
+//                    }
+//                }
+//
+//                binding.cvList.setCardBackgroundColor(backgroundColor)
+//            }
+//        }
     }
 
     private fun showRequestPermissionUi() {

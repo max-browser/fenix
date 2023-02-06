@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f7f7f7">
+    android:background="?attr/layer1">
 
     <ProgressBar
         android:id="@+id/pb_loading"
@@ -51,7 +51,7 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_margin="20dp"
-        app:cardBackgroundColor="@android:color/white"
+        app:cardBackgroundColor="?attr/layer2"
         app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,6 +65,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
             android:text="@string/max_choose_other_documents"
+            android:textColor="?attr/textPrimary"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_divider"
             app:layout_constraintStart_toEndOf="@+id/tv_divider"
@@ -91,7 +92,7 @@
                 android:layout_height="0dp"
                 android:layout_margin="20dp"
                 android:visibility="gone"
-                app:cardBackgroundColor="@android:color/white"
+                app:cardBackgroundColor="?attr/layer2"
                 app:cardCornerRadius="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
