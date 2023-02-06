@@ -10,15 +10,17 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
-import android.util.Log
 import androidx.annotation.VisibleForTesting
+import com.max.browser.core.feature.qrcode.detail.KEY_ENTER_FROM_QRCODE
 import mozilla.components.feature.intent.ext.sanitize
 import mozilla.components.feature.intent.processing.IntentProcessor
+import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.utils.EXTRA_ACTIVITY_REFERRER_CATEGORY
 import mozilla.components.support.utils.EXTRA_ACTIVITY_REFERRER_PACKAGE
 import mozilla.components.support.utils.ext.getApplicationInfoCompat
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.HomeActivity.Companion.PRIVATE_BROWSING_MODE
+import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.components.IntentProcessorType
 import org.mozilla.fenix.components.getType
 import org.mozilla.fenix.ext.components
@@ -60,7 +62,12 @@ class IntentReceiverActivity : Activity() {
 
     fun processIntent(intent: Intent) {
         // Call process for side effects, short on the first that returns true
-        val private = settings().openLinksInAPrivateTab
+        val lastMode = components.settings.lastKnownMode
+        var private = settings().openLinksInAPrivateTab
+        Logger.info("lastMode:$lastMode, linkToPrivate:$private")
+        if (intent.getBooleanExtra(KEY_ENTER_FROM_QRCODE, false)) {
+            private = components.settings.lastKnownMode == BrowsingMode.Private
+        }
         intent.putExtra(PRIVATE_BROWSING_MODE, private)
         if (private) {
             Events.openedLink.record(Events.OpenedLinkExtra("PRIVATE"))
