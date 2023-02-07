@@ -69,13 +69,13 @@ internal fun normalModeAdapterItems(
     }
 
     // Check to add home native ad
-    getAdConfigs().find { it.placement == AdPlacement.AD_PLACEMENT_HOME_NATIVE }?.let { adConfig ->
-        val showNativeAd = adConfig.showCondition.isEnable
-        if (showNativeAd.not()) {
-            return@let
-        }
-        items.add(AdapterItem.HomeNativeAdItem)
-    }
+//    getAdConfigs().find { it.placement == AdPlacement.AD_PLACEMENT_HOME_NATIVE }?.let { adConfig ->
+//        val showNativeAd = adConfig.showCondition.isEnable
+//        if (showNativeAd.not()) {
+//            return@let
+//        }
+//        items.add(AdapterItem.HomeNativeAdItem)
+//    }
 
 
     if (showRecentTab) {
