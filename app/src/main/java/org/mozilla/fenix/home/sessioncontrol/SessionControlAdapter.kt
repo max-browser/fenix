@@ -380,6 +380,7 @@ class SessionControlAdapter(
             is MyDocumentsHeaderViewHolder,
             is MyDocumentsViewHolder,
             is SessionTailViewHolder,
+            is HomeNativeAdViewHolder,
             -> {
                 // no op
                 // This previously called "composeView.disposeComposition" which would have the
@@ -402,9 +403,7 @@ class SessionControlAdapter(
                 // This ViewHolder can be removed / re-added and we need it to show a fresh new composition.
                 holder.composeView.disposeComposition()
             }
-            is HomeNativeAdViewHolder -> {
-                holder.destroy()
-            }
+
             else -> super.onViewRecycled(holder)
         }
     }

@@ -132,15 +132,15 @@
 
             </com.google.android.gms.ads.nativead.NativeAdView>
 
-            <View
-                android:id="@+id/v_native_ad"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@drawable/max_ripple_dark_r8"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <View-->
+<!--                android:id="@+id/v_native_ad"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:background="@drawable/max_ripple_dark_r8"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

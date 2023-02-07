@@ -5,6 +5,7 @@
 package org.mozilla.fenix.home.sessioncontrol
 
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LifecycleOwner
@@ -73,19 +74,6 @@ internal fun normalModeAdapterItems(
         if (showNativeAd.not()) {
             return@let
         }
-
-        val time = System.currentTimeMillis()
-        val firstTime = MaxAdSettings.getInstance().homeNativeAdFirstTimeOfDailyShowing
-        val duration = time - firstTime
-        if (duration >= DateUtils.DAY_IN_MILLIS) {
-            MaxAdSettings.getInstance().homeNativeAdDailyShowCount = 0
-        }
-
-        val dailyShowCount = MaxAdSettings.getInstance().homeNativeAdDailyShowCount
-        if (dailyShowCount >= adConfig.showCondition.dailyShowCount) {
-            return@let
-        }
-
         items.add(AdapterItem.HomeNativeAdItem)
     }
 
