@@ -17,7 +17,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.max.browser.core.MaxBrowserConstant
+import com.max.browser.core.RemoteConfigKey
+import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
+import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import mozilla.components.concept.engine.webextension.EnableSource
@@ -319,7 +322,9 @@ class InstalledAddonDetailsFragment : Fragment() {
         }
     }
     private fun bindRemoveButton() {
-        if (MaxBrowserConstant.MAX_ADDON_HIDE_LIST.contains(addon.id)) {
+        val adBlockEnable =
+            RemoteConfigManager.getInstance().getConfig<Boolean>(RemoteConfigKey.AD_BLOCK_ENABLE)
+        if (adBlockEnable && MaxBrowserConstant.MAX_ADDON_HIDE_LIST.contains(addon.id)) {
             binding.removeAddOn.visibility = View.GONE
         } else {
             binding.removeAddOn.visibility = View.VISIBLE

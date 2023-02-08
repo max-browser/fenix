@@ -16,6 +16,7 @@ import android.os.SystemClock
 import android.text.TextUtils
 import android.text.format.DateUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import androidx.annotation.CallSuper
@@ -48,9 +49,6 @@ import com.max.browser.downloader.worker.ARG_NOTIFICATION_FILE_PATH
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import mozilla.appservices.places.BookmarkRoot
 import mozilla.components.browser.state.action.ContentAction
 import mozilla.components.browser.state.action.SearchAction
@@ -109,10 +107,7 @@ import org.mozilla.fenix.library.history.HistoryFragmentDirections
 import org.mozilla.fenix.library.historymetadata.HistoryMetadataGroupFragmentDirections
 import org.mozilla.fenix.library.recentlyclosed.RecentlyClosedFragmentDirections
 import org.mozilla.fenix.nimbus.FxNimbus
-import org.mozilla.fenix.onboarding.DefaultBrowserNotificationWorker
-import org.mozilla.fenix.onboarding.FenixOnboarding
-import org.mozilla.fenix.onboarding.MARKETING_CHANNEL_ID
-import org.mozilla.fenix.onboarding.ReEngagementNotificationWorker
+import org.mozilla.fenix.onboarding.*
 import org.mozilla.fenix.perf.*
 import org.mozilla.fenix.qrcode.OpenQrcodeScannerIntentProcessor
 import org.mozilla.fenix.onboarding.ensureMarketingChannelExists
@@ -141,7 +136,7 @@ import org.mozilla.fenix.utils.BrowsersCache
 import org.mozilla.fenix.utils.Settings
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.util.Locale
+import java.util.*
 
 /**
  * The main activity of the application. The application is primarily a single Activity (this one)
@@ -362,7 +357,11 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         )
 
         maxHomeActivityDelegate.onCreate()
-        setupAdBlockAddon()
+        RemoteConfigManager.getInstance().fetch().addOnCompleteListener(this) {
+            if (it.isSuccessful) {
+                onRemoteConfigFetched()
+            }
+        }
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
     }
@@ -408,6 +407,15 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             safeIntent,
             binding.rootContainer,
         )
+    }
+
+    private fun onRemoteConfigFetched() {
+        val adBlockEnable =
+            RemoteConfigManager.getInstance()
+                .getConfig<Boolean>(RemoteConfigKey.AD_BLOCK_ENABLE)
+        if (adBlockEnable) {
+            setupAdBlockAddon()
+        }
     }
 
     private fun setupAdBlockAddon() {
