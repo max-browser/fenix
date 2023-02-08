@@ -31,18 +31,10 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.max.browser.core.MaxBrowserConstant
-import com.max.browser.core.RemoteConfigKey
-import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
-import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import com.max.browser.core.delegate.application.MaxBrowserApplicationDelegate
 import com.max.browser.core.delegate.home.activity.MaxHomeActivityDelegate
-import com.max.browser.core.ext.beginTransaction
-import com.max.browser.core.ext.isInternetAvailable
 import com.max.browser.downloader.DownloaderActivityDelegate
 import com.max.browser.downloader.worker.ARG_NOTIFICATION_FILE_PATH
 import kotlinx.coroutines.*
@@ -85,7 +77,6 @@ import mozilla.components.support.utils.toSafeIntent
 import mozilla.components.support.webextensions.WebExtensionPopupFeature
 import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.telemetry.glean.private.NoExtras
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.Metrics
 import org.mozilla.fenix.GleanMetrics.StartOnHome
@@ -114,7 +105,7 @@ import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.onboarding.MARKETING_CHANNEL_ID
 import org.mozilla.fenix.onboarding.ReEngagementNotificationWorker
 import org.mozilla.fenix.perf.*
-import org.mozilla.fenix.qrcode.OpenQrcodeScannerIntentProcessor
+import org.mozilla.fenix.qrcode.OpenDynamicLinkIntentProcessor
 import org.mozilla.fenix.onboarding.ensureMarketingChannelExists
 import org.mozilla.fenix.search.SearchDialogFragmentDirections
 import org.mozilla.fenix.session.PrivateNotificationService
@@ -186,7 +177,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
     private val externalSourceIntentProcessors by lazy {
         listOf(
-            OpenQrcodeScannerIntentProcessor(this),
+            OpenDynamicLinkIntentProcessor(this),
             HomeDeepLinkIntentProcessor(this),
             SpeechProcessingIntentProcessor(this, components.core.store),
             AssistIntentProcessor(),
@@ -1281,5 +1272,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         const val PWA_RECENTLY_USED_THRESHOLD = DateUtils.DAY_IN_MILLIS * 30L
 
         const val OPEN_TO_QRCODE_SCANNER = "open_to_qrcode_scanner"
+        const val OPEN_TO_VPN = "open_to_vpn"
     }
 }

@@ -19,6 +19,10 @@ class DynamicLinkIntentProcessor : IntentProcessor {
                 intent.putExtra(HomeActivity.OPEN_TO_QRCODE_SCANNER, true)
                 return true
             }
+            VPN_LINKS.contains(deepLink.toString()) -> {
+                intent.putExtra(HomeActivity.OPEN_TO_VPN, true)
+                return true
+            }
             else -> {}
         }
         return false
@@ -28,6 +32,10 @@ class DynamicLinkIntentProcessor : IntentProcessor {
         val QRCODE_SCANNER_LINKS = arrayOf(
             "https://www.maxbrowser.co/qrcode-scanner",
             "https://maxbrowser.co/qrcode-scanner",
+        )
+        val VPN_LINKS = arrayOf(
+            "https://www.maxbrowser.co/vpn",
+            "https://maxbrowser.co/vpn",
         )
     }
 }
