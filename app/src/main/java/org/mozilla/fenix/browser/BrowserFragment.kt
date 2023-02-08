@@ -6,6 +6,7 @@ package org.mozilla.fenix.browser
 
 import android.content.Context
 import android.os.StrictMode
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
@@ -15,6 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.MaxBrowserConstant
+import com.max.browser.core.RemoteConfigKey
+import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -42,8 +45,8 @@ import mozilla.components.service.glean.private.NoExtras
 import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.base.log.logger.Logger
-import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifAnyChanged
+import mozilla.components.support.webextensions.WebExtensionSupport
 import org.mozilla.fenix.GleanMetrics.ReaderMode
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
@@ -52,8 +55,6 @@ import org.mozilla.fenix.components.TabCollectionStorage
 import org.mozilla.fenix.components.toolbar.BrowserToolbarView
 import org.mozilla.fenix.components.toolbar.ToolbarMenu
 import org.mozilla.fenix.ext.*
-import org.mozilla.fenix.ext.runIfFragmentIsAttached
-import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.settings.quicksettings.protections.cookiebanners.dialog.CookieBannerReEngagementDialogUtils
 import org.mozilla.fenix.shortcut.PwaOnboardingObserver
@@ -109,7 +110,12 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
         browserToolbarView.view.addNavigationAction(homeAction)
 
         updateToolbarActions(isTablet = resources.getBoolean(R.bool.tablet))
-        checkToAddAdBlockButton()
+
+        RemoteConfigManager.getInstance().fetch().addOnCompleteListener(requireActivity()) {
+            if (it.isSuccessful) {
+                onRemoteConfigFetched()
+            }
+        }
 
         val readerModeAction =
             BrowserToolbar.ToggleButton(
@@ -327,7 +333,18 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
         browserToolbarView.view.invalidateActions()
     }
 
-    private fun checkToAddAdBlockButton(){
+    private fun onRemoteConfigFetched() {
+        val adBlockEnable =
+            RemoteConfigManager.getInstance().getConfig<Boolean>(RemoteConfigKey.AD_BLOCK_ENABLE)
+        if (adBlockEnable) {
+            checkToAddAdBlockButton()
+        }
+    }
+
+    private fun checkToAddAdBlockButton() {
+        if (context == null) {
+            return
+        }
         lifecycleScope.launch(IO) {
             try {
                 val addons = requireContext().components.addonManager.getAddons(waitForPendingActions = false)
