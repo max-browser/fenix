@@ -8,7 +8,7 @@
     <!-- Layers -->
     <!-- Default Screen background, Frontlayer background, Frontlayer header -->
     <color name="fx_mobile_layer_color_1">#f7f7f7</color>
-    <color name="day_light_layer_1_color">fbfbfb</color>
+    <color name="day_light_layer_1_color">#fbfbfb</color>
     <!-- App Bar Top, App Bar Bottom -->
     <color name="fx_mobile_app_bar_color">#fbfbfb</color>
     <!-- Card background, Menu background, Dialog, Banner -->
