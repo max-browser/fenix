@@ -33,6 +33,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.max.browser.core.MaxBrowserConstant
+import com.max.browser.core.RemoteConfigKey
+import com.max.browser.core.RemoteConfigManager
 import com.max.browser.core.ReportManager
 import com.max.browser.core.delegate.application.MaxBrowserApplicationDelegate
 import com.max.browser.core.delegate.home.activity.MaxHomeActivityDelegate
