@@ -32,6 +32,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.ConstraintSet.*
@@ -55,10 +56,12 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.max.browser.core.*
+import com.max.browser.core.data.local.sp.MaxBrowserSettings
 import com.max.browser.core.delegate.home.fragment.MaxHomeFragmentDelegate
 import com.max.browser.core.domain.repository.AdRepository
 import com.max.browser.core.ext.openApplicationDetailsSettings
 import com.max.browser.core.feature.vpn.VpnActivity
+import com.max.browser.core.feature.vpn.isVpnEntranceEnabled
 import de.blinkt.openvpn.core.OpenVPNService
 import de.blinkt.openvpn.core.VpnStatus
 import kotlinx.coroutines.Dispatchers.IO
@@ -99,6 +102,7 @@ import org.koin.android.ext.android.inject
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.HomeScreen
+import org.mozilla.fenix.GleanMetrics.RecentTabs
 import org.mozilla.fenix.GleanMetrics.UnifiedSearch
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
@@ -110,6 +114,8 @@ import org.mozilla.fenix.components.PrivateShortcutCreateManager
 import org.mozilla.fenix.components.TabCollectionStorage
 import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
+import org.mozilla.fenix.compose.cfr.CFRPopup
+import org.mozilla.fenix.compose.cfr.CFRPopupProperties
 import org.mozilla.fenix.databinding.FragmentHomeBinding
 import org.mozilla.fenix.ext.*
 import org.mozilla.fenix.gleanplumb.DefaultMessageController
@@ -145,6 +151,7 @@ import org.mozilla.fenix.utils.Settings.Companion.TOP_SITES_PROVIDER_MAX_THRESHO
 import org.mozilla.fenix.utils.ToolbarPopupWindow
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wallpapers.Wallpaper
+import timber.log.Timber
 import java.io.File
 import java.lang.ref.WeakReference
 import kotlin.math.min
@@ -679,14 +686,27 @@ class HomeFragment : Fragment() {
             )
         }
 
-        val isVpnEntranceEnableRemote: Boolean = RemoteConfigManager.getInstance().getConfig(RemoteConfigKey.VPN_ENTRANCE_ENABLE)
-        val vpnSubsProductId: String = RemoteConfigManager.getInstance().getConfig(RemoteConfigKey.VPN_SUBSCRIBE_PRODUCT_ID)
-        val vpnSubsPurchase = InAppBillingManager.getInstance().getProductPurchase(vpnSubsProductId)
-        val isVpnEntranceEnable = vpnSubsPurchase?.isPurchased() == true || isVpnEntranceEnableRemote
-
-        if (isVpnEntranceEnable) {
+        if (isVpnEntranceEnabled()) {
             binding.vpnButton.apply {
                 visibility = View.VISIBLE
+                if (browsingModeManager.mode.isPrivate && MaxBrowserSettings.getInstance().vpnPromotedToastHasShown.not()) {
+                    postDelayed(
+                        {
+                            runIfFragmentIsAttached {
+                                CFRPopup(
+                                    text = context.getString(R.string.max_vpn_promote_toast),
+                                    anchor = this,
+                                    properties = CFRPopupProperties(
+                                        popupAlignment = CFRPopup.PopupAlignment.INDICATOR_CENTERED_IN_ANCHOR,
+                                        indicatorDirection = CFRPopup.IndicatorDirection.UP,
+                                        popupVerticalOffset = (-4).dp, // Offset the top spacer in the recent tabs header.
+                                    ),
+                                ) {
+                                    MaxBrowserSettings.getInstance().vpnPromotedToastHasShown = true
+                                }.show()
+                            }
+                        }, 300)
+                }
                 setOnClickListener {
                     startActivity(Intent(requireContext(), VpnActivity::class.java))
                     ReportManager.getInstance().report(

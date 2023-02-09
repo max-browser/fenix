@@ -11,10 +11,7 @@ import androidx.annotation.VisibleForTesting.Companion.PRIVATE
 import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.max.browser.core.InAppBillingManager
-import com.max.browser.core.RemoteConfigKey
-import com.max.browser.core.RemoteConfigManager
-import com.max.browser.core.isPurchased
+import com.max.browser.core.feature.vpn.isVpnEntranceEnabled
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
@@ -389,17 +386,12 @@ open class DefaultToolbarMenu(
     @VisibleForTesting(otherwise = PRIVATE)
     val coreMenuItems by lazy {
 
-        val isVpnEntranceEnableRemote: Boolean = RemoteConfigManager.getInstance().getConfig(RemoteConfigKey.VPN_ENTRANCE_ENABLE)
-        val vpnSubsProductId: String = RemoteConfigManager.getInstance().getConfig(RemoteConfigKey.VPN_SUBSCRIBE_PRODUCT_ID)
-        val vpnSubsPurchase = InAppBillingManager.getInstance().getProductPurchase(vpnSubsProductId)
-        val isVpnEntranceEnable = vpnSubsPurchase?.isPurchased() == true || isVpnEntranceEnableRemote
-
         val menuItems =
             listOfNotNull(
                 if (shouldUseBottomToolbar) null else menuToolbar,
                 newTabItem,
                 BrowserMenuDivider(),
-                if (isVpnEntranceEnable) vpnItem else null,
+                if (isVpnEntranceEnabled()) vpnItem else null,
                 bookmarksItem,
                 historyItem,
                 downloadsItem,
