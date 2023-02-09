@@ -690,22 +690,22 @@ class HomeFragment : Fragment() {
             binding.vpnButton.apply {
                 visibility = View.VISIBLE
                 if (browsingModeManager.mode.isPrivate && MaxBrowserSettings.getInstance().vpnPromotedToastHasShown.not()) {
-                    postDelayed(
-                        {
-                            runIfFragmentIsAttached {
-                                CFRPopup(
-                                    text = context.getString(R.string.max_vpn_promote_toast),
-                                    anchor = this,
-                                    properties = CFRPopupProperties(
-                                        popupAlignment = CFRPopup.PopupAlignment.INDICATOR_CENTERED_IN_ANCHOR,
-                                        indicatorDirection = CFRPopup.IndicatorDirection.UP,
-                                        popupVerticalOffset = (-4).dp, // Offset the top spacer in the recent tabs header.
-                                    ),
-                                ) {
-                                    MaxBrowserSettings.getInstance().vpnPromotedToastHasShown = true
-                                }.show()
-                            }
-                        }, 300)
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        delay(300)
+                        runIfFragmentIsAttached {
+                            CFRPopup(
+                                text = context.getString(R.string.max_vpn_promote_toast),
+                                anchor = binding.vpnButton,
+                                properties = CFRPopupProperties(
+                                    popupAlignment = CFRPopup.PopupAlignment.INDICATOR_CENTERED_IN_ANCHOR,
+                                    indicatorDirection = CFRPopup.IndicatorDirection.UP,
+                                    popupVerticalOffset = (-4).dp, // Offset the top spacer in the recent tabs header.
+                                ),
+                            ) {
+                                MaxBrowserSettings.getInstance().vpnPromotedToastHasShown = true
+                            }.show()
+                        }
+                    }
                 }
                 setOnClickListener {
                     startActivity(Intent(requireContext(), VpnActivity::class.java))
