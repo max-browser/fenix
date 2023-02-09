@@ -689,7 +689,7 @@ class HomeFragment : Fragment() {
         if (isVpnEntranceEnabled()) {
             binding.vpnButton.apply {
                 visibility = View.VISIBLE
-                if (browsingModeManager.mode.isPrivate && MaxBrowserSettings.getInstance().vpnPromotedToastHasShown.not()) {
+                if (browsingModeManager.mode.isPrivate && MaxBrowserSettings.getInstance().hasEnterVpnPage.not()) {
                     viewLifecycleOwner.lifecycleScope.launch {
                         delay(300)
                         runIfFragmentIsAttached {
@@ -701,9 +701,7 @@ class HomeFragment : Fragment() {
                                     indicatorDirection = CFRPopup.IndicatorDirection.UP,
                                     popupVerticalOffset = (-4).dp, // Offset the top spacer in the recent tabs header.
                                 ),
-                            ) {
-                                MaxBrowserSettings.getInstance().vpnPromotedToastHasShown = true
-                            }.show()
+                            ).show()
                         }
                     }
                 }
